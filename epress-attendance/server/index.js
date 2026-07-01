@@ -47,6 +47,18 @@ import dashboardRoutes from './routes/dashboard.js';
 import businessRoutes from './routes/business.js';
 import workerRoutes from './routes/worker.js';
 
+app.post('/api/debug-body', (req, res) => {
+  res.json({
+    bodyType: typeof req.body,
+    isBuffer: Buffer.isBuffer(req.body),
+    isArray: Array.isArray(req.body),
+    keys: req.body ? Object.keys(req.body).slice(0, 5) : [],
+    bodyPreview: req.body ? JSON.stringify(req.body).slice(0, 200) : null,
+    bodyConstructor: req.body?.constructor?.name,
+    hasBody: !!req.body,
+  });
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/employees', employeeRoutes);
