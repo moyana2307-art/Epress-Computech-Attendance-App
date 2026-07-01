@@ -1,18 +1,24 @@
 import app from '../server/index.js';
 
-export default async function handler(req, res) {
-  try {
-    let raw = '';
-    for await (const chunk of req) {
-      raw += typeof chunk === 'string' ? chunk : Buffer.from(chunk).toString();
-    }
-    if (raw) {
-      try { req.body = JSON.parse(raw); } catch { req.body = { _raw: raw }; }
-    } else {
-      req.body = { _note: 'empty body' };
-    }
-  } catch (e) {
-    req.body = { _error: e.message };
-  }
-  return app(req, res);
+export default function handler(req, res) {
+  const contentType = req.headers['content-type'];
+  const contentLength = req.headers['content-length'];
+  const hasBody = 'body' in req;
+  const bodyType = hasBody ? typeof req.body : 'N/A';
+  const bodyIs = hasBody ? JSON.stringify(req.body).substring(0, 200) : 'N/A';
+  const hasRawBody = 'rawBody' in req;
+  const keys = Object.keys(req).join(', ');
+  
+  res.status(200).json({
+    method: req.method,
+    url: req.url,
+    contentType,
+    contentLength,
+    hasBody,
+    bodyType,
+    bodyIs,
+    hasRawBody,
+    keys,
+    msg: 'diagnostic, not using app'
+  });
 }
