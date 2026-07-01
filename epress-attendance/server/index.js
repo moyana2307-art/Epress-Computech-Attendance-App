@@ -23,12 +23,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
-app.use(express.text({ type: '*/*' }));
 app.use((req, _res, next) => {
-  if (typeof req.body === 'object') return next();
   if (req.body && typeof req.body === 'string') {
-    try { req.body = JSON.parse(req.body); } catch { req.body = {}; }
+    try { req.body = JSON.parse(req.body); } catch {}
   }
+  req._body = true;
   next();
 });
 
