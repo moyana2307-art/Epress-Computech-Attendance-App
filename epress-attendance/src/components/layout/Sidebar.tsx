@@ -126,7 +126,7 @@ export default function Sidebar() {
           {navItems.map((section) => (
             <div key={section.section}>
               {!collapsed && (
-                <p className="text-[10px] uppercase tracking-widest text-muted px-3 mb-2 font-semibold">
+                <p className="text-[10px] uppercase tracking-widest text-text-secondary px-3 mb-2 font-semibold">
                   {section.section}
                 </p>
               )}
@@ -158,7 +158,7 @@ export default function Sidebar() {
 
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="hidden lg:flex items-center justify-center h-12 border-t border-border-light text-muted hover:text-text transition-colors"
+          className="hidden lg:flex items-center justify-center h-12 border-t border-border-light text-text-secondary hover:text-text transition-colors"
         >
           <ChevronLeft className={cn('w-5 h-5 transition-transform duration-300', collapsed && 'rotate-180')} />
         </button>

@@ -63,7 +63,7 @@ export default function CheckInOut() {
                 value={employeeName}
                 onChange={(e) => setEmployeeName(e.target.value)}
                 placeholder="Enter your full name..."
-                className="w-full max-w-sm h-12 text-center text-lg rounded-xl border border-border bg-card text-text placeholder:text-text-secondary/40 focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all"
+                className="w-full max-w-sm h-12 text-center text-lg rounded-xl border border-border bg-card text-text placeholder:text-text-secondary/60 focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all"
               />
             </div>
 

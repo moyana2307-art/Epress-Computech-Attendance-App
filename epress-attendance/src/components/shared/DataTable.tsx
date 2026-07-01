@@ -62,7 +62,7 @@ export function DataTable<T extends Record<string, any>>({
           {title && <h3 className="text-sm font-semibold text-text font-heading">{title}</h3>}
           {searchable && (
             <div className="relative max-w-sm ml-auto">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}

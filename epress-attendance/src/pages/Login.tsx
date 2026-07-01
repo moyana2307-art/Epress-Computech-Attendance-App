@@ -140,7 +140,7 @@ export default function Login() {
             </Button>
           </form>
 
-          <p className="text-center text-xs text-muted mt-8">
+          <p className="text-center text-xs text-text-secondary mt-8">
             Epress Attendance — Printing &amp; EcoCash HR Platform
           </p>
         </motion.div>

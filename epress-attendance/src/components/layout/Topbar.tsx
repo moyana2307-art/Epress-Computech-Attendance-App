@@ -34,7 +34,7 @@ export default function Topbar() {
         <div className="flex items-center gap-4">
           {searchOpen ? (
             <div className="flex items-center gap-2 bg-background rounded-xl px-4 py-2 border border-border-light animate-fade-in">
-              <Search className="w-4 h-4 text-muted" />
+              <Search className="w-4 h-4 text-text-secondary" />
               <input
                 autoFocus
                 placeholder="Search employees, attendance..."
@@ -49,7 +49,7 @@ export default function Topbar() {
             >
               <Search className="w-4 h-4" />
               <span className="hidden sm:inline">Search...</span>
-              <kbd className="hidden sm:inline-flex text-[10px] px-1.5 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-muted">
+              <kbd className="hidden sm:inline-flex text-[10px] px-1.5 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-text-secondary">
                 ⌘K
               </kbd>
             </button>

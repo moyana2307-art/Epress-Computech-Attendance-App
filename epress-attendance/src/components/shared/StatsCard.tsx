@@ -36,7 +36,7 @@ export function StatsCard({ icon, label, value, trend, color, delay = 0, subtitl
       <div className="mt-4">
         <p className="text-sm text-text-secondary">{label}</p>
         <p className="text-2xl font-bold text-text mt-0.5 font-heading">{value}</p>
-        {subtitle && <p className="text-xs text-muted mt-1">{subtitle}</p>}
+        {subtitle && <p className="text-xs text-text-secondary mt-1">{subtitle}</p>}
       </div>
     </motion.div>
   );
