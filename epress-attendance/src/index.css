@@ -21,12 +21,12 @@
   --color-border-light: #E8E8E8;
   --color-text: #1A1A2E;
   --color-text-secondary: #4B5563;
-  --color-muted: #6B7280;
+  --color-muted: #4B5563;
 
   --color-sidebar: #FFFFFF;
   --color-sidebar-hover: #F3F4F6;
   --color-sidebar-active: #10367D;
-  --color-sidebar-text: #4B5563;
+  --color-sidebar-text: #374151;
   --color-sidebar-text-active: #FFFFFF;
 
   --radius-sm: 0.5rem;

@@ -13,7 +13,7 @@ export function Tabs({ tabs, defaultTab, className }: TabsProps) {
 
   return (
     <div className={cn('space-y-4', className)}>
-      <div className="flex gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl">
+      <div className="flex gap-1 p-1 bg-background dark:bg-gray-800 rounded-xl">
         {tabs.map((tab) => (
           <button
             key={tab.id}

@@ -2,7 +2,7 @@ import { type HTMLAttributes, forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 
 const variants = {
-  default: 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
+  default: 'bg-primary/5 text-text-secondary dark:bg-gray-800 dark:text-gray-300',
   success: 'bg-success/10 text-success',
   warning: 'bg-warning/10 text-warning',
   danger: 'bg-danger/10 text-danger',

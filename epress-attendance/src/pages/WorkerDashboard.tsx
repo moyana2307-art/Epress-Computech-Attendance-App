@@ -254,45 +254,45 @@ export default function WorkerDashboard() {
       icon: <Building2 className="w-5 h-5 text-white" />,
       label: 'Status',
       value: data?.businessOpen ? 'Open' : 'Closed',
-      color: data?.businessOpen ? 'bg-gradient-to-br from-success to-emerald-600' : 'bg-gradient-to-br from-danger to-red-600',
+      color: data?.businessOpen ? 'bg-gradient-to-br from-success to-primary-dark' : 'bg-gradient-to-br from-danger to-primary-dark',
       subtitle: data?.businessHours ? `${data.businessHours.opening_time} - ${data.businessHours.closing_time}` : undefined,
     },
     {
       icon: <Users className="w-5 h-5 text-white" />,
       label: 'On Duty',
       value: data?.employees.map(e => e.employee.name).join(', ') || 'Nobody',
-      color: 'bg-gradient-to-br from-primary to-primary-dark',
+      color: 'bg-gradient-to-br from-primary to-secondary',
     },
     {
       icon: <Clock className="w-5 h-5 text-white" />,
       label: 'My Status',
       value: isOnDuty ? (myStatus?.attendance?.check_in ? 'Checked In' : 'Not Checked In') : 'Off Duty',
-      color: isOnDuty ? 'bg-gradient-to-br from-secondary to-blue-600' : 'bg-gradient-to-br from-muted to-gray-500',
+      color: isOnDuty ? 'bg-gradient-to-br from-secondary to-primary' : 'bg-gradient-to-br from-muted to-primary',
     },
     {
       icon: <Hourglass className="w-5 h-5 text-white" />,
       label: 'My Hours Today',
       value: myStatus?.todayMinutes ? `${Math.floor(myStatus.todayMinutes / 60)}h ${myStatus.todayMinutes % 60}m` : '0h 0m',
-      color: 'bg-gradient-to-br from-purple-500 to-purple-700',
+      color: 'bg-gradient-to-br from-primary to-primary-dark',
     },
     {
       icon: <CheckCircle2 className="w-5 h-5 text-white" />,
       label: 'Check-In',
       value: myStatus?.attendance?.check_in || '--',
-      color: myStatus?.attendance?.check_in ? 'bg-gradient-to-br from-success to-emerald-600' : 'bg-gradient-to-br from-muted to-gray-500',
+      color: myStatus?.attendance?.check_in ? 'bg-gradient-to-br from-success to-primary-dark' : 'bg-gradient-to-br from-muted to-primary',
       subtitle: myStatus?.attendance?.check_in ? myStatus.attendance.status : undefined,
     },
     {
       icon: <LogOut className="w-5 h-5 text-white" />,
       label: 'Check-Out',
       value: myStatus?.attendance?.check_out || '--',
-      color: myStatus?.attendance?.check_out ? 'bg-gradient-to-br from-warning to-orange-600' : 'bg-gradient-to-br from-muted to-gray-500',
+      color: myStatus?.attendance?.check_out ? 'bg-gradient-to-br from-warning to-primary-dark' : 'bg-gradient-to-br from-muted to-primary',
     },
     {
       icon: <AlertTriangle className="w-5 h-5 text-white" />,
       label: 'Late',
       value: myStatus?.attendance?.late_minutes ? `${myStatus.attendance.late_minutes}m` : '0m',
-      color: myStatus?.attendance?.late_minutes ? 'bg-gradient-to-br from-warning to-amber-600' : 'bg-gradient-to-br from-success to-emerald-600',
+      color: myStatus?.attendance?.late_minutes ? 'bg-gradient-to-br from-warning to-primary-dark' : 'bg-gradient-to-br from-success to-primary-dark',
     },
   ];
 
@@ -398,7 +398,7 @@ export default function WorkerDashboard() {
                     key={d.department}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm"
+                    className="p-4 rounded-xl border border-border-light dark:border-gray-700 bg-card dark:bg-gray-800 shadow-sm"
                   >
                     <div className="flex items-center gap-3 mb-2">
                       <div className="p-2 rounded-lg bg-primary/10">
@@ -479,7 +479,7 @@ export default function WorkerDashboard() {
                     icon: LogOut,
                     label: 'Check Out',
                     desc: 'End your shift',
-                    gradient: 'from-secondary to-blue-600',
+                    gradient: 'from-secondary to-primary',
                     bgLight: 'bg-secondary/10',
                     iconColor: 'text-secondary-dark',
                     onClick: isOnDuty && myStatus?.attendance?.check_in && !myStatus?.attendance?.check_out ? handleCheckout : undefined,
@@ -490,7 +490,7 @@ export default function WorkerDashboard() {
                     icon: CalendarCheck,
                     label: 'Leave',
                     desc: 'Request time off',
-                    gradient: 'from-warning to-amber-600',
+                    gradient: 'from-warning to-primary-dark',
                     bgLight: 'bg-warning/5',
                     iconColor: 'text-warning',
                     href: '/leaves',
@@ -499,7 +499,7 @@ export default function WorkerDashboard() {
                     icon: UserCircle,
                     label: 'Profile',
                     desc: 'Manage your account',
-                    gradient: 'from-success to-emerald-600',
+                    gradient: 'from-success to-primary-dark',
                     bgLight: 'bg-success/5',
                     iconColor: 'text-success',
                     href: '/profile',
@@ -512,14 +512,15 @@ export default function WorkerDashboard() {
                       to={action.href || '#'}
                       onClick={action.onClick}
                       disabled={action.disabled}
-                      className={cn(
-                        'group relative overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 dark:hover:border-primary/30',
+                        className={cn(
+                          'group relative overflow-hidden rounded-xl border border-border-light dark:border-gray-700 bg-card dark:bg-gray-800 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 dark:hover:border-primary/30',
                         action.disabled && 'opacity-50 cursor-not-allowed pointer-events-none'
                       )}
                     >
-                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                        style={{ backgroundImage: `linear-gradient(to right, var(--tw-gradient-stops))` }}
-                      />
+                      <div className={cn(
+                        'absolute top-0 left-0 right-0 h-1 bg-gradient-to-r opacity-0 group-hover:opacity-100 transition-opacity duration-300',
+                        action.gradient
+                      )} />
                       <div className="flex items-center gap-4 p-4">
                         <div className={cn(
                           'p-3 rounded-xl shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3',
@@ -528,11 +529,11 @@ export default function WorkerDashboard() {
                           <action.icon className={cn('w-5 h-5', action.iconColor)} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{action.label}</p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{action.desc}</p>
+                          <p className="text-sm font-semibold text-text">{action.label}</p>
+                          <p className="text-xs text-text-secondary mt-0.5">{action.desc}</p>
                         </div>
                         {action.href && (
-                          <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-primary transition-all duration-300 group-hover:translate-x-0.5" />
+                          <ChevronRight className="w-4 h-4 text-text-secondary/30 group-hover:text-primary transition-all duration-300 group-hover:translate-x-0.5" />
                         )}
                       </div>
                     </Comp>
@@ -568,7 +569,7 @@ export default function WorkerDashboard() {
                   <tbody className="divide-y divide-border-light">
                     {data.todayRecords.map((row, i) => (
                       <motion.tr key={row.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.05 }} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                        transition={{ delay: i * 0.05 }} className="hover:bg-primary/5 dark:hover:bg-gray-800/50 transition-colors">
                         <td className="px-3 py-3 text-sm font-medium text-text">{row.employee_name}</td>
                         <td className="px-3 py-3 text-sm text-text">{row.check_in || '--'}</td>
                         <td className="px-3 py-3 text-sm text-text">{row.check_out || '--'}</td>
@@ -601,7 +602,7 @@ export default function WorkerDashboard() {
             {data?.recentActivity?.length ? (
               data.recentActivity.map((act, i) => (
                 <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.03 }} className="flex items-center gap-3 p-2 rounded-lg bg-white dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                  transition={{ delay: i * 0.03 }} className="flex items-center gap-3 p-2 rounded-lg bg-card dark:bg-gray-800/50 hover:bg-primary/5 dark:hover:bg-gray-800 transition-colors">
                   <Bell className="w-4 h-4 text-primary shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium text-text truncate">{act.title}</p>

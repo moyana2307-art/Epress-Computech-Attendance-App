@@ -67,11 +67,11 @@ export default function Dashboard() {
 
   const statCards = useMemo(() => [
     { icon: <Users className="w-5 h-5 text-white" />, label: 'Total Employees', value: stats?.total_employees ?? 156, color: 'bg-primary', trend: { value: 12, positive: true } },
-    { icon: <UserCheck className="w-5 h-5 text-white" />, label: 'Present Today', value: stats?.present_today ?? 134, color: 'bg-[#49E0C6]', trend: { value: 8, positive: true } },
-    { icon: <UserX className="w-5 h-5 text-white" />, label: 'Absent Today', value: stats?.absent_today ?? 12, color: 'bg-[#FF8181]', trend: { value: 5, positive: false } },
-    { icon: <CalendarCheck className="w-5 h-5 text-white" />, label: 'On Leave', value: stats?.on_leave ?? 10, color: 'bg-[#FDB353]', trend: { value: 2, positive: false } },
-    { icon: <AlertTriangle className="w-5 h-5 text-white" />, label: 'Late Arrivals', value: stats?.late_arrivals ?? 8, color: 'bg-[#FF8181]', trend: { value: 15, positive: false } },
-    { icon: <TrendingUp className="w-5 h-5 text-white" />, label: 'Attendance %', value: stats?.attendance_percentage ?? '94.2%', color: 'bg-[#49E0C6]', trend: { value: 3, positive: true } },
+    { icon: <UserCheck className="w-5 h-5 text-white" />, label: 'Present Today', value: stats?.present_today ?? 134, color: 'bg-success', trend: { value: 8, positive: true } },
+    { icon: <UserX className="w-5 h-5 text-white" />, label: 'Absent Today', value: stats?.absent_today ?? 12, color: 'bg-danger', trend: { value: 5, positive: false } },
+    { icon: <CalendarCheck className="w-5 h-5 text-white" />, label: 'On Leave', value: stats?.on_leave ?? 10, color: 'bg-warning', trend: { value: 2, positive: false } },
+    { icon: <AlertTriangle className="w-5 h-5 text-white" />, label: 'Late Arrivals', value: stats?.late_arrivals ?? 8, color: 'bg-warning', trend: { value: 15, positive: false } },
+    { icon: <TrendingUp className="w-5 h-5 text-white" />, label: 'Attendance %', value: stats?.attendance_percentage ?? '94.2%', color: 'bg-success', trend: { value: 3, positive: true } },
   ], [stats]);
 
   if (loading) {
@@ -103,12 +103,12 @@ export default function Dashboard() {
             <CardTitle>Weekly Attendance Trend</CardTitle>
           </CardHeader>
           <CardContent>
-            <CustomLineChart
+              <CustomLineChart
               data={weeklyData}
               lines={[
-                { key: 'present', color: '#49E0C6' },
-                { key: 'absent', color: '#FF8181' },
-                { key: 'late', color: '#FDB353' },
+                { key: 'present', color: '#22C55E' },
+                { key: 'absent', color: '#EF4444' },
+                { key: 'late', color: '#F59E0B' },
               ]}
             />
           </CardContent>
@@ -133,8 +133,8 @@ export default function Dashboard() {
             <CustomBarChart
               data={monthlyData}
               bars={[
-                { key: 'present', color: '#0091FF' },
-                { key: 'absent', color: '#FF8181' },
+                { key: 'present', color: '#10367D' },
+                { key: 'absent', color: '#EF4444' },
               ]}
             />
           </CardContent>

@@ -64,7 +64,7 @@ export default function Sidebar() {
     <>
       <button
         onClick={() => setMobileOpen(true)}
-        className="fixed top-4 left-4 z-40 lg:hidden p-2 rounded-xl bg-white dark:bg-gray-800 border border-border-light shadow-sm"
+        className="fixed top-4 left-4 z-40 lg:hidden p-2 rounded-xl bg-card dark:bg-gray-800 border border-border-light shadow-sm"
       >
         <Menu className="w-5 h-5 text-text" />
       </button>
@@ -83,40 +83,40 @@ export default function Sidebar() {
 
       <aside
         className={cn(
-          'fixed top-0 left-0 z-30 h-screen bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 flex flex-col transition-all duration-300 shadow-sm dark:shadow-none',
+          'fixed top-0 left-0 z-30 h-screen bg-card dark:bg-gray-950 border-r border-border-light dark:border-gray-800 flex flex-col transition-all duration-300 shadow-sm dark:shadow-none',
           collapsed ? 'w-[72px]' : 'w-64',
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
-        <div className={cn('flex items-center h-16 px-4 border-b border-gray-200 dark:border-gray-800', collapsed && 'justify-center')}>
+        <div className={cn('flex items-center h-16 px-4 border-b border-border-light dark:border-gray-800', collapsed && 'justify-center')}>
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center shrink-0 shadow-sm">
               <ShieldCheck className="w-5 h-5 text-white" />
             </div>
             {!collapsed && (
               <div>
-                <h1 className="text-sm font-bold text-gray-900 dark:text-gray-100 font-heading">Epress</h1>
-                <p className="text-[10px] text-gray-500 dark:text-gray-400">Attendance System</p>
+                <h1 className="text-sm font-bold text-text font-heading">Epress</h1>
+                <p className="text-[10px] text-text-secondary">Attendance System</p>
               </div>
             )}
           </div>
           <button
             onClick={() => setMobileOpen(false)}
-            className="lg:hidden ml-auto p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="lg:hidden ml-auto p-1 rounded-lg hover:bg-primary/5 dark:hover:bg-gray-800"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className={cn('px-4 py-3 border-b border-gray-200 dark:border-gray-800', collapsed && 'px-2')}>
+        <div className={cn('px-4 py-3 border-b border-border-light dark:border-gray-800', collapsed && 'px-2')}>
           <div className={cn('flex items-center gap-2', collapsed && 'justify-center')}>
             <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-xs font-bold font-heading shrink-0">
               {user?.name?.charAt(0) || 'A'}
             </div>
             {!collapsed && (
               <div className="overflow-hidden">
-                <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 truncate">{user?.name || 'User'}</p>
-                <p className="text-[10px] text-gray-500 dark:text-gray-400 capitalize">{user?.role || 'employee'}</p>
+                <p className="text-xs font-semibold text-text truncate">{user?.name || 'User'}</p>
+                <p className="text-[10px] text-text-secondary capitalize">{user?.role || 'employee'}</p>
               </div>
             )}
           </div>
@@ -126,7 +126,7 @@ export default function Sidebar() {
           {navItems.map((section) => (
             <div key={section.section}>
               {!collapsed && (
-                <p className="text-[10px] uppercase tracking-widest text-gray-400 dark:text-gray-500 px-3 mb-2 font-semibold">
+                <p className="text-[10px] uppercase tracking-widest text-text-secondary/60 px-3 mb-2 font-semibold">
                   {section.section}
                 </p>
               )}
@@ -142,7 +142,7 @@ export default function Sidebar() {
                         'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 relative',
                         active
                           ? 'bg-primary text-white shadow-sm shadow-primary/20'
-                          : 'text-gray-600 dark:text-gray-400 hover:text-primary hover:bg-primary/5 dark:hover:bg-gray-800/50',
+                          : 'text-text-secondary hover:text-primary hover:bg-primary/5 dark:hover:bg-gray-800/50',
                         collapsed && 'justify-center px-2'
                       )}
                     >
@@ -159,7 +159,7 @@ export default function Sidebar() {
 
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="hidden lg:flex items-center justify-center h-12 border-t border-gray-200 dark:border-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+          className="hidden lg:flex items-center justify-center h-12 border-t border-border-light dark:border-gray-800 text-text-secondary/60 hover:text-text-secondary transition-colors"
         >
           <ChevronLeft className={cn('w-5 h-5 transition-transform duration-300', collapsed && 'rotate-180')} />
         </button>

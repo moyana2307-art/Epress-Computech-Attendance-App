@@ -2,13 +2,13 @@ import { cn } from '@/lib/utils';
 
 function Skeleton({ className }: { className?: string }) {
   return (
-    <div className={cn('animate-pulse rounded-lg bg-gray-200 dark:bg-gray-700', className)} />
+    <div className={cn('animate-pulse rounded-lg bg-border dark:bg-gray-700', className)} />
   );
 }
 
 export function StatsCardSkeleton() {
   return (
-    <div className="rounded-xl bg-white dark:bg-gray-800 border border-border-light p-5">
+    <div className="rounded-xl bg-card dark:bg-gray-800 border border-border-light p-5">
       <div className="flex items-start justify-between">
         <Skeleton className="w-11 h-11 rounded-xl" />
         <Skeleton className="w-14 h-5 rounded-full" />
@@ -23,7 +23,7 @@ export function StatsCardSkeleton() {
 
 export function TableSkeleton({ rows = 5, cols = 6 }: { rows?: number; cols?: number }) {
   return (
-    <div className="rounded-xl bg-white dark:bg-gray-800 border border-border-light overflow-hidden">
+    <div className="rounded-xl bg-card dark:bg-gray-800 border border-border-light overflow-hidden">
       <div className="p-4 border-b border-border-light">
         <Skeleton className="h-9 w-64 rounded-lg" />
       </div>

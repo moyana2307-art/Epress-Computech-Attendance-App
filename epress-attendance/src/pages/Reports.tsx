@@ -53,7 +53,7 @@ export default function Reports() {
             <CustomAreaChart
               data={monthlyTrend}
               areas={[
-                { key: 'attendance', color: '#2563eb' },
+                { key: 'attendance', color: '#10367D' },
                 { key: 'late', color: '#f59e0b' },
               ]}
               height={280}
@@ -69,7 +69,7 @@ export default function Reports() {
             <CustomBarChart
               data={deptPerformance}
               bars={[
-                { key: 'present', color: '#10b981' },
+                { key: 'present', color: '#22C55E' },
                 { key: 'late', color: '#f59e0b' },
                 { key: 'absent', color: '#ef4444' },
               ]}

@@ -20,7 +20,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           id={id}
           ref={ref}
           className={cn(
-            'h-10 w-full rounded-xl border border-border bg-white dark:bg-gray-800 px-4 pr-10 py-2 text-sm text-text appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200',
+            'h-10 w-full rounded-xl border border-border bg-card dark:bg-gray-800 px-4 pr-10 py-2 text-sm text-text appearance-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200',
             className
           )}
           {...props}

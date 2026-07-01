@@ -63,8 +63,8 @@ export default function CalendarPage() {
             <div className="flex items-center justify-between">
               <CardTitle>{monthName}</CardTitle>
               <div className="flex gap-1">
-                <button onClick={handlePrev} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"><ChevronLeft className="w-4 h-4" /></button>
-                <button onClick={handleNext} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"><ChevronRight className="w-4 h-4" /></button>
+                <button onClick={handlePrev} className="p-2 rounded-lg hover:bg-primary/5 dark:hover:bg-gray-800 transition-colors"><ChevronLeft className="w-4 h-4" /></button>
+                <button onClick={handleNext} className="p-2 rounded-lg hover:bg-primary/5 dark:hover:bg-gray-800 transition-colors"><ChevronRight className="w-4 h-4" /></button>
               </div>
             </div>
           </CardHeader>
@@ -81,7 +81,7 @@ export default function CalendarPage() {
                   key={d.dateStr}
                   onClick={() => setSelectedDate(d.dateStr)}
                   className={cn(
-                    'relative p-2 rounded-xl text-sm font-medium transition-all hover:bg-gray-100 dark:hover:bg-gray-800',
+                    'relative p-2 rounded-xl text-sm font-medium transition-all hover:bg-primary/5 dark:hover:bg-gray-800',
                     d.isToday && 'ring-2 ring-primary',
                     selectedDate === d.dateStr && 'bg-primary text-white hover:bg-primary-dark'
                   )}

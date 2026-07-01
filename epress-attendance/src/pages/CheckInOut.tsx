@@ -56,7 +56,7 @@ export default function CheckInOut() {
         <CardContent className="pt-6">
           <form onSubmit={handleToggle} className="space-y-6">
             <div className="flex flex-col items-center gap-4">
-              <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20">
+              <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 border border-primary/20">
                 <Fingerprint className="w-16 h-16 text-primary" />
               </div>
               <input
@@ -90,8 +90,8 @@ export default function CheckInOut() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {[
-          { icon: LogIn, label: 'Check In', desc: 'Record your arrival time', color: 'from-success to-emerald-600' },
-          { icon: LogOut, label: 'Check Out', desc: 'Record your departure time', color: 'from-warning to-orange-600' },
+          { icon: LogIn, label: 'Check In', desc: 'Record your arrival time', color: 'from-success to-primary-dark' },
+          { icon: LogOut, label: 'Check Out', desc: 'Record your departure time', color: 'from-warning to-primary-dark' },
         ].map((item) => (
           <div key={item.label} className="p-5 rounded-2xl bg-card border border-border hover:shadow-md transition-all">
             <div className={cn('p-3 rounded-xl bg-gradient-to-br w-fit mb-3', item.color)}>

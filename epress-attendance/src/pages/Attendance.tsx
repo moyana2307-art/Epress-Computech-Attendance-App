@@ -61,7 +61,7 @@ export default function Attendance() {
             <CustomBarChart
               data={weeklyChartData}
               bars={[
-                { key: 'Present', color: '#10b981' },
+                { key: 'Present', color: '#22C55E' },
                 { key: 'Late', color: '#f59e0b' },
                 { key: 'Absent', color: '#ef4444' },
               ]}

@@ -1,6 +1,6 @@
 import { ResponsiveContainer, LineChart, Line, BarChart, Bar, PieChart, Pie, AreaChart, Area, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
 
-const COLORS = ['#10367D', '#74B4D9', '#22C55E', '#F59E0B', '#EF4444', '#8B5CF6'];
+const COLORS = ['#10367D', '#74B4D9', '#22C55E', '#F59E0B', '#EF4444', '#10367D'];
 
 const tooltipStyle = {
   contentStyle: {

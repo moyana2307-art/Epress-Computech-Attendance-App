@@ -107,7 +107,7 @@ export default function NotificationsPage() {
                   </p>
                 </div>
                 {!notif.read && (
-                  <button onClick={() => markRead(notif.id)} className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-text-secondary hover:text-text transition-colors">
+                  <button onClick={() => markRead(notif.id)} className="p-1 rounded-lg hover:bg-primary/5 dark:hover:bg-gray-800 text-text-secondary hover:text-text transition-colors">
                     <X className="w-4 h-4" />
                   </button>
                 )}
