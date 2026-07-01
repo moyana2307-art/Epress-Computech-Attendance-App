@@ -398,7 +398,7 @@ export default function WorkerDashboard() {
                     key={d.department}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="p-4 rounded-xl border border-border bg-background/30"
+                    className="p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm"
                   >
                     <div className="flex items-center gap-3 mb-2">
                       <div className="p-2 rounded-lg bg-primary/10">
@@ -491,7 +491,7 @@ export default function WorkerDashboard() {
                       onClick={action.onClick}
                       disabled={action.disabled}
                       className={cn(
-                        'flex flex-col items-center gap-2 p-4 rounded-xl border border-border-light hover:bg-background transition-all duration-200 hover:shadow-sm',
+                        'flex flex-col items-center gap-2 p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 hover:shadow-sm',
                         action.disabled && 'opacity-50 cursor-not-allowed'
                       )}
                     >
@@ -532,7 +532,7 @@ export default function WorkerDashboard() {
                   <tbody className="divide-y divide-border-light">
                     {data.todayRecords.map((row, i) => (
                       <motion.tr key={row.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.05 }} className="hover:bg-background/50 transition-colors">
+                        transition={{ delay: i * 0.05 }} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                         <td className="px-3 py-3 text-sm font-medium text-text">{row.employee_name}</td>
                         <td className="px-3 py-3 text-sm text-text">{row.check_in || '--'}</td>
                         <td className="px-3 py-3 text-sm text-text">{row.check_out || '--'}</td>
@@ -565,7 +565,7 @@ export default function WorkerDashboard() {
             {data?.recentActivity?.length ? (
               data.recentActivity.map((act, i) => (
                 <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.03 }} className="flex items-center gap-3 p-2 rounded-lg hover:bg-background/50">
+                  transition={{ delay: i * 0.03 }} className="flex items-center gap-3 p-2 rounded-lg bg-white dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                   <Bell className="w-4 h-4 text-primary shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium text-text truncate">{act.title}</p>

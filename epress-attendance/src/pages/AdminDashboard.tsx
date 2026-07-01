@@ -200,7 +200,7 @@ export default function AdminDashboard() {
             {dashboard?.departmentAssignments?.length ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {dashboard.departmentAssignments.map((d: DeptAssignment) => (
-                  <div key={d.department} className="p-4 rounded-xl border border-border bg-background/30">
+                  <div key={d.department} className="p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
                     <div className="flex items-center gap-3 mb-2">
                       <div className="p-2 rounded-lg bg-primary/10">
                         {d.department === 'Printing' ? <Printer className="w-5 h-5 text-primary" /> :
@@ -234,7 +234,7 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent className="space-y-3">
               {onDuty.length ? onDuty.map((es) => (
-                <div key={es.employee.id} className="flex items-center gap-3 p-2 rounded-lg bg-background/50">
+                <div key={es.employee.id} className="flex items-center gap-3 p-2 rounded-lg bg-white dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                   <Avatar name={es.employee.name} size="sm" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-text">{es.employee.name}</p>
@@ -303,7 +303,7 @@ export default function AdminDashboard() {
                   <tbody className="divide-y divide-border-light">
                     {dashboard.todayRecords.map((row, i) => (
                       <motion.tr key={row.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.03 }} className="hover:bg-background/50 transition-colors">
+                        transition={{ delay: i * 0.03 }} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                         <td className="px-3 py-3 text-sm font-medium text-text">{row.employee_name}</td>
                         <td className="px-3 py-3 text-sm text-text">{row.check_in || '--'}</td>
                         <td className="px-3 py-3 text-sm text-text">{row.check_out || '--'}</td>
@@ -330,13 +330,13 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent className="max-h-[300px] overflow-y-auto space-y-2">
             {employees.map(emp => (
-              <div key={emp.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-background/50 group">
+                    <div key={emp.id} className="flex items-center gap-3 p-2 rounded-lg bg-white dark:bg-gray-800/50 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group">
                 <Avatar name={emp.name} size="sm" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-text">{emp.name}</p>
                   <p className="text-[10px] text-text-secondary">{emp.position || emp.department}</p>
                 </div>
-                <button onClick={() => openEditEmployee(emp)} className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-background">
+                <button onClick={() => openEditEmployee(emp)} className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700">
                   <Edit3 className="w-3.5 h-3.5 text-text-secondary" />
                 </button>
                 <Badge variant={emp.status === 'active' ? 'success' : 'danger'}>{emp.status}</Badge>
