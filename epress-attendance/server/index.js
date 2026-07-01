@@ -47,11 +47,15 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/business', businessRoutes);
 app.use('/api/worker', workerRoutes);
 
-const distPath = path.join(__dirname, '..', 'dist');
-app.use(express.static(distPath));
-app.get('*', (_req, res) => {
-  res.sendFile(path.join(distPath, 'index.html'));
-});
+try {
+  const distPath = path.join(__dirname, '..', 'dist');
+  app.use(express.static(distPath));
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'), (err) => {
+      if (err) res.status(404).send('Not found');
+    });
+  });
+} catch {} // static serving not available (serverless)
 
 handleAutoCheckout();
 setInterval(handleAutoCheckout, 60000);
