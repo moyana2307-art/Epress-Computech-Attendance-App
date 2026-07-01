@@ -3,13 +3,13 @@ import { Slot } from '@radix-ui/react-slot';
 import { cn } from '@/lib/utils';
 
 const variants = {
-  default: 'bg-primary text-white hover:bg-primary-dark shadow-sm shadow-primary/20',
-  secondary: 'bg-secondary text-primary hover:bg-secondary-dark',
-  outline: 'border-2 border-border bg-white dark:bg-gray-800 hover:bg-background text-text',
-  ghost: 'hover:bg-gray-100 dark:hover:bg-gray-800 text-text-secondary',
-  danger: 'bg-danger text-white hover:bg-danger/90 shadow-sm shadow-danger/20',
-  success: 'bg-success text-white hover:bg-success/90 shadow-sm shadow-success/20',
-  warning: 'bg-warning text-white hover:bg-warning/90 shadow-sm shadow-warning/20',
+  default: 'bg-primary text-white hover:bg-primary-dark shadow-sm shadow-primary/20 hover:shadow-md hover:shadow-primary/25',
+  secondary: 'bg-secondary text-primary hover:bg-secondary-dark shadow-sm shadow-secondary/20 hover:shadow-md hover:shadow-secondary/25',
+  outline: 'border-2 border-border bg-white dark:bg-gray-800 hover:bg-background text-text hover:border-primary/30',
+  ghost: 'hover:bg-gray-100 dark:hover:bg-gray-800 text-text-secondary hover:text-text',
+  danger: 'bg-danger text-white hover:bg-danger/90 shadow-sm shadow-danger/20 hover:shadow-md hover:shadow-danger/25',
+  success: 'bg-success text-white hover:bg-success/90 shadow-sm shadow-success/20 hover:shadow-md hover:shadow-success/25',
+  warning: 'bg-warning text-white hover:bg-warning/90 shadow-sm shadow-warning/20 hover:shadow-md hover:shadow-warning/25',
 } as const;
 
 const sizes = {

@@ -153,7 +153,7 @@ export default function AdminDashboard() {
         animate={{ opacity: 1, y: 0 }}
         className="bg-gradient-to-br from-primary via-primary-dark to-primary rounded-2xl p-6 lg:p-8 text-white relative overflow-hidden"
       >
-        <div className="absolute inset-0 opacity-[0.03]">
+        <div className="absolute inset-0 opacity-[0.04]">
           <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
             <pattern id="ag" width="30" height="30" patternUnits="userSpaceOnUse">
               <path d="M 30 0 L 0 0 0 30" fill="none" stroke="white" strokeWidth="0.5"/>
@@ -161,7 +161,8 @@ export default function AdminDashboard() {
             <rect width="100%" height="100%" fill="url(#ag)"/>
           </svg>
         </div>
-        <div className="absolute top-0 left-0 w-72 h-72 bg-secondary/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute top-0 left-0 w-72 h-72 bg-secondary/15 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 animate-float-slow" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl translate-x-1/3 translate-y-1/3 animate-float-slower" />
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <p className="text-white/60 text-sm mb-1">{getGreeting()}, {user?.name}</p>

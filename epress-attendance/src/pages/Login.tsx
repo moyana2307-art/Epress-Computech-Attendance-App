@@ -42,8 +42,9 @@ export default function Login() {
             <rect width="100%" height="100%" fill="url(#grid)"/>
           </svg>
         </div>
-        <div className="absolute top-20 -right-20 w-72 h-72 rounded-full bg-white/5 blur-3xl" />
-        <div className="absolute -bottom-20 -left-20 w-96 h-96 rounded-full bg-secondary/10 blur-3xl" />
+        <div className="absolute top-20 -right-20 w-72 h-72 rounded-full bg-white/8 blur-3xl animate-float-slow" />
+        <div className="absolute -bottom-20 -left-20 w-96 h-96 rounded-full bg-secondary/15 blur-3xl animate-float-slower" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-white/3 blur-[120px]" />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
