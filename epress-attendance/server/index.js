@@ -24,13 +24,8 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 
-import { json as parseJson } from 'body-parser';
-app.use(parseJson());
-
 app.use((req, _res, next) => {
-  if (!req.body || typeof req.body !== 'object') {
-    console.error('BODY MISSING:', req.method, req.url, req.headers['content-type']);
-  }
+  if (!req.body) req.body = {};
   next();
 });
 
