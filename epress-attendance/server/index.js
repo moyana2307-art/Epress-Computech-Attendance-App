@@ -24,14 +24,17 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use((req, _res, next) => {
-  if (typeof req.body === 'string') {
+  if (Buffer.isBuffer(req.body)) {
+    try { req.body = JSON.parse(req.body.toString()); } catch (e) { req.body = {}; }
+  } else if (typeof req.body === 'string') {
     try { req.body = JSON.parse(req.body); } catch (e) { req.body = {}; }
-  } else if (!req.body) {
+  } else if (!req.body || (typeof req.body === 'object' && Object.keys(req.body).length === 0)) {
     req.body = {};
   }
+  if (req.body && typeof req.body === 'object') req._body = true;
   next();
 });
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 
 import authRoutes from './routes/auth.js';
 import attendanceRoutes from './routes/attendance.js';
