@@ -39,7 +39,9 @@
 :root {
   --color-glow-primary: rgba(116, 180, 217, 0.1);
   --color-glow-accent: rgba(16, 54, 125, 0.06);
-  --color-surface: #F5F6F8;
+  --color-surface: #F5F7FA;
+  --color-navbar: #FFFFFF;
+  --color-navbar-border: #E8EDF2;
 }
 
 .dark {
@@ -58,6 +60,8 @@
   --color-glow-primary: rgba(116, 180, 217, 0.15);
   --color-glow-accent: rgba(16, 54, 125, 0.2);
   --color-surface: #1E293B;
+  --color-navbar: #0F172A;
+  --color-navbar-border: #1E293B;
 }
 
 body {

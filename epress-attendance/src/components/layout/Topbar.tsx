@@ -29,27 +29,27 @@ export default function Topbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-20 h-16 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-border-light">
+    <header className="sticky top-0 z-20 h-16 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-800 shadow-[0_1px_2px_-1px_rgba(0,0,0,0.05)] dark:shadow-none">
       <div className="flex items-center justify-between h-full px-4 lg:px-6">
         <div className="flex items-center gap-4">
           {searchOpen ? (
-            <div className="flex items-center gap-2 bg-background rounded-xl px-4 py-2 border border-border-light animate-fade-in">
-              <Search className="w-4 h-4 text-text-secondary" />
+            <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-800/50 rounded-xl px-4 py-2 border border-gray-200 dark:border-gray-700 animate-fade-in">
+              <Search className="w-4 h-4 text-gray-400 dark:text-gray-500" />
               <input
                 autoFocus
                 placeholder="Search employees, attendance..."
-                className="bg-transparent border-none outline-none text-sm text-text w-64 placeholder:text-muted/60"
+                className="bg-transparent border-none outline-none text-sm text-gray-700 dark:text-gray-300 w-64 placeholder:text-gray-400 dark:placeholder:text-gray-500"
                 onBlur={() => setSearchOpen(false)}
               />
             </div>
           ) : (
             <button
               onClick={() => setSearchOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-background border border-border-light text-text-secondary text-sm hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
               <Search className="w-4 h-4" />
               <span className="hidden sm:inline">Search...</span>
-              <kbd className="hidden sm:inline-flex text-[10px] px-1.5 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-text-secondary">
+              <kbd className="hidden sm:inline-flex text-[10px] px-1.5 py-0.5 rounded bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500">
                 ⌘K
               </kbd>
             </button>
@@ -59,7 +59,7 @@ export default function Topbar() {
         <div ref={ref} className="flex items-center gap-2">
           <button
             onClick={toggle}
-            className="p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-text-secondary transition-colors"
+            className="p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-colors"
           >
             {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
@@ -67,10 +67,10 @@ export default function Topbar() {
           <div className="relative">
             <button
               onClick={() => setNotifOpen(!notifOpen)}
-              className="relative p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-text-secondary transition-colors"
+              className="relative p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-colors"
             >
               <Bell className="w-4 h-4" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-danger rounded-full ring-2 ring-white dark:ring-gray-800" />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-danger rounded-full ring-2 ring-white dark:ring-gray-900" />
             </button>
             <AnimatePresence>
               {notifOpen && (
@@ -78,15 +78,15 @@ export default function Topbar() {
                   initial={{ opacity: 0, y: 8, scale: 0.96 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                  className="absolute right-0 top-12 w-80 bg-white dark:bg-gray-800 border border-border-light rounded-xl shadow-xl overflow-hidden"
+                  className="absolute right-0 top-12 w-80 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl overflow-hidden"
                 >
-                  <div className="p-4 border-b border-border-light flex items-center justify-between">
-                    <h3 className="font-semibold text-text text-sm font-heading">Notifications</h3>
+                  <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                    <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-sm font-heading">Notifications</h3>
                     <Link to="/notifications" className="text-xs text-primary hover:underline">
                       View all
                     </Link>
                   </div>
-                  <div className="p-4 text-center text-sm text-text-secondary">
+                  <div className="p-4 text-center text-sm text-gray-500 dark:text-gray-400">
                     <p>No new notifications</p>
                   </div>
                 </motion.div>
@@ -101,10 +101,10 @@ export default function Topbar() {
             >
               <Avatar name={user?.name || 'Admin'} size="sm" />
               <div className="hidden md:block text-left">
-                <p className="text-sm font-medium text-text leading-tight">{user?.name || 'Admin'}</p>
-                <p className="text-[10px] text-text-secondary capitalize">{user?.role || 'admin'}</p>
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 leading-tight">{user?.name || 'Admin'}</p>
+                <p className="text-[10px] text-gray-500 dark:text-gray-400 capitalize">{user?.role || 'admin'}</p>
               </div>
-              <ChevronDown className="hidden md:block w-4 h-4 text-text-secondary" />
+              <ChevronDown className="hidden md:block w-4 h-4 text-gray-400 dark:text-gray-500" />
             </button>
             <AnimatePresence>
               {profileOpen && (
@@ -112,11 +112,11 @@ export default function Topbar() {
                   initial={{ opacity: 0, y: 8, scale: 0.96 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                  className="absolute right-0 top-12 w-56 bg-white dark:bg-gray-800 border border-border-light rounded-xl shadow-xl overflow-hidden"
+                  className="absolute right-0 top-12 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl overflow-hidden"
                 >
-                  <div className="p-4 border-b border-border-light">
-                    <p className="text-sm font-medium text-text">{user?.name || 'Admin User'}</p>
-                    <p className="text-xs text-text-secondary">{user?.email || 'admin@epress.com'}</p>
+                  <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{user?.name || 'Admin User'}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{user?.email || 'admin@epress.com'}</p>
                   </div>
                   <div className="p-2">
                     {[
@@ -127,7 +127,7 @@ export default function Topbar() {
                         key={item.path}
                         to={item.path}
                         onClick={() => setProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-text-secondary hover:text-text hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                       >
                         <item.icon className="w-4 h-4" />
                         {item.label}
