@@ -23,10 +23,16 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
-app.use(express.json());
-app.use((req, _res, next) => {
-  console.error('REQ:', req.method, req.url, typeof req.body, JSON.stringify(req.body).slice(0, 100));
-  next();
+
+app.use((req, res, next) => {
+  if (req.body && typeof req.body === 'object') return next();
+  let data = '';
+  req.on('data', chunk => data += chunk);
+  req.on('end', () => {
+    try { if (data) req.body = JSON.parse(data); }
+    catch (e) { console.error('Parse error:', e.message); }
+    next();
+  });
 });
 
 import authRoutes from './routes/auth.js';
