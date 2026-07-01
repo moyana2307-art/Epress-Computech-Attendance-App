@@ -24,23 +24,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 
-app.use((req, res, next) => {
-  if (req.method !== 'GET' && req.method !== 'HEAD') {
-    const chunks = [];
-    req.on('data', chunk => chunks.push(chunk));
-    req.on('end', () => {
-      if (chunks.length) {
-        const raw = Buffer.concat(chunks).toString();
-        try { req.body = JSON.parse(raw); } catch { req.body = {}; }
-      } else if (!req.body) {
-        req.body = {};
-      }
-      next();
-    });
-  } else {
-    next();
-  }
-});
+app.use(express.json());
 
 import authRoutes from './routes/auth.js';
 import attendanceRoutes from './routes/attendance.js';
