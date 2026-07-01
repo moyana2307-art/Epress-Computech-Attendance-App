@@ -23,24 +23,14 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
-
-if (process.env.VERCEL !== '1') {
-  app.use(express.json());
-} else {
-  app.use((req, res, next) => {
-    if (typeof req.body === 'object' && req.body) return next();
-    if (req.rawBody) {
-      try { req.body = JSON.parse(req.rawBody); } catch { req.body = {}; }
-      return next();
-    }
-    if (typeof req.body === 'string') {
-      try { req.body = JSON.parse(req.body); } catch { req.body = {}; }
-      return next();
-    }
-    req.body = {};
-    next();
-  });
-}
+app.use(express.text({ type: '*/*' }));
+app.use((req, _res, next) => {
+  if (typeof req.body === 'object') return next();
+  if (req.body && typeof req.body === 'string') {
+    try { req.body = JSON.parse(req.body); } catch { req.body = {}; }
+  }
+  next();
+});
 
 import authRoutes from './routes/auth.js';
 import attendanceRoutes from './routes/attendance.js';
