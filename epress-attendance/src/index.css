@@ -36,6 +36,12 @@
   --radius-2xl: 1.5rem;
 }
 
+:root {
+  --color-glow-primary: rgba(116, 180, 217, 0.1);
+  --color-glow-accent: rgba(16, 54, 125, 0.06);
+  --color-surface: #F5F6F8;
+}
+
 .dark {
   --color-background: #0F172A;
   --color-card: #1E293B;
@@ -51,11 +57,7 @@
   --color-sidebar-text-active: #FFFFFF;
   --color-glow-primary: rgba(116, 180, 217, 0.15);
   --color-glow-accent: rgba(16, 54, 125, 0.2);
-}
-
-.light {
-  --color-glow-primary: rgba(116, 180, 217, 0.08);
-  --color-glow-accent: rgba(16, 54, 125, 0.04);
+  --color-surface: #1E293B;
 }
 
 body {

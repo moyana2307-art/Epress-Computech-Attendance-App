@@ -32,7 +32,7 @@ export default function Login() {
   ];
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen flex">
       <div className="hidden lg:flex flex-1 bg-gradient-to-br from-primary via-primary-dark to-primary relative overflow-hidden items-center justify-center">
         <div className="absolute inset-0 opacity-[0.04]">
           <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
@@ -74,10 +74,10 @@ export default function Login() {
         </motion.div>
       </div>
 
-      <div className="flex-1 flex items-center justify-center p-6">
+      <div className="flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
         <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-sm"
         >
           <div className="lg:hidden flex justify-center mb-8">
@@ -86,62 +86,69 @@ export default function Login() {
             </div>
           </div>
 
-          <h2 className="text-2xl font-bold text-text mb-1 font-heading">Welcome back</h2>
-          <p className="text-text-secondary text-sm mb-4">Sign in to your account to continue</p>
-
-          <div className="flex flex-wrap gap-2 mb-6">
-            {demoAccounts.map((acct) => (
-              <button
-                key={acct.email}
-                type="button"
-                onClick={() => { setEmail(acct.email); setPassword(acct.password); }}
-                className="px-3 py-1.5 text-xs rounded-lg border border-border hover:bg-background transition-colors text-text"
-              >
-                {acct.label} ({acct.role})
-              </button>
-            ))}
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <Input
-              id="email"
-              label="Email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              required
-            />
-            <div className="relative">
-              <Input
-                id="password"
-                label="Password"
-                type={showPw ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPw(!showPw)}
-                className="absolute right-3 top-[38px] text-text-secondary hover:text-text transition-colors"
-              >
-                {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-border-light">
+            <div className="text-center mb-6">
+              <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
+                <ShieldCheck className="w-7 h-7 text-primary" />
+              </div>
+              <h2 className="text-2xl font-bold text-text font-heading">Welcome back</h2>
+              <p className="text-text-secondary text-sm mt-1">Sign in to your account to continue</p>
             </div>
 
-            {error && (
-              <div className="text-sm text-danger bg-danger/5 rounded-xl px-4 py-2.5 border border-danger/10">{error}</div>
-            )}
+            <div className="flex flex-wrap gap-2 mb-6 justify-center">
+              {demoAccounts.map((acct) => (
+                <button
+                  key={acct.email}
+                  type="button"
+                  onClick={() => { setEmail(acct.email); setPassword(acct.password); }}
+                  className="px-3 py-1.5 text-xs rounded-lg border border-border hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 text-text-secondary hover:text-primary font-medium"
+                >
+                  {acct.label} ({acct.role})
+                </button>
+              ))}
+            </div>
 
-            <Button type="submit" className="w-full h-11" size="lg" disabled={loading}>
-              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-              {loading ? 'Signing in...' : 'Sign In'}
-            </Button>
-          </form>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <Input
+                id="email"
+                label="Email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                required
+              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  label="Password"
+                  type={showPw ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPw(!showPw)}
+                  className="absolute right-3 top-[38px] text-text-secondary hover:text-text transition-colors"
+                >
+                  {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
 
-          <p className="text-center text-xs text-text-secondary mt-8">
+              {error && (
+                <div className="text-sm text-danger bg-danger/5 rounded-xl px-4 py-2.5 border border-danger/10">{error}</div>
+              )}
+
+              <Button type="submit" className="w-full h-11" size="lg" disabled={loading}>
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                {loading ? 'Signing in...' : 'Sign In'}
+              </Button>
+            </form>
+          </div>
+
+          <p className="text-center text-xs text-text-secondary/60 mt-6">
             Epress Attendance — Printing &amp; EcoCash HR Platform
           </p>
         </motion.div>
