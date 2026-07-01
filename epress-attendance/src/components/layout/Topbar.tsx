@@ -29,7 +29,7 @@ export default function Topbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-20 h-16 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-800 shadow-[0_1px_2px_-1px_rgba(0,0,0,0.05)] dark:shadow-none">
+    <header className="sticky top-0 z-20 h-16 bg-white/90 dark:bg-gray-900/80 backdrop-blur-lg border-b border-gray-200 dark:border-gray-800 shadow-sm dark:shadow-none">
       <div className="flex items-center justify-between h-full px-4 lg:px-6">
         <div className="flex items-center gap-4">
           {searchOpen ? (
@@ -45,7 +45,7 @@ export default function Topbar() {
           ) : (
             <button
               onClick={() => setSearchOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 text-sm hover:bg-primary/5 hover:border-primary/20 dark:hover:bg-gray-800 transition-colors"
             >
               <Search className="w-4 h-4" />
               <span className="hidden sm:inline">Search...</span>
@@ -59,7 +59,7 @@ export default function Topbar() {
         <div ref={ref} className="flex items-center gap-2">
           <button
             onClick={toggle}
-            className="p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-colors"
+            className="p-2.5 rounded-xl hover:bg-primary/5 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-gray-300 transition-colors"
           >
             {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
@@ -67,7 +67,7 @@ export default function Topbar() {
           <div className="relative">
             <button
               onClick={() => setNotifOpen(!notifOpen)}
-              className="relative p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 transition-colors"
+              className="relative p-2.5 rounded-xl hover:bg-primary/5 dark:hover:bg-gray-800 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-gray-300 transition-colors"
             >
               <Bell className="w-4 h-4" />
               <span className="absolute top-2 right-2 w-2 h-2 bg-danger rounded-full ring-2 ring-white dark:ring-gray-900" />
@@ -97,7 +97,7 @@ export default function Topbar() {
           <div className="relative">
             <button
               onClick={() => setProfileOpen(!profileOpen)}
-              className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-primary/5 dark:hover:bg-gray-800 transition-colors"
             >
               <Avatar name={user?.name || 'Admin'} size="sm" />
               <div className="hidden md:block text-left">
@@ -127,7 +127,7 @@ export default function Topbar() {
                         key={item.path}
                         to={item.path}
                         onClick={() => setProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-gray-100 hover:bg-primary/5 dark:hover:bg-gray-700/50 transition-colors"
                       >
                         <item.icon className="w-4 h-4" />
                         {item.label}

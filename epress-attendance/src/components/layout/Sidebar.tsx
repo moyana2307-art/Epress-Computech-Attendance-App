@@ -83,7 +83,7 @@ export default function Sidebar() {
 
       <aside
         className={cn(
-          'fixed top-0 left-0 z-30 h-screen bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 flex flex-col transition-all duration-300 shadow-[1px_0_2px_-1px_rgba(0,0,0,0.06)] dark:shadow-none',
+          'fixed top-0 left-0 z-30 h-screen bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 flex flex-col transition-all duration-300 shadow-sm dark:shadow-none',
           collapsed ? 'w-[72px]' : 'w-64',
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
@@ -139,13 +139,14 @@ export default function Sidebar() {
                       to={item.path}
                       onClick={() => setMobileOpen(false)}
                       className={cn(
-                        'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200',
+                        'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 relative',
                         active
                           ? 'bg-primary text-white shadow-sm shadow-primary/20'
                           : 'text-gray-600 dark:text-gray-400 hover:text-primary hover:bg-primary/5 dark:hover:bg-gray-800/50',
                         collapsed && 'justify-center px-2'
                       )}
                     >
+                      {active && !collapsed && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-white rounded-r-full" />}
                       <item.icon className="w-4.5 h-4.5 shrink-0" />
                       {!collapsed && <span>{item.label}</span>}
                     </Link>

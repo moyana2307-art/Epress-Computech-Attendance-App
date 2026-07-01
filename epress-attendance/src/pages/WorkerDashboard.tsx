@@ -462,12 +462,15 @@ export default function WorkerDashboard() {
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 {[
                   {
                     icon: Key,
-                    label: 'Check In (OTP)',
-                    color: 'bg-primary/10 text-primary',
+                    label: 'Check In',
+                    desc: 'OTP verification',
+                    gradient: 'from-primary to-primary-dark',
+                    bgLight: 'bg-primary/5',
+                    iconColor: 'text-primary',
                     onClick: isOnDuty && !myStatus?.attendance?.check_in ? handleCheckin : undefined,
                     disabled: !isOnDuty || !myStatus?.checkInAvailable || !!myStatus?.attendance?.check_in,
                     condition: !myStatus?.attendance?.check_in,
@@ -475,13 +478,32 @@ export default function WorkerDashboard() {
                   {
                     icon: LogOut,
                     label: 'Check Out',
-                    color: 'bg-warning/10 text-warning',
+                    desc: 'End your shift',
+                    gradient: 'from-secondary to-blue-600',
+                    bgLight: 'bg-secondary/10',
+                    iconColor: 'text-secondary-dark',
                     onClick: isOnDuty && myStatus?.attendance?.check_in && !myStatus?.attendance?.check_out ? handleCheckout : undefined,
                     disabled: !isOnDuty || !myStatus?.checkOutAvailable || !myStatus?.attendance?.check_in || !!myStatus?.attendance?.check_out,
                     condition: myStatus?.attendance?.check_in && !myStatus?.attendance?.check_out,
                   },
-                  { icon: CalendarCheck, label: 'Leave', color: 'bg-warning/10 text-warning', href: '/leaves' },
-                  { icon: UserCircle, label: 'Profile', color: 'bg-success/10 text-success', href: '/profile' },
+                  {
+                    icon: CalendarCheck,
+                    label: 'Leave',
+                    desc: 'Request time off',
+                    gradient: 'from-warning to-amber-600',
+                    bgLight: 'bg-warning/5',
+                    iconColor: 'text-warning',
+                    href: '/leaves',
+                  },
+                  {
+                    icon: UserCircle,
+                    label: 'Profile',
+                    desc: 'Manage your account',
+                    gradient: 'from-success to-emerald-600',
+                    bgLight: 'bg-success/5',
+                    iconColor: 'text-success',
+                    href: '/profile',
+                  },
                 ].filter(a => a.condition !== false).map((action, i) => {
                   const Comp = action.href ? Link : 'button';
                   return (
@@ -491,14 +513,28 @@ export default function WorkerDashboard() {
                       onClick={action.onClick}
                       disabled={action.disabled}
                       className={cn(
-                        'flex flex-col items-center gap-2 p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 hover:shadow-sm',
-                        action.disabled && 'opacity-50 cursor-not-allowed'
+                        'group relative overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 dark:hover:border-primary/30',
+                        action.disabled && 'opacity-50 cursor-not-allowed pointer-events-none'
                       )}
                     >
-                      <div className={`p-2.5 rounded-xl ${action.color}`}>
-                        <action.icon className="w-5 h-5" />
+                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                        style={{ backgroundImage: `linear-gradient(to right, var(--tw-gradient-stops))` }}
+                      />
+                      <div className="flex items-center gap-4 p-4">
+                        <div className={cn(
+                          'p-3 rounded-xl shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3',
+                          action.bgLight
+                        )}>
+                          <action.icon className={cn('w-5 h-5', action.iconColor)} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{action.label}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{action.desc}</p>
+                        </div>
+                        {action.href && (
+                          <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-primary transition-all duration-300 group-hover:translate-x-0.5" />
+                        )}
                       </div>
-                      <span className="text-xs font-medium text-text-secondary">{action.label}</span>
                     </Comp>
                   );
                 })}
