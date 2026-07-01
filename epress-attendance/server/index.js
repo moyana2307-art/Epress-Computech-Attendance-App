@@ -47,6 +47,12 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/business', businessRoutes);
 app.use('/api/worker', workerRoutes);
 
+const distPath = path.join(__dirname, '..', 'dist');
+app.use(express.static(distPath));
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'));
+});
+
 handleAutoCheckout();
 setInterval(handleAutoCheckout, 60000);
 cleanupExpiredOTPs();
