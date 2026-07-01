@@ -1,11 +1,18 @@
 import app from '../server/index.js';
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   try {
-    const buf = req.read();
-    const raw = buf ? (Buffer.isBuffer(buf) ? buf.toString() : String(buf)) : '';
-    if (raw) req.body = JSON.parse(raw);
-    else req.body = {};
-  } catch { req.body = {}; }
+    let raw = '';
+    for await (const chunk of req) {
+      raw += typeof chunk === 'string' ? chunk : Buffer.from(chunk).toString();
+    }
+    if (raw) {
+      try { req.body = JSON.parse(raw); } catch { req.body = { _raw: raw }; }
+    } else {
+      req.body = { _note: 'empty body' };
+    }
+  } catch (e) {
+    req.body = { _error: e.message };
+  }
   return app(req, res);
 }
