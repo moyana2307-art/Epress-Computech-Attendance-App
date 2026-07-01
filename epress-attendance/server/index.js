@@ -23,27 +23,24 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
-app.post('/api/debug-body', (req, res) => {
-  const raw = [];
-  req.on('data', chunk => raw.push(chunk));
-  req.on('end', () => {
-    const buf = Buffer.concat(raw);
-    res.json({
-      bodyType: typeof req.body,
-      hasBody: !!req.body,
-      isBuffer: Buffer.isBuffer(req.body),
-      isSealed: Object.isSealed(req.body),
-      bodyConstructor: req.body?.constructor?.name,
-      rawBody: buf.toString().slice(0, 200),
-      rawBodyType: typeof buf,
-      rawBodyConstructor: buf.constructor.name,
-      contentType: req.headers['content-type'],
-      contentLength: req.headers['content-length'],
-    });
-  });
-});
 
-app.use(express.json());
+app.use((req, res, next) => {
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    const chunks = [];
+    req.on('data', chunk => chunks.push(chunk));
+    req.on('end', () => {
+      if (chunks.length) {
+        const raw = Buffer.concat(chunks).toString();
+        try { req.body = JSON.parse(raw); } catch { req.body = {}; }
+      } else if (!req.body) {
+        req.body = {};
+      }
+      next();
+    });
+  } else {
+    next();
+  }
+});
 
 import authRoutes from './routes/auth.js';
 import attendanceRoutes from './routes/attendance.js';
@@ -55,18 +52,6 @@ import shiftRoutes from './routes/shifts.js';
 import dashboardRoutes from './routes/dashboard.js';
 import businessRoutes from './routes/business.js';
 import workerRoutes from './routes/worker.js';
-
-app.post('/api/debug-body', (req, res) => {
-  res.json({
-    bodyType: typeof req.body,
-    isBuffer: Buffer.isBuffer(req.body),
-    isArray: Array.isArray(req.body),
-    keys: req.body ? Object.keys(req.body).slice(0, 5) : [],
-    bodyPreview: req.body ? JSON.stringify(req.body).slice(0, 200) : null,
-    bodyConstructor: req.body?.constructor?.name,
-    hasBody: !!req.body,
-  });
-});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/attendance', attendanceRoutes);
