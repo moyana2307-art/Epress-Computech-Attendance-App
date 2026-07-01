@@ -37,6 +37,18 @@
 }
 
 :root {
+  --color-background: #EBEBEB;
+  --color-card: #FFFFFF;
+  --color-card-hover: #F8F9FA;
+  --color-border: #D4D4D4;
+  --color-border-light: #E8E8E8;
+  --color-text: #1A1A2E;
+  --color-text-secondary: #4B5563;
+  --color-muted: #6B7280;
+  --color-sidebar: #FFFFFF;
+  --color-sidebar-hover: #F3F4F6;
+  --color-sidebar-text: #4B5563;
+  --color-sidebar-text-active: #FFFFFF;
   --color-glow-primary: rgba(116, 180, 217, 0.1);
   --color-glow-accent: rgba(16, 54, 125, 0.06);
   --color-surface: #F5F7FA;
