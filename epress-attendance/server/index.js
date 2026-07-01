@@ -24,6 +24,10 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+app.use((req, _res, next) => {
+  console.error('REQ:', req.method, req.url, typeof req.body, JSON.stringify(req.body).slice(0, 100));
+  next();
+});
 
 import authRoutes from './routes/auth.js';
 import attendanceRoutes from './routes/attendance.js';
