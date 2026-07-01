@@ -4,12 +4,25 @@ const COLORS = ['#10367D', '#74B4D9', '#22C55E', '#F59E0B', '#EF4444', '#8B5CF6'
 
 const tooltipStyle = {
   contentStyle: {
-    background: '#fff',
-    border: '1px solid #E8E8E8',
+    background: 'var(--color-card)',
+    border: '1px solid var(--color-border)',
     borderRadius: '12px',
     boxShadow: '0 4px 12px -2px rgb(0 0 0 / 0.08)',
     fontSize: '13px',
+    color: 'var(--color-text)',
   },
+  labelStyle: { color: 'var(--color-text-secondary)' },
+};
+
+const axisProps = {
+  tick: { fontSize: 12, fill: 'var(--color-text-secondary)' },
+  axisLine: false,
+  tickLine: false,
+};
+
+const gridProps = {
+  strokeDasharray: '3 3',
+  vertical: false,
 };
 
 export function CustomLineChart({ data, lines, height = 300 }: {
@@ -20,9 +33,9 @@ export function CustomLineChart({ data, lines, height = 300 }: {
   return (
     <ResponsiveContainer width="100%" height={height}>
       <LineChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#E8E8E8" vertical={false} />
-        <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#6B7280' }} axisLine={false} tickLine={false} />
-        <YAxis tick={{ fontSize: 12, fill: '#6B7280' }} axisLine={false} tickLine={false} />
+        <CartesianGrid {...gridProps} />
+        <XAxis dataKey="name" {...axisProps} />
+        <YAxis {...axisProps} />
         <Tooltip {...tooltipStyle} />
         {lines.map((l) => (
           <Line key={l.key} type="monotone" dataKey={l.key} stroke={l.color} strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
@@ -40,9 +53,9 @@ export function CustomBarChart({ data, bars, height = 300 }: {
   return (
     <ResponsiveContainer width="100%" height={height}>
       <BarChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#E8E8E8" vertical={false} />
-        <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#6B7280' }} axisLine={false} tickLine={false} />
-        <YAxis tick={{ fontSize: 12, fill: '#6B7280' }} axisLine={false} tickLine={false} />
+        <CartesianGrid {...gridProps} />
+        <XAxis dataKey="name" {...axisProps} />
+        <YAxis {...axisProps} />
         <Tooltip {...tooltipStyle} />
         {bars.map((b) => (
           <Bar key={b.key} dataKey={b.key} fill={b.color} radius={[6, 6, 0, 0]} />
@@ -79,9 +92,9 @@ export function CustomAreaChart({ data, areas, height = 300 }: {
   return (
     <ResponsiveContainer width="100%" height={height}>
       <AreaChart data={data} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#E8E8E8" vertical={false} />
-        <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#6B7280' }} axisLine={false} tickLine={false} />
-        <YAxis tick={{ fontSize: 12, fill: '#6B7280' }} axisLine={false} tickLine={false} />
+        <CartesianGrid {...gridProps} />
+        <XAxis dataKey="name" {...axisProps} />
+        <YAxis {...axisProps} />
         <Tooltip {...tooltipStyle} />
         {areas.map((a) => (
           <Area key={a.key} type="monotone" dataKey={a.key} stroke={a.color} fill={a.color} fillOpacity={0.1} strokeWidth={2} />

@@ -29,7 +29,7 @@ export default function Topbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-20 h-16 bg-white/80 backdrop-blur-lg border-b border-border-light">
+    <header className="sticky top-0 z-20 h-16 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-b border-border-light">
       <div className="flex items-center justify-between h-full px-4 lg:px-6">
         <div className="flex items-center gap-4">
           {searchOpen ? (
@@ -70,7 +70,7 @@ export default function Topbar() {
               className="relative p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-text-secondary transition-colors"
             >
               <Bell className="w-4 h-4" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-danger rounded-full ring-2 ring-white" />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-danger rounded-full ring-2 ring-white dark:ring-gray-800" />
             </button>
             <AnimatePresence>
               {notifOpen && (
@@ -78,7 +78,7 @@ export default function Topbar() {
                   initial={{ opacity: 0, y: 8, scale: 0.96 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                  className="absolute right-0 top-12 w-80 bg-white border border-border-light rounded-xl shadow-xl overflow-hidden"
+                  className="absolute right-0 top-12 w-80 bg-white dark:bg-gray-800 border border-border-light rounded-xl shadow-xl overflow-hidden"
                 >
                   <div className="p-4 border-b border-border-light flex items-center justify-between">
                     <h3 className="font-semibold text-text text-sm font-heading">Notifications</h3>
@@ -112,7 +112,7 @@ export default function Topbar() {
                   initial={{ opacity: 0, y: 8, scale: 0.96 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                  className="absolute right-0 top-12 w-56 bg-white border border-border-light rounded-xl shadow-xl overflow-hidden"
+                  className="absolute right-0 top-12 w-56 bg-white dark:bg-gray-800 border border-border-light rounded-xl shadow-xl overflow-hidden"
                 >
                   <div className="p-4 border-b border-border-light">
                     <p className="text-sm font-medium text-text">{user?.name || 'Admin User'}</p>
@@ -127,7 +127,7 @@ export default function Topbar() {
                         key={item.path}
                         to={item.path}
                         onClick={() => setProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-text-secondary hover:text-text hover:bg-gray-100 transition-colors"
+                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-text-secondary hover:text-text hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                       >
                         <item.icon className="w-4 h-4" />
                         {item.label}
@@ -135,7 +135,7 @@ export default function Topbar() {
                     ))}
                     <button
                       onClick={logout}
-                      className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm text-danger hover:bg-danger/5 transition-colors"
+                      className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm text-danger hover:bg-danger/5 dark:hover:bg-danger/10 transition-colors"
                     >
                       <LogOut className="w-4 h-4" />
                       Sign Out

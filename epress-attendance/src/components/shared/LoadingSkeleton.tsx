@@ -8,7 +8,7 @@ function Skeleton({ className }: { className?: string }) {
 
 export function StatsCardSkeleton() {
   return (
-    <div className="rounded-xl bg-white border border-border-light p-5">
+    <div className="rounded-xl bg-white dark:bg-gray-800 border border-border-light p-5">
       <div className="flex items-start justify-between">
         <Skeleton className="w-11 h-11 rounded-xl" />
         <Skeleton className="w-14 h-5 rounded-full" />
@@ -23,7 +23,7 @@ export function StatsCardSkeleton() {
 
 export function TableSkeleton({ rows = 5, cols = 6 }: { rows?: number; cols?: number }) {
   return (
-    <div className="rounded-xl bg-white border border-border-light overflow-hidden">
+    <div className="rounded-xl bg-white dark:bg-gray-800 border border-border-light overflow-hidden">
       <div className="p-4 border-b border-border-light">
         <Skeleton className="h-9 w-64 rounded-lg" />
       </div>

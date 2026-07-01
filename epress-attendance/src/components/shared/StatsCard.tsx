@@ -18,7 +18,7 @@ export function StatsCard({ icon, label, value, trend, color, delay = 0, subtitl
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay }}
-      className="relative overflow-hidden rounded-xl bg-white border border-border-light p-5 hover:shadow-md transition-all duration-300 group"
+      className="relative overflow-hidden rounded-xl bg-white dark:bg-gray-800 border border-border-light p-5 hover:shadow-md transition-all duration-300 group"
     >
       <div className="flex items-start justify-between">
         <div className={cn('p-2.5 rounded-xl', color)}>

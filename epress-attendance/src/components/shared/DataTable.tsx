@@ -56,7 +56,7 @@ export function DataTable<T extends Record<string, any>>({
   };
 
   return (
-    <div className="rounded-xl bg-white border border-border-light overflow-hidden">
+    <div className="rounded-xl bg-white dark:bg-gray-800 border border-border-light overflow-hidden">
       {(searchable || title) && (
         <div className="p-4 border-b border-border-light flex items-center justify-between gap-4">
           {title && <h3 className="text-sm font-semibold text-text font-heading">{title}</h3>}
