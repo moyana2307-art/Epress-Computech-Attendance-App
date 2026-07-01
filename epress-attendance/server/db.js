@@ -3,7 +3,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dbPath = path.join(__dirname, 'attendance.db');
+const dbPath = process.env.VERCEL === '1'
+  ? '/tmp/attendance.db'
+  : path.join(__dirname, 'attendance.db');
 
 const db = new Database(dbPath);
 

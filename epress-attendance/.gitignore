@@ -31,3 +31,11 @@ dist-ssr
 *.db
 *.db-shm
 *.db-wal
+
+# Build output
+dist/
+
+# Generated docs
+*.pdf
+
+.vercel
