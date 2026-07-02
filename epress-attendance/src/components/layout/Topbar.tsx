@@ -8,6 +8,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Avatar } from '@/components/ui/avatar';
+import { cn } from '@/lib/utils';
 
 export default function Topbar() {
   const { user, logout } = useAuth();
@@ -29,11 +30,11 @@ export default function Topbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-20 h-16 bg-card/90 dark:bg-gray-900/80 backdrop-blur-lg border-b border-border-light dark:border-gray-800 shadow-sm dark:shadow-none">
+    <header className="sticky top-0 z-20 h-16 bg-card/90 dark:bg-[#0A0F1D]/80 backdrop-blur-lg border-b border-navbar-border dark:border-[#162240] shadow-sm dark:shadow-[0_1px_0_rgba(116,180,217,0.05)]">
       <div className="flex items-center justify-between h-full px-4 lg:px-6">
         <div className="flex items-center gap-4">
           {searchOpen ? (
-            <div className="flex items-center gap-2 bg-background dark:bg-gray-800/50 rounded-xl px-4 py-2 border border-border-light dark:border-gray-700 animate-fade-in">
+            <div className="flex items-center gap-2 bg-background dark:bg-card rounded-xl px-4 py-2 border border-border-light dark:border-border animate-fade-in">
               <Search className="w-4 h-4 text-text-secondary/60" />
               <input
                 autoFocus
@@ -45,21 +46,22 @@ export default function Topbar() {
           ) : (
             <button
               onClick={() => setSearchOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-background dark:bg-gray-800/50 border border-border-light dark:border-gray-700 text-text-secondary text-sm hover:bg-primary/5 hover:border-primary/20 dark:hover:bg-gray-800 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-background dark:bg-card border border-border-light dark:border-border text-text-secondary text-sm hover:bg-primary-lighter/60 hover:border-primary/20 dark:hover:bg-card-hover dark:hover:border-primary/30 transition-all duration-200"
             >
               <Search className="w-4 h-4" />
               <span className="hidden sm:inline">Search...</span>
-              <kbd className="hidden sm:inline-flex text-[10px] px-1.5 py-0.5 rounded bg-border dark:bg-gray-700 text-text-secondary/60">
+              <kbd className="hidden sm:inline-flex text-[10px] px-1.5 py-0.5 rounded bg-border dark:bg-border text-text-secondary/60 font-mono">
                 ⌘K
               </kbd>
             </button>
           )}
         </div>
 
-        <div ref={ref} className="flex items-center gap-2">
+        <div ref={ref} className="flex items-center gap-1.5">
           <button
             onClick={toggle}
-            className="p-2.5 rounded-xl hover:bg-primary/5 dark:hover:bg-gray-800 text-text-secondary hover:text-primary dark:hover:text-gray-300 transition-colors"
+            className="p-2.5 rounded-xl hover:bg-primary-lighter/60 dark:hover:bg-card-hover text-text-secondary hover:text-primary dark:hover:text-secondary transition-all duration-200"
+            title={dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
           >
             {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
@@ -67,10 +69,10 @@ export default function Topbar() {
           <div className="relative">
             <button
               onClick={() => setNotifOpen(!notifOpen)}
-              className="relative p-2.5 rounded-xl hover:bg-primary/5 dark:hover:bg-gray-800 text-text-secondary hover:text-primary dark:hover:text-gray-300 transition-colors"
+              className="relative p-2.5 rounded-xl hover:bg-primary-lighter/60 dark:hover:bg-card-hover text-text-secondary hover:text-primary dark:hover:text-secondary transition-all duration-200"
             >
               <Bell className="w-4 h-4" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-danger rounded-full ring-2 ring-white dark:ring-gray-900" />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-danger rounded-full ring-2 ring-white dark:ring-[#0A0F1D] animate-pulse-soft" />
             </button>
             <AnimatePresence>
               {notifOpen && (
@@ -78,15 +80,16 @@ export default function Topbar() {
                   initial={{ opacity: 0, y: 8, scale: 0.96 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                  className="absolute right-0 top-12 w-80 bg-card dark:bg-gray-800 border border-border-light dark:border-gray-700 rounded-xl shadow-xl overflow-hidden"
+                  className="absolute right-0 top-12 w-80 bg-card dark:bg-[#0D1425] border border-border-light dark:border-[#162240] rounded-xl dropdown-shadow overflow-hidden"
                 >
-                  <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                  <div className="p-4 border-b border-gray-200 dark:border-[#162240] flex items-center justify-between">
                     <h3 className="font-semibold text-text text-sm font-heading">Notifications</h3>
-                    <Link to="/notifications" className="text-xs text-primary hover:underline">
+                    <Link to="/notifications" className="text-xs font-medium text-primary hover:text-primary-dark dark:hover:text-secondary transition-colors">
                       View all
                     </Link>
                   </div>
                   <div className="p-4 text-center text-sm text-text-secondary">
+                    <Bell className="w-8 h-8 mx-auto mb-2 opacity-30" />
                     <p>No new notifications</p>
                   </div>
                 </motion.div>
@@ -97,14 +100,14 @@ export default function Topbar() {
           <div className="relative">
             <button
               onClick={() => setProfileOpen(!profileOpen)}
-              className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-primary/5 dark:hover:bg-gray-800 transition-colors"
+              className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-primary-lighter/60 dark:hover:bg-card-hover transition-all duration-200"
             >
               <Avatar name={user?.name || 'Admin'} size="sm" />
               <div className="hidden md:block text-left">
                 <p className="text-sm font-medium text-text leading-tight">{user?.name || 'Admin'}</p>
                 <p className="text-[10px] text-text-secondary capitalize">{user?.role || 'admin'}</p>
               </div>
-              <ChevronDown className="hidden md:block w-4 h-4 text-text-secondary/60" />
+              <ChevronDown className={cn('hidden md:block w-4 h-4 text-text-secondary/60 transition-transform duration-200', profileOpen && 'rotate-180')} />
             </button>
             <AnimatePresence>
               {profileOpen && (
@@ -112,9 +115,9 @@ export default function Topbar() {
                   initial={{ opacity: 0, y: 8, scale: 0.96 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                  className="absolute right-0 top-12 w-56 bg-card dark:bg-gray-800 border border-border-light dark:border-gray-700 rounded-xl shadow-xl overflow-hidden"
+                  className="absolute right-0 top-12 w-56 bg-card dark:bg-[#0D1425] border border-border-light dark:border-[#162240] rounded-xl dropdown-shadow overflow-hidden"
                 >
-                  <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                  <div className="p-4 border-b border-gray-200 dark:border-[#162240]">
                     <p className="text-sm font-medium text-text">{user?.name || 'Admin User'}</p>
                     <p className="text-xs text-text-secondary">{user?.email || 'admin@epress.com'}</p>
                   </div>
@@ -127,7 +130,7 @@ export default function Topbar() {
                         key={item.path}
                         to={item.path}
                         onClick={() => setProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-text-secondary hover:text-primary dark:hover:text-gray-100 hover:bg-primary/5 dark:hover:bg-gray-700/50 transition-colors"
+                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-text-secondary hover:text-primary dark:hover:text-secondary hover:bg-primary-lighter/60 dark:hover:bg-card-hover transition-all duration-200"
                       >
                         <item.icon className="w-4 h-4" />
                         {item.label}
@@ -135,7 +138,7 @@ export default function Topbar() {
                     ))}
                     <button
                       onClick={logout}
-                      className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm text-danger hover:bg-danger/5 dark:hover:bg-danger/10 transition-colors"
+                      className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm text-danger hover:bg-danger/5 dark:hover:bg-danger/10 transition-all duration-200 mt-0.5"
                     >
                       <LogOut className="w-4 h-4" />
                       Sign Out

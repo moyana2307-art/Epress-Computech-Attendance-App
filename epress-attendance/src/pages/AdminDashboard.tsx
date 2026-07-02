@@ -5,7 +5,8 @@ import {
   Users, UserCheck, UserX, Clock, AlertTriangle, CalendarCheck,
   TrendingUp, Building2, Briefcase, ArrowRight,
   Settings, Save, ShieldCheck, RefreshCw, Edit3,
-  Printer, DollarSign, Trash2,
+  Printer, DollarSign, Plus, BarChart3, Fingerprint,
+  ChevronRight,
 } from 'lucide-react';
 import { StatsCard } from '@/components/shared/StatsCard';
 import { DashboardSkeleton } from '@/components/shared/LoadingSkeleton';
@@ -18,7 +19,7 @@ import { Modal } from '@/components/ui/modal';
 import { api } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { getGreeting, cn } from '@/lib/utils';
-import type { BusinessSettings, Employee, Shift, WorkerDashboardData, DeptAssignment, EmployeeSchedule } from '@/lib/types';
+import type { BusinessSettings, Employee, Shift, WorkerDashboardData, DeptAssignment } from '@/lib/types';
 
 function useAdminData() {
   const [dashboard, setDashboard] = useState<WorkerDashboardData | null>(null);
@@ -82,12 +83,12 @@ export default function AdminDashboard() {
 
   const statCards = useMemo(() => [
     { icon: <Users className="w-5 h-5 text-white" />, label: 'Employees', value: employees.length, color: 'bg-gradient-to-br from-primary to-primary-dark' },
-    { icon: <UserCheck className="w-5 h-5 text-white" />, label: 'On Duty Now', value: onDuty.length, color: 'bg-gradient-to-br from-success to-primary-dark' },
+    { icon: <UserCheck className="w-5 h-5 text-white" />, label: 'On Duty Now', value: onDuty.length, color: 'bg-gradient-to-br from-success to-emerald-700' },
     { icon: <Clock className="w-5 h-5 text-white" />, label: 'Checked In', value: checkedIn, color: 'bg-gradient-to-br from-secondary to-primary' },
-    { icon: <Building2 className="w-5 h-5 text-white" />, label: 'Business', value: dashboard?.businessOpen ? 'Open' : 'Closed', color: dashboard?.businessOpen ? 'bg-gradient-to-br from-success to-primary-dark' : 'bg-gradient-to-br from-danger to-primary-dark', subtitle: dashboard?.businessHours ? `${dashboard.businessHours.opening_time} - ${dashboard.businessHours.closing_time}` : undefined },
-    { icon: <AlertTriangle className="w-5 h-5 text-white" />, label: 'Late Today', value: lateCount, color: lateCount ? 'bg-gradient-to-br from-warning to-primary-dark' : 'bg-gradient-to-br from-muted to-primary-dark' },
+    { icon: <Building2 className="w-5 h-5 text-white" />, label: 'Business', value: dashboard?.businessOpen ? 'Open' : 'Closed', color: dashboard?.businessOpen ? 'bg-gradient-to-br from-success to-emerald-700' : 'bg-gradient-to-br from-danger to-red-700', subtitle: dashboard?.businessHours ? `${dashboard.businessHours.opening_time} - ${dashboard.businessHours.closing_time}` : undefined },
+    { icon: <AlertTriangle className="w-5 h-5 text-white" />, label: 'Late Today', value: lateCount, color: lateCount ? 'bg-gradient-to-br from-warning to-amber-700' : 'bg-gradient-to-br from-gray-400 to-gray-500' },
     { icon: <ShieldCheck className="w-5 h-5 text-white" />, label: 'Departments', value: dashboard?.departmentAssignments?.length || 0, color: 'bg-gradient-to-br from-primary to-secondary' },
-    { icon: <TrendingUp className="w-5 h-5 text-white" />, label: 'Checked Out', value: dashboard?.todayRecords?.filter(r => r.check_out).length || 0, color: 'bg-gradient-to-br from-muted to-primary' },
+    { icon: <TrendingUp className="w-5 h-5 text-white" />, label: 'Checked Out', value: dashboard?.todayRecords?.filter(r => r.check_out).length || 0, color: 'bg-gradient-to-br from-gray-400 to-primary' },
     { icon: <CalendarCheck className="w-5 h-5 text-white" />, label: dayNames[new Date().getDay()], value: dashboard?.businessHours ? `${dashboard.businessHours.opening_time} - ${dashboard.businessHours.closing_time}` : '--', color: 'bg-gradient-to-br from-primary to-secondary' },
   ], [employees.length, onDuty.length, checkedIn, lateCount, dashboard]);
 
@@ -151,9 +152,9 @@ export default function AdminDashboard() {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-br from-primary via-primary-dark to-primary rounded-2xl p-6 lg:p-8 text-white relative overflow-hidden"
+        className="bg-gradient-to-br from-primary via-[#0F2E6E] to-primary-dark rounded-2xl p-6 lg:p-8 text-white relative overflow-hidden dark:shadow-[0_0_40px_rgba(16,54,125,0.15)]"
       >
-        <div className="absolute inset-0 opacity-[0.04]">
+        <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]">
           <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
             <pattern id="ag" width="30" height="30" patternUnits="userSpaceOnUse">
               <path d="M 30 0 L 0 0 0 30" fill="none" stroke="white" strokeWidth="0.5"/>
@@ -161,50 +162,61 @@ export default function AdminDashboard() {
             <rect width="100%" height="100%" fill="url(#ag)"/>
           </svg>
         </div>
-        <div className="absolute top-0 left-0 w-72 h-72 bg-secondary/15 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 animate-float-slow" />
+        <div className="dark:absolute dark:inset-0 dark:opacity-[0.02] dark:bg-noise" />
+        <div className="absolute top-0 left-0 w-72 h-72 bg-secondary/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 animate-float-slow" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl translate-x-1/3 translate-y-1/3 animate-float-slower" />
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <p className="text-white/60 text-sm mb-1">{getGreeting()}, {user?.name}</p>
-            <h1 className="text-2xl lg:text-3xl font-bold font-heading">Epress Admin</h1>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="w-2 h-2 rounded-full bg-success animate-pulse-soft" />
+              <p className="text-white/70 text-sm">{getGreeting()}, {user?.name}</p>
+            </div>
+            <h1 className="text-2xl lg:text-3xl font-bold font-heading tracking-tight">Admin Dashboard</h1>
             <p className="text-white/60 text-sm mt-1">
-              {dashboard?.businessOpen ? '● OPEN' : '● CLOSED'} · {dayNames[new Date().getDay()]} · {employees.length} employees
+              {dashboard?.businessOpen ? '● Business Open' : '● Business Closed'} · {dayNames[new Date().getDay()]} · {employees.length} employees
             </p>
           </div>
-          <div className="flex items-center gap-3">
-            <Button variant="secondary" size="lg" className="bg-white/10 text-white hover:bg-white/20 border-0" onClick={() => setSettingsOpen(true)}>
-              <Settings className="w-4 h-4" /> Settings
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" className="bg-white/10 text-white hover:bg-white/20 border-0" onClick={() => setSettingsOpen(true)}>
+              <Settings className="w-4 h-4" /> <span className="hidden sm:inline">Settings</span>
             </Button>
-            <Button variant="secondary" size="lg" className="bg-white/10 text-white hover:bg-white/20 border-0" onClick={openNewEmployee}>
-              <Users className="w-4 h-4" /> Add Employee
+            <Button variant="ghost" size="sm" className="bg-white/10 text-white hover:bg-white/20 border-0" onClick={openNewEmployee}>
+              <Plus className="w-4 h-4" /> <span className="hidden sm:inline">Employee</span>
             </Button>
-            <Button variant="secondary" size="lg" className="bg-white/10 text-white hover:bg-white/20 border-0" onClick={refresh}>
-              <RefreshCw className="w-4 h-4" /> Refresh
+            <Button variant="ghost" size="sm" className="bg-white/10 text-white hover:bg-white/20 border-0" onClick={refresh}>
+              <RefreshCw className="w-4 h-4" />
             </Button>
           </div>
         </div>
       </motion.div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-8 gap-3">
         {statCards.map((card, i) => (
           <StatsCard key={card.label} {...card} delay={i * 0.04} />
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <Card className="lg:col-span-3">
           <CardHeader>
             <CardTitle>Department Assignments</CardTitle>
+            <Badge variant="primary">{dashboard?.departmentAssignments?.length || 0} depts</Badge>
           </CardHeader>
           <CardContent>
             {dashboard?.departmentAssignments?.length ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {dashboard.departmentAssignments.map((d: DeptAssignment) => (
-                  <div key={d.department} className="p-4 rounded-xl border border-border-light dark:border-gray-700 bg-card dark:bg-gray-800 shadow-sm">
+                {dashboard.departmentAssignments.map((d: DeptAssignment, i: number) => (
+                  <motion.div
+                    key={d.department}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    className="p-4 rounded-xl border border-border-light/60 dark:border-border/50 bg-card card-shadow card-shadow-hover transition-all duration-200 dark:hover:border-primary/20"
+                  >
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="p-2 rounded-lg bg-primary/10">
+                      <div className="p-2 rounded-lg bg-primary/10 dark:bg-primary/15">
                         {d.department === 'Printing' ? <Printer className="w-5 h-5 text-primary" /> :
-                         <DollarSign className="w-5 h-5 text-primary" />}
+                         <Briefcase className="w-5 h-5 text-primary" />}
                       </div>
                       <div>
                         <p className="text-sm font-semibold text-text">{d.department}</p>
@@ -215,7 +227,7 @@ export default function AdminDashboard() {
                       <Avatar name={d.employee_name} size="sm" />
                       <span className="text-sm font-medium text-text">{d.employee_name}</span>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             ) : (
@@ -227,15 +239,21 @@ export default function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Employees on Duty</CardTitle>
+              <CardTitle>On Duty</CardTitle>
+              <Badge variant="success">{onDuty.length}</Badge>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-2 max-h-[240px] overflow-y-auto">
               {onDuty.length ? onDuty.map((es) => (
-                  <div key={es.employee.id} className="flex items-center gap-3 p-2 rounded-lg bg-card dark:bg-gray-800/50 hover:bg-primary/5 dark:hover:bg-gray-800 transition-colors">
-                  <Avatar name={es.employee.name} size="sm" />
+                <motion.div
+                  key={es.employee.id}
+                  initial={{ opacity: 0, x: -5 }}
+                  animate={{ opacity: 1, x: 0 }}
+                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-primary-lighter/60 dark:hover:bg-card-hover transition-colors"
+                  >
+                    <Avatar name={es.employee.name} size="sm" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-text">{es.employee.name}</p>
                     <p className="text-xs text-text-secondary">{es.schedule?.department} · {es.schedule?.start_time}-{es.schedule?.end_time}</p>
@@ -243,7 +261,7 @@ export default function AdminDashboard() {
                   <Badge variant={es.attendance?.check_in ? 'success' : 'warning'}>
                     {es.attendance?.check_in ? 'IN' : '--'}
                   </Badge>
-                </div>
+                </motion.div>
               )) : (
                 <div className="text-center py-6 text-text-secondary">
                   <UserX className="w-8 h-8 mx-auto mb-2 opacity-40" />
@@ -256,14 +274,18 @@ export default function AdminDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Late Arrivals</CardTitle>
+              <Badge variant={lateCount ? 'warning' : 'default'}>{lateCount}</Badge>
             </CardHeader>
             <CardContent>
               {dashboard?.todayRecords?.filter(r => r.status === 'Late').length ? (
-                <div className="space-y-3">
+                <div className="space-y-2 max-h-[140px] overflow-y-auto">
                   {dashboard.todayRecords.filter(r => r.status === 'Late').map(r => (
-                    <div key={r.id} className="flex items-center gap-3 p-2 rounded-lg bg-warning/5">
+                    <div key={r.id} className="flex items-center gap-3 p-2 rounded-lg bg-warning/5 border border-warning/10">
                       <Avatar name={r.employee_name} size="sm" />
-                      <div className="flex-1 min-w-0"><p className="text-sm font-medium text-text">{r.employee_name}</p><p className="text-xs text-text-secondary">{r.check_in}</p></div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-text">{r.employee_name}</p>
+                        <p className="text-xs text-text-secondary">{r.check_in}</p>
+                      </div>
                       <Badge variant="warning">{r.late_minutes}m</Badge>
                     </div>
                   ))}
@@ -279,71 +301,116 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle>Today's Attendance</CardTitle>
-            <Link to="/attendance" className="text-xs text-primary hover:underline flex items-center gap-1">
-              View all <ArrowRight className="w-3 h-3" />
-            </Link>
-          </CardHeader>
-          <CardContent>
-            {dashboard?.todayRecords?.length ? (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-border-light text-left">
-                      <th className="px-3 py-2 text-xs font-semibold text-text-secondary uppercase">Employee</th>
-                      <th className="px-3 py-2 text-xs font-semibold text-text-secondary uppercase">Check In</th>
-                      <th className="px-3 py-2 text-xs font-semibold text-text-secondary uppercase">Check Out</th>
-                      <th className="px-3 py-2 text-xs font-semibold text-text-secondary uppercase">Status</th>
-                      <th className="px-3 py-2 text-xs font-semibold text-text-secondary uppercase">Note</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border-light">
-                    {dashboard.todayRecords.map((row, i) => (
-                      <motion.tr key={row.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.03 }} className="hover:bg-primary/5 dark:hover:bg-gray-800/50 transition-colors">
-                        <td className="px-3 py-3 text-sm font-medium text-text">{row.employee_name}</td>
-                        <td className="px-3 py-3 text-sm text-text">{row.check_in || '--'}</td>
-                        <td className="px-3 py-3 text-sm text-text">{row.check_out || '--'}</td>
-                        <td className="px-3 py-3"><Badge variant={row.status === 'Late' ? 'warning' : 'success'}>{row.status}</Badge></td>
-                        <td className="px-3 py-3 text-xs text-text-secondary">{row.note || row.shift_name || ''}</td>
-                      </motion.tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <div className="text-center py-8 text-text-secondary">
-                <Users className="w-10 h-10 mx-auto mb-2 opacity-40" />
-                <p className="text-sm">No records today</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Employees</CardTitle>
-            <Button variant="ghost" size="sm" onClick={openNewEmployee} className="text-primary">+ Add</Button>
-          </CardHeader>
-          <CardContent className="max-h-[300px] overflow-y-auto space-y-2">
-            {employees.map(emp => (
-                    <div key={emp.id} className="flex items-center gap-3 p-2 rounded-lg bg-card dark:bg-gray-800/50 hover:bg-primary/5 dark:hover:bg-gray-800 transition-colors group">
-                <Avatar name={emp.name} size="sm" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-text">{emp.name}</p>
-                  <p className="text-[10px] text-text-secondary">{emp.position || emp.department}</p>
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+        <div className="xl:col-span-3 space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Today's Attendance</CardTitle>
+              <Link to="/attendance" className="text-xs font-medium text-primary hover:text-primary-dark transition-colors flex items-center gap-1">
+                View all <ArrowRight className="w-3 h-3" />
+              </Link>
+            </CardHeader>
+            <CardContent>
+              {dashboard?.todayRecords?.length ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-border-light text-left">
+                        <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Employee</th>
+                        <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Check In</th>
+                        <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Check Out</th>
+                        <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Status</th>
+                        <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Note</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border-light/60">
+                      {dashboard.todayRecords.map((row, i) => (
+                        <motion.tr key={row.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: i * 0.03 }}
+                          className="hover:bg-primary-lighter/40 dark:hover:bg-card-hover/50 transition-colors">
+                          <td className="px-3 py-3 text-sm font-medium text-text">{row.employee_name}</td>
+                          <td className="px-3 py-3 text-sm text-text">{row.check_in || '--'}</td>
+                          <td className="px-3 py-3 text-sm text-text">{row.check_out || '--'}</td>
+                          <td className="px-3 py-3">
+                            <Badge variant={row.status === 'Late' ? 'warning' : 'success'}>{row.status}</Badge>
+                          </td>
+                          <td className="px-3 py-3 text-xs text-text-secondary">{row.note || row.shift_name || ''}</td>
+                        </motion.tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
-                <button onClick={() => openEditEmployee(emp)} className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-primary/5 dark:hover:bg-gray-700">
-                  <Edit3 className="w-3.5 h-3.5 text-text-secondary" />
-                </button>
-                <Badge variant={emp.status === 'active' ? 'success' : 'danger'}>{emp.status}</Badge>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+              ) : (
+                <div className="text-center py-8 text-text-secondary">
+                  <Users className="w-10 h-10 mx-auto mb-2 opacity-40" />
+                  <p className="text-sm">No records today</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {[
+                { icon: Plus, label: 'Add Employee', desc: 'Register new staff', color: 'from-primary to-primary-dark', href: undefined, onClick: openNewEmployee },
+                { icon: BarChart3, label: 'View Reports', desc: 'Analytics & insights', color: 'from-secondary to-primary', href: '/reports' },
+                { icon: Settings, label: 'Settings', desc: 'Business configuration', color: 'from-gray-500 to-primary', onClick: () => setSettingsOpen(true) },
+                { icon: Fingerprint, label: 'Attendance Log', desc: 'View all records', color: 'from-success to-emerald-700', href: '/attendance' },
+              ].map((action, i) => {
+                const Comp = action.href ? Link : 'button';
+                return (
+                  <Comp
+                    key={i}
+                    to={action.href || '#'}
+                    onClick={action.onClick}
+                    className="group flex items-center gap-3 p-3 rounded-xl border border-border-light/60 dark:border-border/50 bg-card card-shadow card-shadow-hover transition-all duration-200 hover:-translate-y-0.5 dark:hover:border-primary/30"
+                  >
+                    <div className={cn(
+                      'p-2 rounded-lg shrink-0 transition-transform duration-200 group-hover:scale-110',
+                      'bg-gradient-to-br ' + action.color + ' text-white shadow-sm'
+                    )}>
+                      <action.icon className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-text">{action.label}</p>
+                      <p className="text-xs text-text-secondary">{action.desc}</p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-text-secondary/30 group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+                  </Comp>
+                );
+              })}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Employees</CardTitle>
+              <Button variant="ghost" size="sm" onClick={openNewEmployee} className="text-primary text-xs p-0 h-auto">
+                + Add
+              </Button>
+            </CardHeader>
+            <CardContent className="max-h-[280px] overflow-y-auto space-y-1">
+              {employees.map(emp => (
+                <div key={emp.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-primary-lighter/60 dark:hover:bg-card-hover transition-colors group">
+                  <Avatar name={emp.name} size="sm" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-text">{emp.name}</p>
+                    <p className="text-[10px] text-text-secondary">{emp.position || emp.department}</p>
+                  </div>
+                  <button onClick={() => openEditEmployee(emp)} className="opacity-0 group-hover:opacity-100 p-1 rounded hover:bg-primary/5 dark:hover:bg-gray-700 transition-all">
+                    <Edit3 className="w-3.5 h-3.5 text-text-secondary" />
+                  </button>
+                  <Badge variant={emp.status === 'active' ? 'success' : 'danger'}>{emp.status}</Badge>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       <Modal open={settingsOpen} onClose={() => setSettingsOpen(false)} title="Business Settings">
@@ -395,3 +462,5 @@ export default function AdminDashboard() {
     </motion.div>
   );
 }
+
+

@@ -64,9 +64,9 @@ export default function Sidebar() {
     <>
       <button
         onClick={() => setMobileOpen(true)}
-        className="fixed top-4 left-4 z-40 lg:hidden p-2 rounded-xl bg-card dark:bg-gray-800 border border-border-light shadow-sm"
+        className="fixed top-4 left-4 z-40 lg:hidden p-2 rounded-xl bg-white dark:bg-card border border-slate-200 dark:border-border shadow-sm"
       >
-        <Menu className="w-5 h-5 text-text" />
+        <Menu className="w-5 h-5 text-slate-700 dark:text-text" />
       </button>
 
       <AnimatePresence>
@@ -75,7 +75,7 @@ export default function Sidebar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-30 bg-black/20 lg:hidden"
+            className="fixed inset-0 z-30 bg-black/30 backdrop-blur-sm lg:hidden"
             onClick={() => setMobileOpen(false)}
           />
         )}
@@ -83,50 +83,50 @@ export default function Sidebar() {
 
       <aside
         className={cn(
-          'fixed top-0 left-0 z-30 h-screen bg-card dark:bg-gray-950 border-r border-border-light dark:border-gray-800 flex flex-col transition-all duration-300 shadow-sm dark:shadow-none',
+          'fixed top-0 left-0 z-30 h-screen bg-white dark:bg-[#0A0F1D] border-r border-slate-200 dark:border-[#162240] flex flex-col transition-all duration-300 shadow-[0_0_1px_rgba(0,0,0,0.06),1px_0_2px_rgba(0,0,0,0.03)] dark:shadow-none',
           collapsed ? 'w-[72px]' : 'w-64',
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         )}
       >
-        <div className={cn('flex items-center h-16 px-4 border-b border-border-light dark:border-gray-800', collapsed && 'justify-center')}>
+        <div className={cn('flex items-center h-16 px-4 border-b border-slate-200 dark:border-[#162240]', collapsed && 'justify-center')}>
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center shrink-0 shadow-sm">
+            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shrink-0 shadow-sm shadow-blue-200">
               <ShieldCheck className="w-5 h-5 text-white" />
             </div>
             {!collapsed && (
               <div>
-                <h1 className="text-sm font-bold text-text font-heading">Epress</h1>
-                <p className="text-[10px] text-text-secondary">Attendance System</p>
+                <h1 className="text-sm font-bold text-slate-900 dark:text-text font-heading">Epress</h1>
+                <p className="text-[10px] text-slate-500 dark:text-text-secondary">Attendance System</p>
               </div>
             )}
           </div>
           <button
             onClick={() => setMobileOpen(false)}
-            className="lg:hidden ml-auto p-1 rounded-lg hover:bg-primary/5 dark:hover:bg-gray-800"
+            className="lg:hidden ml-auto p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-card-hover"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 text-slate-500 dark:text-text" />
           </button>
         </div>
 
-        <div className={cn('px-4 py-3 border-b border-border-light dark:border-gray-800', collapsed && 'px-2')}>
-          <div className={cn('flex items-center gap-2', collapsed && 'justify-center')}>
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-xs font-bold font-heading shrink-0">
+        <div className={cn('px-4 py-4 border-b border-slate-200 dark:border-[#162240]', collapsed && 'px-2')}>
+          <div className={cn('flex items-center gap-3', collapsed && 'justify-center')}>
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-xs font-bold font-heading shrink-0 ring-2 ring-blue-100 dark:ring-white/10">
               {user?.name?.charAt(0) || 'A'}
             </div>
             {!collapsed && (
-              <div className="overflow-hidden">
-                <p className="text-xs font-semibold text-text truncate">{user?.name || 'User'}</p>
-                <p className="text-[10px] text-text-secondary capitalize">{user?.role || 'employee'}</p>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-slate-900 dark:text-text truncate leading-tight">{user?.name || 'User'}</p>
+                <p className="text-[11px] text-slate-500 dark:text-text-secondary capitalize">{user?.role || 'employee'}</p>
               </div>
             )}
           </div>
         </div>
 
-        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-6">
+        <nav className="flex-1 overflow-y-auto py-5 px-3 space-y-6">
           {navItems.map((section) => (
             <div key={section.section}>
               {!collapsed && (
-                <p className="text-[10px] uppercase tracking-widest text-text-secondary/60 px-3 mb-2 font-semibold">
+                <p className="text-[10px] uppercase tracking-[0.12em] text-slate-400 dark:text-text-secondary/60 px-3 mb-2.5 font-semibold">
                   {section.section}
                 </p>
               )}
@@ -139,15 +139,20 @@ export default function Sidebar() {
                       to={item.path}
                       onClick={() => setMobileOpen(false)}
                       className={cn(
-                        'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 relative',
+                        'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 relative group',
                         active
-                          ? 'bg-primary text-white shadow-sm shadow-primary/20'
-                          : 'text-text-secondary hover:text-primary hover:bg-primary/5 dark:hover:bg-gray-800/50',
+                          ? 'bg-blue-50 dark:bg-primary text-blue-700 dark:text-white'
+                          : 'text-slate-600 dark:text-text-secondary hover:bg-slate-100 dark:hover:bg-card-hover hover:text-slate-900 dark:hover:text-primary-light',
                         collapsed && 'justify-center px-2'
                       )}
                     >
-                      {active && !collapsed && <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-white rounded-r-full" />}
-                      <item.icon className="w-4.5 h-4.5 shrink-0" />
+                      {active && (
+                        <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-blue-600 dark:bg-secondary rounded-r-full" />
+                      )}
+                      <item.icon className={cn(
+                        'w-4.5 h-4.5 shrink-0 transition-all duration-200',
+                        active ? 'text-blue-600 dark:text-white' : 'text-slate-400 dark:text-text-secondary group-hover:text-slate-600 dark:group-hover:text-primary-light'
+                      )} />
                       {!collapsed && <span>{item.label}</span>}
                     </Link>
                   );
@@ -159,9 +164,9 @@ export default function Sidebar() {
 
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="hidden lg:flex items-center justify-center h-12 border-t border-border-light dark:border-gray-800 text-text-secondary/60 hover:text-text-secondary transition-colors"
+          className="hidden lg:flex items-center justify-center h-11 border-t border-slate-200 dark:border-[#162240] text-slate-400 dark:text-text-secondary/60 hover:text-slate-600 dark:hover:text-text-secondary hover:bg-slate-50 dark:hover:bg-card-hover transition-colors"
         >
-          <ChevronLeft className={cn('w-5 h-5 transition-transform duration-300', collapsed && 'rotate-180')} />
+          <ChevronLeft className={cn('w-4 h-4 transition-transform duration-300', collapsed && 'rotate-180')} />
         </button>
       </aside>
     </>
