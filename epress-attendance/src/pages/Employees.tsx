@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Mail, Phone, Building2, MoreHorizontal } from 'lucide-react';
+import { Plus, Mail, Phone, Building2, MoreHorizontal, Fingerprint } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
@@ -11,17 +11,21 @@ import { EmptyState } from '@/components/shared/EmptyState';
 import { TableSkeleton } from '@/components/shared/LoadingSkeleton';
 import { cn } from '@/lib/utils';
 import { api } from '@/lib/api';
+import { useAuth } from '@/contexts/AuthContext';
 import type { Employee } from '@/lib/types';
 
 const departments = ['Engineering', 'Design', 'Marketing', 'Operations', 'HR', 'Finance'];
 
 export default function Employees() {
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [deptFilter, setDeptFilter] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', department: 'Engineering', position: '', phone: '' });
+  const [checkingIn, setCheckingIn] = useState<number | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -50,6 +54,18 @@ export default function Employees() {
       setForm({ name: '', email: '', department: 'Engineering', position: '', phone: '' });
     } catch (err: any) {
       alert(err.message);
+    }
+  };
+
+  const handleAdminCheckin = async (empId: number) => {
+    setCheckingIn(empId);
+    try {
+      const result = await api.attendance.adminCheckin(empId);
+      alert(result.message);
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setCheckingIn(null);
     }
   };
 
@@ -116,6 +132,18 @@ export default function Employees() {
                   {emp.status}
                 </Badge>
               </div>
+              {isAdmin && emp.status === 'active' && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleAdminCheckin(emp.id)}
+                  disabled={checkingIn === emp.id}
+                  className="mt-2 w-full"
+                >
+                  <Fingerprint className="w-3.5 h-3.5" />
+                  {checkingIn === emp.id ? 'Checking in...' : 'Check In'}
+                </Button>
+              )}
               <div className="mt-4 space-y-2 text-sm text-text-secondary">
                 <div className="flex items-center gap-2">
                   <Mail className="w-3.5 h-3.5" />

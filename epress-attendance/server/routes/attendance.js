@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import db from '../db.js';
+import { nowHHMM, todayStr, canCheckIn, canCheckOut } from '../shiftUtils.js';
 
 const router = Router();
 
@@ -87,29 +88,66 @@ router.post('/toggle', (req, res) => {
     return res.status(400).json({ message: 'Employee not found or inactive.' });
   }
 
-  const today = new Date().toISOString().split('T')[0];
-  const currentTime = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+  const today = todayStr();
+  const currentTime = nowHHMM();
 
   const existing = db.prepare(
     'SELECT * FROM attendance WHERE employee_id = ? AND date = ?'
   ).get(employee.id, today);
 
   if (!existing) {
+    const settings = db.prepare('SELECT * FROM business_settings WHERE id = 1').get();
+    const cin = canCheckIn(employee.id, currentTime, settings);
+
+    if (!cin.available) {
+      return res.status(400).json({
+        message: cin.reason === 'Check-in window closed (grace period expired)'
+          ? 'Check-in window closed. Ask Admin to check you in.'
+          : (cin.reason || 'Check-in not available right now.'),
+      });
+    }
+
+    const schedule = cin.schedule;
+    const shift = schedule ? db.prepare(
+      'SELECT id FROM shifts WHERE LOWER(department) = LOWER(?) AND start_time = ? AND end_time = ? LIMIT 1'
+    ).get(schedule.department, schedule.start_time, schedule.end_time) : null;
+
     db.prepare(
-      'INSERT INTO attendance (employee_id, date, check_in, status) VALUES (?, ?, ?, ?)'
-    ).run(employee.id, today, currentTime, 'Present');
+      'INSERT INTO attendance (employee_id, shift_id, date, check_in, status, late_minutes, note) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    ).run(
+      employee.id,
+      shift?.id || null,
+      today,
+      currentTime,
+      cin.isLate ? 'Late' : 'Present',
+      cin.lateMinutes || 0,
+      '',
+    );
 
     db.prepare(
       'INSERT INTO notifications (title, message, type) VALUES (?, ?, ?)'
     ).run('Check-In', `${employee.name} checked in at ${currentTime}`, 'info');
 
+    if (cin.isLate) {
+      db.prepare(
+        'INSERT INTO notifications (title, message, type) VALUES (?, ?, ?)'
+      ).run('Late Arrival', `${employee.name} was ${cin.lateMinutes} min late`, 'warning');
+    }
+
     return res.json({
       message: `Checked in successfully at ${currentTime}`,
-      data: { employee_id: employee.id, date: today, check_in: currentTime, status: 'Present' },
+      data: { employee_id: employee.id, date: today, check_in: currentTime, status: cin.isLate ? 'Late' : 'Present' },
     });
   }
 
   if (existing.check_in && !existing.check_out) {
+    const settings = db.prepare('SELECT * FROM business_settings WHERE id = 1').get();
+    const cout = canCheckOut(employee.id, currentTime, settings);
+
+    if (!cout.available) {
+      return res.status(400).json({ message: cout.reason || 'Check-out not available right now.' });
+    }
+
     db.prepare('UPDATE attendance SET check_out = ? WHERE id = ?').run(currentTime, existing.id);
 
     db.prepare(
@@ -127,6 +165,46 @@ router.post('/toggle', (req, res) => {
   }
 
   return res.status(400).json({ message: 'No attendance action available.' });
+});
+
+router.post('/admin-checkin', (req, res) => {
+  const { employeeId } = req.body;
+  if (!employeeId) {
+    return res.status(400).json({ message: 'Employee ID is required.' });
+  }
+
+  const employee = db.prepare('SELECT * FROM employees WHERE id = ?').get(employeeId);
+  if (!employee) {
+    return res.status(400).json({ message: 'Employee not found.' });
+  }
+
+  const today = todayStr();
+  const currentTime = nowHHMM();
+
+  const existing = db.prepare(
+    'SELECT * FROM attendance WHERE employee_id = ? AND date = ?'
+  ).get(employee.id, today);
+
+  if (existing?.check_in) {
+    return res.status(400).json({ message: `${employee.name} already checked in today at ${existing.check_in}.` });
+  }
+
+  if (existing && !existing.check_in) {
+    db.prepare('UPDATE attendance SET check_in = ?, status = ?, note = ? WHERE id = ?')
+      .run(currentTime, 'Present', 'Admin check-in', existing.id);
+  } else {
+    db.prepare(
+      'INSERT INTO attendance (employee_id, date, check_in, status, note) VALUES (?, ?, ?, ?, ?)'
+    ).run(employee.id, today, currentTime, 'Present', 'Admin check-in');
+  }
+
+  db.prepare(
+    'INSERT INTO notifications (title, message, type) VALUES (?, ?, ?)'
+  ).run('Admin Check-In', `${employee.name} checked in by Admin at ${currentTime}`, 'info');
+
+  return res.json({
+    message: `${employee.name} checked in successfully by Admin at ${currentTime}`,
+  });
 });
 
 export default router;

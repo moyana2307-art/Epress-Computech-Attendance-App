@@ -46,6 +46,11 @@ export const api = {
         method: 'POST',
         body: JSON.stringify({ employeeName }),
       }),
+    adminCheckin: (employeeId: number) =>
+      request<{ message: string }>('/attendance/admin-checkin', {
+        method: 'POST',
+        body: JSON.stringify({ employeeId }),
+      }),
   },
   employees: {
     list: () => request<import('./types').Employee[]>('/employees'),
