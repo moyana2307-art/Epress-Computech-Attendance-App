@@ -6,7 +6,7 @@ import {
   TrendingUp, LogIn, LogOut, Calendar, UserCircle,
   Briefcase, Bell, ArrowRight, Timer,
   Building2, CheckCircle2, XCircle, Users, Hourglass,
-  Printer, DollarSign, Smartphone, ShieldCheck, Key,
+  Printer, DollarSign, Banknote, Smartphone, ShieldCheck, Key,
   Loader2, ChevronRight, RefreshCw, Settings,
 } from 'lucide-react';
 import { StatsCard } from '@/components/shared/StatsCard';
@@ -214,8 +214,7 @@ export default function WorkerDashboard() {
   const [otpOpen, setOtpOpen] = useState(false);
   const [checkingOut, setCheckingOut] = useState(false);
   const [revenueOpen, setRevenueOpen] = useState(false);
-  const [revEcocash, setRevEcocash] = useState('');
-  const [revPrinting, setRevPrinting] = useState('');
+  const [revCashUp, setRevCashUp] = useState('');
   const [actionMsg, setActionMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
   const myStatus: EmployeeStatus | undefined = data?.employees.find(
@@ -237,13 +236,11 @@ export default function WorkerDashboard() {
     setActionMsg(null);
     try {
       const r = await api.worker.checkout(user.name, {
-        ecocashAmount: parseFloat(revEcocash) || 0,
-        printingAmount: parseFloat(revPrinting) || 0,
+        cashUpAmount: parseFloat(revCashUp) || 0,
       });
       setActionMsg({ text: r.message, type: 'success' });
       setRevenueOpen(false);
-      setRevEcocash('');
-      setRevPrinting('');
+      setRevCashUp('');
       await refresh();
     } catch (e: any) {
       setActionMsg({ text: e.message, type: 'error' });
@@ -575,8 +572,7 @@ export default function WorkerDashboard() {
                       <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Employee</th>
                       <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Check In</th>
                       <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Check Out</th>
-                      <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">EcoCash</th>
-                      <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Printing</th>
+                      <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Cash Up</th>
                       <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Status</th>
                       <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Note</th>
                     </tr>
@@ -589,8 +585,7 @@ export default function WorkerDashboard() {
                         <td className="px-3 py-3 text-sm font-medium text-text">{row.employee_name}</td>
                         <td className="px-3 py-3 text-sm text-text">{row.check_in || '--'}</td>
                         <td className="px-3 py-3 text-sm text-text">{row.check_out || '--'}</td>
-                        <td className="px-3 py-3 text-sm text-success font-medium">${(row.ecocash_amount || 0).toFixed(2)}</td>
-                        <td className="px-3 py-3 text-sm text-warning font-medium">${(row.printing_amount || 0).toFixed(2)}</td>
+                        <td className="px-3 py-3 text-sm text-success font-medium">$${(row.cash_up_amount || 0).toFixed(2)}</td>
                         <td className="px-3 py-3">
                           <Badge variant={row.status === 'Late' ? 'warning' : 'success'}>{row.status}</Badge>
                         </td>
@@ -662,16 +657,14 @@ export default function WorkerDashboard() {
       <Modal open={revenueOpen} onClose={() => { if (!checkingOut) setRevenueOpen(false); }} title="Check-Out Revenue">
         <div className="space-y-5">
           <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20">
-            <DollarSign className="w-8 h-8 text-primary" />
+            <Banknote className="w-8 h-8 text-primary" />
             <div>
-              <p className="text-sm font-medium text-text">Enter today's revenue</p>
-              <p className="text-xs text-text-secondary">Record amounts collected during your shift</p>
+              <p className="text-sm font-medium text-text">Enter cash-up amount</p>
+              <p className="text-xs text-text-secondary">Record total cash collected during your shift</p>
             </div>
           </div>
-          <Input id="rev-eco" label="EcoCash Amount ($)" type="number" min="0" step="0.01"
-            value={revEcocash} onChange={(e) => setRevEcocash(e.target.value)} placeholder="0.00" />
-          <Input id="rev-print" label="Printing Amount ($)" type="number" min="0" step="0.01"
-            value={revPrinting} onChange={(e) => setRevPrinting(e.target.value)} placeholder="0.00" />
+          <Input id="rev-cashup" label="Cash Up Amount ($)" type="number" min="0" step="0.01"
+            value={revCashUp} onChange={(e) => setRevCashUp(e.target.value)} placeholder="0.00" />
           <div className="flex gap-3 pt-2">
             <Button onClick={handleCheckout} disabled={checkingOut} className="flex-1">
               {checkingOut ? <Loader2 className="w-4 h-4 animate-spin" /> : <LogOut className="w-4 h-4" />}

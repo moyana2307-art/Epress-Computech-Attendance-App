@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import InstallApp from '@/components/shared/InstallApp';
+import DeviceNotifications from '@/components/shared/DeviceNotifications';
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
@@ -14,6 +15,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         </main>
       </div>
       <InstallApp />
+      <DeviceNotifications />
     </div>
   );
 }

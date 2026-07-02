@@ -1,8 +1,11 @@
 import db from './db.js';
 
+const TZ = 'Africa/Harare';
+
 export function nowHHMM() {
   const d = new Date();
-  return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  const opts = { timeZone: TZ, hour: '2-digit', minute: '2-digit', hour12: false };
+  return new Intl.DateTimeFormat('en-GB', opts).format(d);
 }
 
 export function timeToMinutes(t) {
@@ -11,11 +14,12 @@ export function timeToMinutes(t) {
 }
 
 export function getDayOfWeek() {
-  return new Date().getDay();
+  return parseInt(new Intl.DateTimeFormat('en-GB', { timeZone: TZ, weekday: 'numeric' }).format(new Date()), 10);
 }
 
 export function todayStr() {
-  return new Date().toISOString().split('T')[0];
+  const opts = { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' };
+  return new Intl.DateTimeFormat('en-CA', opts).format(new Date());
 }
 
 export function isBusinessOpen(currentTime) {

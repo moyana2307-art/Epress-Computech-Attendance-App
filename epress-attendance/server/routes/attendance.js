@@ -141,11 +141,11 @@ router.post('/toggle', (req, res) => {
   }
 
   if (existing.check_in && !existing.check_out) {
-    const { ecocashAmount, printingAmount } = req.body;
+    const { cashUpAmount } = req.body;
 
-    if (ecocashAmount === undefined && printingAmount === undefined) {
+    if (cashUpAmount === undefined) {
       return res.json({
-        message: 'Enter revenue amounts to complete check-out',
+        message: 'Enter cash-up amount to complete check-out',
         requiresRevenue: true,
         employee_id: employee.id,
         date: today,
@@ -160,8 +160,8 @@ router.post('/toggle', (req, res) => {
     }
 
     db.prepare(
-      'UPDATE attendance SET check_out = ?, ecocash_amount = ?, printing_amount = ? WHERE id = ?'
-    ).run(currentTime, ecocashAmount || 0, printingAmount || 0, existing.id);
+      'UPDATE attendance SET check_out = ?, cash_up_amount = ? WHERE id = ?'
+    ).run(currentTime, cashUpAmount || 0, existing.id);
 
     db.prepare(
       'INSERT INTO notifications (title, message, type) VALUES (?, ?, ?)'

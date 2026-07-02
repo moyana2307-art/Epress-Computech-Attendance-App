@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { LogIn, LogOut, Clock, Loader2, DollarSign } from 'lucide-react';
+import { LogIn, LogOut, Clock, Loader2, DollarSign, Banknote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -13,8 +13,7 @@ export default function CheckInOut() {
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' | 'info' } | null>(null);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showRevenue, setShowRevenue] = useState(false);
-  const [ecocashAmount, setEcocashAmount] = useState('');
-  const [printingAmount, setPrintingAmount] = useState('');
+  const [cashUpAmount, setCashUpAmount] = useState('');
 
   useState(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -31,7 +30,7 @@ export default function CheckInOut() {
     setMessage(null);
     try {
       const extra = showRevenue
-        ? { ecocashAmount: parseFloat(ecocashAmount) || 0, printingAmount: parseFloat(printingAmount) || 0 }
+        ? { cashUpAmount: parseFloat(cashUpAmount) || 0 }
         : undefined;
       const result = await api.attendance.toggle(employeeName, extra);
 
@@ -45,8 +44,7 @@ export default function CheckInOut() {
       setMessage({ text: result.message, type: 'success' });
       setEmployeeName('');
       setShowRevenue(false);
-      setEcocashAmount('');
-      setPrintingAmount('');
+      setCashUpAmount('');
     } catch (err: any) {
       setMessage({ text: err.message, type: 'error' });
     } finally {
@@ -90,31 +88,19 @@ export default function CheckInOut() {
                 >
                   <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
                     <div className="flex items-center gap-2 mb-3">
-                      <DollarSign className="w-4 h-4 text-primary" />
-                      <span className="text-sm font-semibold text-text">Revenue Collected</span>
+                      <Banknote className="w-4 h-4 text-primary" />
+                      <span className="text-sm font-semibold text-text">Cash Up Amount</span>
                     </div>
-                    <div className="space-y-3">
-                      <Input
-                        id="ecocash"
-                        label="EcoCash Amount ($)"
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        value={ecocashAmount}
-                        onChange={(e) => setEcocashAmount(e.target.value)}
-                        placeholder="0.00"
-                      />
-                      <Input
-                        id="printing"
-                        label="Printing Amount ($)"
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        value={printingAmount}
-                        onChange={(e) => setPrintingAmount(e.target.value)}
-                        placeholder="0.00"
-                      />
-                    </div>
+                    <Input
+                      id="cashup"
+                      label="Total Amount ($)"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={cashUpAmount}
+                      onChange={(e) => setCashUpAmount(e.target.value)}
+                      placeholder="0.00"
+                    />
                   </div>
                 </motion.div>
               )}

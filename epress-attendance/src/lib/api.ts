@@ -46,7 +46,7 @@ export const api = {
     },
     stats: (date?: string) =>
       request<import('./types').DashboardStats>(`/attendance/stats${date ? `?date=${date}` : ''}`),
-    toggle: (employeeName: string, extra?: { ecocashAmount?: number; printingAmount?: number }) =>
+    toggle: (employeeName: string, extra?: { cashUpAmount?: number }) =>
       request<import('./types').ToggleResult>('/attendance/toggle', {
         method: 'POST',
         body: JSON.stringify({ employeeName, ...extra }),
@@ -142,7 +142,7 @@ export const api = {
         method: 'POST',
         body: JSON.stringify({ employeeName, code }),
       }),
-    checkout: (employeeName: string, extra?: { ecocashAmount?: number; printingAmount?: number }) =>
+    checkout: (employeeName: string, extra?: { cashUpAmount?: number }) =>
       request<{ message: string }>('/worker/checkout', {
         method: 'POST',
         body: JSON.stringify({ employeeName, ...extra }),

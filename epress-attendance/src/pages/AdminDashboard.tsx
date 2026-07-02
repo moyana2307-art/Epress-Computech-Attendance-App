@@ -321,8 +321,7 @@ export default function AdminDashboard() {
                         <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Employee</th>
                         <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Check In</th>
                         <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Check Out</th>
-                        <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">EcoCash</th>
-                        <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Printing</th>
+                        <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Cash Up</th>
                         <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Status</th>
                         <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Note</th>
                       </tr>
@@ -335,8 +334,7 @@ export default function AdminDashboard() {
                           <td className="px-3 py-3 text-sm font-medium text-text">{row.employee_name}</td>
                           <td className="px-3 py-3 text-sm text-text">{row.check_in || '--'}</td>
                           <td className="px-3 py-3 text-sm text-text">{row.check_out || '--'}</td>
-                          <td className="px-3 py-3 text-sm text-success font-medium">${(row.ecocash_amount || 0).toFixed(2)}</td>
-                          <td className="px-3 py-3 text-sm text-warning font-medium">${(row.printing_amount || 0).toFixed(2)}</td>
+                          <td className="px-3 py-3 text-sm text-success font-medium">$${(row.cash_up_amount || 0).toFixed(2)}</td>
                           <td className="px-3 py-3">
                             <Badge variant={row.status === 'Late' ? 'warning' : 'success'}>{row.status}</Badge>
                           </td>

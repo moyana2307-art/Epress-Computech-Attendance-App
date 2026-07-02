@@ -146,12 +146,14 @@ try { db.prepare("ALTER TABLE users ADD COLUMN avatar TEXT DEFAULT ''").run(); }
 // Migration: add revenue columns to attendance
 try { db.prepare("ALTER TABLE attendance ADD COLUMN ecocash_amount REAL DEFAULT 0").run(); } catch {}
 try { db.prepare("ALTER TABLE attendance ADD COLUMN printing_amount REAL DEFAULT 0").run(); } catch {}
+// Migration: add single cash_up_amount column (replaces ecocash/printing split)
+try { db.prepare("ALTER TABLE attendance ADD COLUMN cash_up_amount REAL DEFAULT 0").run(); } catch {}
 
 // Seed default admin
-const admin = db.prepare('SELECT id FROM users WHERE email = ?').get('admin@epress.com');
+const admin = db.prepare('SELECT id FROM users WHERE email = ?').get('admin@epressattendance.co.zw');
 if (!admin) {
   db.prepare('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)').run(
-    'Admin User', 'admin@epress.com', 'admin123', 'admin'
+    'Admin User', 'admin@epressattendance.co.zw', 'admin123', 'admin'
   );
 }
 
@@ -198,12 +200,12 @@ if (!db.prepare("SELECT id FROM shifts WHERE name = 'Sunday Shift'").get()) {
 // Seed users
 if (!db.prepare("SELECT id FROM users WHERE name = 'Acquiline'").get()) {
   db.prepare('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)').run(
-    'Acquiline', 'acquiline@epress.com', 'acquiline123', 'employee'
+    'Acquiline', 'acquiline@epressattendance.co.zw', 'acquiline123', 'employee'
   );
 }
 if (!db.prepare("SELECT id FROM users WHERE name = 'Pride'").get()) {
   db.prepare('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)').run(
-    'Pride', 'pride@epress.com', 'pride123', 'employee'
+    'Pride', 'pride@epressattendance.co.zw', 'pride123', 'employee'
   );
 }
 
@@ -211,12 +213,12 @@ if (!db.prepare("SELECT id FROM users WHERE name = 'Pride'").get()) {
 if (!db.prepare("SELECT id FROM employees WHERE name = 'Acquiline'").get()) {
   db.prepare(
     'INSERT INTO employees (name, email, department, position, status, responsibilities) VALUES (?, ?, ?, ?, ?, ?)'
-  ).run('Acquiline', 'acquiline@epress.com', 'Printing', 'Senior Attendant', 'active', 'Printing Services, EcoCash Transactions');
+  ).run('Acquiline', 'acquiline@epressattendance.co.zw', 'Printing', 'Senior Attendant', 'active', 'Printing Services, EcoCash Transactions');
 }
 if (!db.prepare("SELECT id FROM employees WHERE name = 'Pride'").get()) {
   db.prepare(
     'INSERT INTO employees (name, email, department, position, status, responsibilities) VALUES (?, ?, ?, ?, ?, ?)'
-  ).run('Pride', 'pride@epress.com', 'Printing', 'Attendant', 'active', 'Printing Services only');
+  ).run('Pride', 'pride@epressattendance.co.zw', 'Printing', 'Attendant', 'active', 'Printing Services only');
 }
 
 // Seed business_hours (day_of_week: 0=Sun, 1=Mon, ..., 6=Sat)

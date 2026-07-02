@@ -26,8 +26,7 @@ export interface Attendance {
   status: 'Present' | 'Late' | 'Absent';
   late_minutes: number;
   note: string;
-  ecocash_amount: number;
-  printing_amount: number;
+  cash_up_amount: number;
   created_at: string;
 }
 

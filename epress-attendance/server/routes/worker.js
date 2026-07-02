@@ -217,7 +217,7 @@ router.post('/verify-otp', (req, res) => {
 });
 
 router.post('/checkout', (req, res) => {
-  const { employeeName, ecocashAmount, printingAmount } = req.body;
+  const { employeeName, cashUpAmount } = req.body;
   if (!employeeName || !employeeName.trim()) {
     return res.status(400).json({ message: 'Employee name is required.' });
   }
@@ -250,8 +250,8 @@ router.post('/checkout', (req, res) => {
     return res.status(400).json({ message: 'Already checked out today.' });
   }
 
-  db.prepare('UPDATE attendance SET check_out = ?, ecocash_amount = ?, printing_amount = ? WHERE id = ?')
-    .run(currentTime, ecocashAmount || 0, printingAmount || 0, existing.id);
+  db.prepare('UPDATE attendance SET check_out = ?, cash_up_amount = ? WHERE id = ?')
+    .run(currentTime, cashUpAmount || 0, existing.id);
 
   db.prepare(
     'INSERT INTO notifications (title, message, type) VALUES (?, ?, ?)'
