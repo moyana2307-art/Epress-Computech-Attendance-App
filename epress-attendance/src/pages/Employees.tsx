@@ -24,7 +24,7 @@ export default function Employees() {
   const [search, setSearch] = useState('');
   const [deptFilter, setDeptFilter] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
-  const [form, setForm] = useState({ name: '', email: '', department: 'Engineering', position: '', phone: '' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', department: 'Engineering', position: '', phone: '' });
   const [checkingIn, setCheckingIn] = useState<number | null>(null);
 
   useEffect(() => {
@@ -51,7 +51,7 @@ export default function Employees() {
       const emp = await api.employees.create(form);
       setEmployees((prev) => [...prev, emp]);
       setModalOpen(false);
-      setForm({ name: '', email: '', department: 'Engineering', position: '', phone: '' });
+      setForm({ name: '', email: '', password: '', department: 'Engineering', position: '', phone: '' });
     } catch (err: any) {
       alert(err.message);
     }
@@ -191,6 +191,7 @@ export default function Employees() {
         <form onSubmit={handleCreate} className="space-y-4">
           <Input id="name" label="Full Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
           <Input id="email" label="Email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
+          <Input id="password" label="Password" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
           <Input id="position" label="Position" value={form.position} onChange={(e) => setForm({ ...form, position: e.target.value })} />
           <Select id="department" label="Department" value={form.department} onChange={(e) => setForm({ ...form, department: e.target.value })} options={departments.map((d) => ({ value: d, label: d }))} />
           <Input id="phone" label="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />

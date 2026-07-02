@@ -27,35 +27,45 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  const { name, email, department, position, phone, shift_id, responsibilities } = req.body;
+  const { name, email, password, department, position, phone, shift_id, responsibilities } = req.body;
 
   if (!name || typeof name !== 'string' || !name.trim()) {
     return res.status(400).json({ message: 'Employee name is required.' });
   }
 
   try {
-    const result = db.prepare(
-      'INSERT INTO employees (name, email, department, position, phone, shift_id, responsibilities) VALUES (?, ?, ?, ?, ?, ?, ?)'
-    ).run(
-      name.trim(),
-      email || null,
-      department || 'General',
-      position || '',
-      phone || '',
-      shift_id || null,
-      responsibilities || ''
-    );
+    const transaction = db.transaction(() => {
+      // Create user account for sign-in
+      const userPw = password || 'default123';
+      db.prepare(
+        'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)'
+      ).run(name.trim(), email || null, userPw, 'employee');
 
-    const employee = db.prepare(`
-      SELECT e.*, s.name as shift_name
-      FROM employees e
-      LEFT JOIN shifts s ON e.shift_id = s.id
-      WHERE e.id = ?
-    `).get(result.lastInsertRowid);
+      // Create employee record
+      const result = db.prepare(
+        'INSERT INTO employees (name, email, department, position, phone, shift_id, responsibilities) VALUES (?, ?, ?, ?, ?, ?, ?)'
+      ).run(
+        name.trim(),
+        email || null,
+        department || 'General',
+        position || '',
+        phone || '',
+        shift_id || null,
+        responsibilities || ''
+      );
+
+      return db.prepare(`
+        SELECT e.*, s.name as shift_name
+        FROM employees e
+        LEFT JOIN shifts s ON e.shift_id = s.id
+        WHERE e.id = ?
+      `).get(result.lastInsertRowid);
+    });
+    const employee = transaction();
     res.status(201).json(employee);
   } catch (err) {
     if (err.message.includes('UNIQUE')) {
-      return res.status(409).json({ message: 'Employee with this name already exists.' });
+      return res.status(409).json({ message: 'An account with this name or email already exists.' });
     }
     throw err;
   }

@@ -26,9 +26,9 @@ export default function Login() {
   };
 
   const demoAccounts = [
-    { label: 'Admin', email: 'admin@epress.com', password: 'admin123', role: 'admin' },
-    { label: 'Acquiline', email: 'acquiline@epress.com', password: 'acquiline123', role: 'Morning' },
-    { label: 'Pride', email: 'pride@epress.com', password: 'pride123', role: 'Evening' },
+    { label: 'Admin', email: 'admin@epress.com', password: 'admin123' },
+    { label: 'Acquiline', email: 'acquiline@epress.com', password: 'acquiline123' },
+    { label: 'Pride', email: 'pride@epress.com', password: 'pride123' },
   ];
 
   return (
@@ -103,7 +103,7 @@ export default function Login() {
                   onClick={() => { setEmail(acct.email); setPassword(acct.password); }}
                   className="px-3 py-1.5 text-xs rounded-lg border border-border hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 text-text-secondary hover:text-primary font-medium"
                 >
-                  {acct.label} ({acct.role})
+                  {acct.label}
                 </button>
               ))}
             </div>
