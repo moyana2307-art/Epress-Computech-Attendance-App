@@ -130,6 +130,17 @@ export const api = {
         body: JSON.stringify(data),
       }),
   },
+  revenue: {
+    monthly: (params?: { month?: string; year?: string; employee_id?: string }) => {
+      const q = params ? '?' + new URLSearchParams(params).toString() : '';
+      return request<import('./types').MonthlyRevenue>(`/revenue/monthly${q}`);
+    },
+    employee: (id: number, params?: { month?: string; year?: string }) => {
+      const q = params ? '?' + new URLSearchParams(params).toString() : '';
+      return request<import('./types').EmployeeRevenueDetail>(`/revenue/employee/${id}${q}`);
+    },
+    all: () => request<import('./types').AllRevenueRecord[]>('/revenue/all'),
+  },
   worker: {
     dashboard: () => request<import('./types').WorkerDashboardData>('/worker/dashboard'),
     requestOtp: (employeeName: string) =>

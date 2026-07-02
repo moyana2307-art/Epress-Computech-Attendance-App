@@ -138,6 +138,39 @@ export interface DeptAssignment {
   end_time: string;
 }
 
+export interface EmployeeRevenue {
+  employee_id: number;
+  employee_name: string;
+  department: string;
+  work_days: number;
+  total_revenue: number;
+  avg_daily_revenue: number;
+}
+
+export interface MonthlyRevenue {
+  month: string;
+  year: string;
+  total_revenue: number;
+  employees: EmployeeRevenue[];
+}
+
+export interface EmployeeRevenueDetail {
+  employee: Employee;
+  month: string;
+  year: string;
+  total: number;
+  records: Attendance[];
+}
+
+export interface AllRevenueRecord {
+  employee_id: number;
+  employee_name: string;
+  department: string;
+  month: string;
+  total_revenue: number;
+  work_days: number;
+}
+
 export interface WorkerDashboardData {
   businessOpen: boolean;
   businessHours: { opening_time: string; closing_time: string } | null;

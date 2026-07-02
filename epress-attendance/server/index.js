@@ -37,6 +37,7 @@ import dashboardRoutes from './routes/dashboard.js';
 import businessRoutes from './routes/business.js';
 import workerRoutes from './routes/worker.js';
 import messageRoutes from './routes/messages.js';
+import revenueRoutes from './routes/revenue.js';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/attendance', attendanceRoutes);
@@ -48,6 +49,7 @@ app.use('/api/shifts', shiftRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/business', businessRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/revenue', revenueRoutes);
 app.use('/api/worker', workerRoutes);
 
 try {
