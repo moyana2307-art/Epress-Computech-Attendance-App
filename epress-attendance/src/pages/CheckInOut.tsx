@@ -56,9 +56,7 @@ export default function CheckInOut() {
         <CardContent className="pt-6">
           <form onSubmit={handleToggle} className="space-y-6">
             <div className="flex flex-col items-center gap-4">
-              <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/10 to-secondary/10 border border-primary/20">
-                <Fingerprint className="w-16 h-16 text-primary" />
-              </div>
+              
               <input
                 value={employeeName}
                 onChange={(e) => setEmployeeName(e.target.value)}
