@@ -30,27 +30,27 @@ export default function Topbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-20 h-16 bg-card/90 dark:bg-[#0A0F1D]/80 backdrop-blur-lg border-b border-navbar-border dark:border-[#162240] shadow-sm dark:shadow-[0_1px_0_rgba(116,180,217,0.05)]">
+    <header className="sticky top-0 z-20 h-16 bg-white dark:bg-[#0A0F1D]/80 border-b border-slate-200 dark:border-[#162240]">
       <div className="flex items-center justify-between h-full px-4 lg:px-6">
         <div className="flex items-center gap-4">
           {searchOpen ? (
-            <div className="flex items-center gap-2 bg-background dark:bg-card rounded-xl px-4 py-2 border border-border-light dark:border-border animate-fade-in">
-              <Search className="w-4 h-4 text-text-secondary/60" />
+            <div className="flex items-center gap-2 bg-slate-100 dark:bg-card rounded-xl px-4 py-2 border border-slate-200 dark:border-border animate-fade-in">
+              <Search className="w-4 h-4 text-slate-400 dark:text-text-secondary/60" />
               <input
                 autoFocus
-                placeholder="Search employees, attendance..."
-                className="bg-transparent border-none outline-none text-sm text-text w-64 placeholder:text-text-secondary/60"
+                placeholder="Search and navigate..."
+                className="bg-transparent border-none outline-none text-sm text-slate-900 dark:text-text w-64 placeholder:text-slate-400 dark:placeholder:text-text-secondary/60"
                 onBlur={() => setSearchOpen(false)}
               />
             </div>
           ) : (
             <button
               onClick={() => setSearchOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-background dark:bg-card border border-border-light dark:border-border text-text-secondary text-sm hover:bg-primary-lighter/60 hover:border-primary/20 dark:hover:bg-card-hover dark:hover:border-primary/30 transition-all duration-200"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-card border border-slate-200 dark:border-border text-slate-500 dark:text-text-secondary text-sm hover:bg-slate-200/70 hover:border-slate-300 dark:hover:bg-card-hover dark:hover:border-primary/30 transition-all duration-200"
             >
-              <Search className="w-4 h-4" />
-              <span className="hidden sm:inline">Search...</span>
-              <kbd className="hidden sm:inline-flex text-[10px] px-1.5 py-0.5 rounded bg-border dark:bg-border text-text-secondary/60 font-mono">
+              <Search className="w-4 h-4 text-slate-400 dark:text-text-secondary" />
+              <span className="hidden sm:inline text-slate-500 dark:text-text-secondary">Search and navigate...</span>
+              <kbd className="hidden sm:inline-flex items-center text-[10px] px-1.5 py-0.5 rounded-md bg-white dark:bg-gray-700 border border-slate-200 dark:border-gray-600 text-slate-400 dark:text-text-secondary/60 font-mono shadow-[0_1px_0_rgba(0,0,0,0.04)]">
                 ⌘K
               </kbd>
             </button>
@@ -60,7 +60,7 @@ export default function Topbar() {
         <div ref={ref} className="flex items-center gap-1.5">
           <button
             onClick={toggle}
-            className="p-2.5 rounded-xl hover:bg-primary-lighter/60 dark:hover:bg-card-hover text-text-secondary hover:text-primary dark:hover:text-secondary transition-all duration-200"
+            className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-card-hover text-slate-400 dark:text-text-secondary hover:text-slate-600 dark:hover:text-secondary transition-all duration-200"
             title={dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
           >
             {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -69,10 +69,10 @@ export default function Topbar() {
           <div className="relative">
             <button
               onClick={() => setNotifOpen(!notifOpen)}
-              className="relative p-2.5 rounded-xl hover:bg-primary-lighter/60 dark:hover:bg-card-hover text-text-secondary hover:text-primary dark:hover:text-secondary transition-all duration-200"
+              className="relative p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-card-hover text-slate-400 dark:text-text-secondary hover:text-slate-600 dark:hover:text-secondary transition-all duration-200"
             >
               <Bell className="w-4 h-4" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-danger rounded-full ring-2 ring-white dark:ring-[#0A0F1D] animate-pulse-soft" />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white dark:ring-[#0A0F1D] animate-pulse-soft" />
             </button>
             <AnimatePresence>
               {notifOpen && (
@@ -80,16 +80,16 @@ export default function Topbar() {
                   initial={{ opacity: 0, y: 8, scale: 0.96 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                  className="absolute right-0 top-12 w-80 bg-card dark:bg-[#0D1425] border border-border-light dark:border-[#162240] rounded-xl dropdown-shadow overflow-hidden"
+                  className="absolute right-0 top-12 w-80 bg-white dark:bg-[#0D1425] border border-slate-200 dark:border-[#162240] rounded-xl dropdown-shadow overflow-hidden"
                 >
-                  <div className="p-4 border-b border-gray-200 dark:border-[#162240] flex items-center justify-between">
-                    <h3 className="font-semibold text-text text-sm font-heading">Notifications</h3>
-                    <Link to="/notifications" className="text-xs font-medium text-primary hover:text-primary-dark dark:hover:text-secondary transition-colors">
+                  <div className="p-4 border-b border-slate-100 dark:border-[#162240] flex items-center justify-between">
+                    <h3 className="font-semibold text-slate-900 dark:text-text text-sm font-heading">Notifications</h3>
+                    <Link to="/notifications" className="text-xs font-medium text-blue-600 dark:text-secondary hover:text-blue-700 dark:hover:text-secondary transition-colors">
                       View all
                     </Link>
                   </div>
-                  <div className="p-4 text-center text-sm text-text-secondary">
-                    <Bell className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                  <div className="p-4 text-center text-sm text-slate-500 dark:text-text-secondary">
+                    <Bell className="w-8 h-8 mx-auto mb-2 opacity-30 text-slate-300 dark:text-text-secondary" />
                     <p>No new notifications</p>
                   </div>
                 </motion.div>
@@ -97,56 +97,58 @@ export default function Topbar() {
             </AnimatePresence>
           </div>
 
-          <div className="relative">
-            <button
-              onClick={() => setProfileOpen(!profileOpen)}
-              className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-primary-lighter/60 dark:hover:bg-card-hover transition-all duration-200"
-            >
-              <Avatar name={user?.name || 'Admin'} size="sm" />
-              <div className="hidden md:block text-left">
-                <p className="text-sm font-medium text-text leading-tight">{user?.name || 'Admin'}</p>
-                <p className="text-[10px] text-text-secondary capitalize">{user?.role || 'admin'}</p>
-              </div>
-              <ChevronDown className={cn('hidden md:block w-4 h-4 text-text-secondary/60 transition-transform duration-200', profileOpen && 'rotate-180')} />
-            </button>
-            <AnimatePresence>
-              {profileOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                  className="absolute right-0 top-12 w-56 bg-card dark:bg-[#0D1425] border border-border-light dark:border-[#162240] rounded-xl dropdown-shadow overflow-hidden"
-                >
-                  <div className="p-4 border-b border-gray-200 dark:border-[#162240]">
-                    <p className="text-sm font-medium text-text">{user?.name || 'Admin User'}</p>
-                    <p className="text-xs text-text-secondary">{user?.email || 'admin@epress.com'}</p>
-                  </div>
-                  <div className="p-2">
-                    {[
-                      { label: 'Profile', icon: UserCircle, path: '/profile' },
-                      { label: 'Settings', icon: SettingsIcon, path: '/settings' },
-                    ].map((item) => (
-                      <Link
-                        key={item.path}
-                        to={item.path}
-                        onClick={() => setProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-text-secondary hover:text-primary dark:hover:text-secondary hover:bg-primary-lighter/60 dark:hover:bg-card-hover transition-all duration-200"
+          <div className="flex items-center gap-1.5 pl-1.5 ml-1.5 border-l border-slate-200 dark:border-[#162240]">
+            <div className="relative">
+              <button
+                onClick={() => setProfileOpen(!profileOpen)}
+                className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-card-hover transition-all duration-200"
+              >
+                <Avatar name={user?.name || 'Admin'} size="sm" />
+                <div className="hidden md:block text-left">
+                  <p className="text-sm font-medium text-slate-900 dark:text-text leading-tight">{user?.name || 'Admin'}</p>
+                  <p className="text-[10px] text-slate-500 dark:text-text-secondary capitalize">{user?.role || 'admin'}</p>
+                </div>
+                <ChevronDown className={cn('hidden md:block w-4 h-4 text-slate-400 dark:text-text-secondary/60 transition-transform duration-200', profileOpen && 'rotate-180')} />
+              </button>
+              <AnimatePresence>
+                {profileOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                    className="absolute right-0 top-12 w-56 bg-white dark:bg-[#0D1425] border border-slate-200 dark:border-[#162240] rounded-xl dropdown-shadow overflow-hidden"
+                  >
+                    <div className="p-4 border-b border-slate-100 dark:border-[#162240]">
+                      <p className="text-sm font-medium text-slate-900 dark:text-text">{user?.name || 'Admin User'}</p>
+                      <p className="text-xs text-slate-500 dark:text-text-secondary">{user?.email || 'admin@epress.com'}</p>
+                    </div>
+                    <div className="p-2">
+                      {[
+                        { label: 'Profile', icon: UserCircle, path: '/profile' },
+                        { label: 'Settings', icon: SettingsIcon, path: '/settings' },
+                      ].map((item) => (
+                        <Link
+                          key={item.path}
+                          to={item.path}
+                          onClick={() => setProfileOpen(false)}
+                          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-slate-600 dark:text-text-secondary hover:text-slate-900 dark:hover:text-secondary hover:bg-slate-100 dark:hover:bg-card-hover transition-all duration-200"
+                        >
+                          <item.icon className="w-4 h-4" />
+                          {item.label}
+                        </Link>
+                      ))}
+                      <button
+                        onClick={logout}
+                        className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm text-red-600 dark:text-danger hover:bg-red-50 dark:hover:bg-danger/10 transition-all duration-200 mt-0.5"
                       >
-                        <item.icon className="w-4 h-4" />
-                        {item.label}
-                      </Link>
-                    ))}
-                    <button
-                      onClick={logout}
-                      className="flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm text-danger hover:bg-danger/5 dark:hover:bg-danger/10 transition-all duration-200 mt-0.5"
-                    >
-                      <LogOut className="w-4 h-4" />
-                      Sign Out
-                    </button>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                        <LogOut className="w-4 h-4" />
+                        Sign Out
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
       </div>
