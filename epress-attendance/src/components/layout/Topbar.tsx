@@ -34,33 +34,33 @@ export default function Topbar() {
       <div className="flex items-center justify-between h-full px-4 lg:px-6">
         <div className="flex items-center gap-4">
           {searchOpen ? (
-            <div className="flex items-center gap-2 bg-slate-100 dark:bg-card rounded-xl px-4 py-2 border border-slate-200 dark:border-border animate-fade-in">
-              <Search className="w-4 h-4 text-slate-400 dark:text-text-secondary/60" />
+            <div className="flex items-center gap-2 bg-white dark:bg-card rounded-xl px-4 py-2 border border-slate-300 dark:border-border shadow-sm animate-fade-in">
+              <Search className="w-4 h-4 text-slate-500 dark:text-text-secondary/60" />
               <input
                 autoFocus
                 placeholder="Search and navigate..."
-                className="bg-transparent border-none outline-none text-sm text-slate-900 dark:text-text w-64 placeholder:text-slate-400 dark:placeholder:text-text-secondary/60"
+                className="bg-transparent border-none outline-none text-sm text-slate-900 dark:text-text w-64 placeholder:text-slate-500 dark:placeholder:text-text-secondary"
                 onBlur={() => setSearchOpen(false)}
               />
             </div>
           ) : (
             <button
               onClick={() => setSearchOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 dark:bg-card border border-slate-200 dark:border-border text-slate-500 dark:text-text-secondary text-sm hover:bg-slate-200/70 hover:border-slate-300 dark:hover:bg-card-hover dark:hover:border-primary/30 transition-all duration-200"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-card border border-slate-300 dark:border-border text-slate-600 dark:text-text-secondary text-sm hover:bg-slate-50 hover:border-slate-400 dark:hover:bg-card-hover dark:hover:border-primary/30 transition-all duration-200 shadow-sm"
             >
-              <Search className="w-4 h-4 text-slate-400 dark:text-text-secondary" />
-              <span className="hidden sm:inline text-slate-500 dark:text-text-secondary">Search and navigate...</span>
-              <kbd className="hidden sm:inline-flex items-center text-[10px] px-1.5 py-0.5 rounded-md bg-white dark:bg-gray-700 border border-slate-200 dark:border-gray-600 text-slate-400 dark:text-text-secondary/60 font-mono shadow-[0_1px_0_rgba(0,0,0,0.04)]">
+              <Search className="w-4 h-4 text-slate-500 dark:text-text-secondary" />
+              <span className="hidden sm:inline text-slate-600 dark:text-text-secondary">Search and navigate...</span>
+              <kbd className="hidden sm:inline-flex items-center text-[10px] px-1.5 py-0.5 rounded-md bg-slate-50 dark:bg-gray-700 border border-slate-200 dark:border-gray-600 text-slate-500 dark:text-text-secondary/60 font-mono">
                 ⌘K
               </kbd>
             </button>
           )}
         </div>
 
-        <div ref={ref} className="flex items-center gap-1.5">
+        <div ref={ref} className="flex items-center gap-1">
           <button
             onClick={toggle}
-            className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-card-hover text-slate-400 dark:text-text-secondary hover:text-slate-600 dark:hover:text-secondary transition-all duration-200"
+            className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-card-hover text-slate-500 dark:text-text-secondary hover:text-slate-700 dark:hover:text-secondary transition-all duration-200"
             title={dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
           >
             {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -69,7 +69,7 @@ export default function Topbar() {
           <div className="relative">
             <button
               onClick={() => setNotifOpen(!notifOpen)}
-              className="relative p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-card-hover text-slate-400 dark:text-text-secondary hover:text-slate-600 dark:hover:text-secondary transition-all duration-200"
+              className="relative p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-card-hover text-slate-500 dark:text-text-secondary hover:text-slate-700 dark:hover:text-secondary transition-all duration-200"
             >
               <Bell className="w-4 h-4" />
               <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white dark:ring-[#0A0F1D] animate-pulse-soft" />
