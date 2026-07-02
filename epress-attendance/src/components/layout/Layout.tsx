@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
+import InstallApp from '@/components/shared/InstallApp';
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
@@ -12,6 +13,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           {children}
         </main>
       </div>
+      <InstallApp />
     </div>
   );
 }
