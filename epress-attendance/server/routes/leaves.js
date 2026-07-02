@@ -33,8 +33,10 @@ router.put('/:id', (req, res) => {
   if (!['pending', 'approved', 'rejected'].includes(status)) {
     return res.status(400).json({ message: 'Invalid status.' });
   }
-  const leave = db.prepare('SELECT * FROM leave_requests WHERE id = ?').get(req.params.id);
-  if (!leave) return res.status(404).json({ message: 'Leave request not found.' });
+  const id = Number(req.params.id);
+  if (!id) return res.status(400).json({ message: 'Invalid leave request ID.' });
+  const leave = db.prepare('SELECT * FROM leave_requests WHERE id = ?').get(id);
+  if (!leave) return res.status(404).json({ message: `Leave request #${req.params.id} not found. It may have been deleted or the database was reset.` });
 
   db.prepare('UPDATE leave_requests SET status = ? WHERE id = ?').run(status, req.params.id);
 

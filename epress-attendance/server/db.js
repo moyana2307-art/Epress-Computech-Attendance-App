@@ -284,4 +284,22 @@ if (!db.prepare('SELECT id FROM business_settings WHERE id = 1').get()) {
   ).run(1, '08:00', '20:15', 10, 15);
 }
 
+// Seed sample leave requests
+if (!db.prepare('SELECT id FROM leave_requests LIMIT 1').get()) {
+  const today = new Date();
+  const past = (days: number) => {
+    const d = new Date(today);
+    d.setDate(d.getDate() + days);
+    return d.toISOString().split('T')[0];
+  };
+  const ins = db.prepare(
+    'INSERT INTO leave_requests (employee_name, type, start_date, end_date, reason, status) VALUES (?, ?, ?, ?, ?, ?)'
+  );
+  ins.run('Acquiline', 'sick', past(-5), past(-3), 'Flu symptoms', 'approved');
+  ins.run('Acquiline', 'vacation', past(10), past(14), 'Family trip', 'approved');
+  ins.run('Pride', 'personal', past(-2), past(-1), 'Personal matters', 'rejected');
+  ins.run('Acquiline', 'sick', past(20), past(21), 'Medical appointment', 'pending');
+  ins.run('Pride', 'vacation', past(25), past(27), 'Weekend getaway', 'pending');
+}
+
 export default db;
