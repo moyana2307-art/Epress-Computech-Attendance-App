@@ -100,16 +100,22 @@ router.put('/:id', (req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
-  const employee = db.prepare('SELECT * FROM employees WHERE id = ?').get(req.params.id);
+  try {
+    const employee = db.prepare('SELECT * FROM employees WHERE id = ?').get(req.params.id);
 
-  if (!employee) {
-    return res.status(404).json({ message: 'Employee not found.' });
+    if (!employee) {
+      return res.status(404).json({ message: 'Employee not found.' });
+    }
+
+    db.prepare('DELETE FROM attendance WHERE employee_id = ?').run(req.params.id);
+    db.prepare('DELETE FROM employee_schedules WHERE employee_id = ?').run(req.params.id);
+    db.prepare('DELETE FROM otp_codes WHERE employee_id = ?').run(req.params.id);
+    db.prepare('DELETE FROM employees WHERE id = ?').run(req.params.id);
+
+    res.json({ message: 'Employee deleted successfully.' });
+  } catch (err) {
+    res.status(500).json({ message: err?.message || 'Failed to delete employee.' });
   }
-
-  db.prepare('DELETE FROM attendance WHERE employee_id = ?').run(req.params.id);
-  db.prepare('DELETE FROM employees WHERE id = ?').run(req.params.id);
-
-  res.json({ message: 'Employee deleted successfully.' });
 });
 
 export default router;
