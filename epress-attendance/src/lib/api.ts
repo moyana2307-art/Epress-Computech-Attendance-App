@@ -46,10 +46,10 @@ export const api = {
     },
     stats: (date?: string) =>
       request<import('./types').DashboardStats>(`/attendance/stats${date ? `?date=${date}` : ''}`),
-    toggle: (employeeName: string) =>
-      request<{ message: string; data: import('./types').Attendance }>('/attendance/toggle', {
+    toggle: (employeeName: string, extra?: { ecocashAmount?: number; printingAmount?: number }) =>
+      request<import('./types').ToggleResult>('/attendance/toggle', {
         method: 'POST',
-        body: JSON.stringify({ employeeName }),
+        body: JSON.stringify({ employeeName, ...extra }),
       }),
     adminCheckin: (employeeId: number) =>
       request<{ message: string }>('/attendance/admin-checkin', {

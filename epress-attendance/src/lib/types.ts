@@ -26,7 +26,17 @@ export interface Attendance {
   status: 'Present' | 'Late' | 'Absent';
   late_minutes: number;
   note: string;
+  ecocash_amount: number;
+  printing_amount: number;
   created_at: string;
+}
+
+export interface ToggleResult {
+  message: string;
+  data?: Attendance;
+  requiresRevenue?: boolean;
+  employee_id?: number;
+  date?: string;
 }
 
 export interface Department {

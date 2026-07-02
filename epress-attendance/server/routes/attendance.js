@@ -141,6 +141,17 @@ router.post('/toggle', (req, res) => {
   }
 
   if (existing.check_in && !existing.check_out) {
+    const { ecocashAmount, printingAmount } = req.body;
+
+    if (ecocashAmount === undefined && printingAmount === undefined) {
+      return res.json({
+        message: 'Enter revenue amounts to complete check-out',
+        requiresRevenue: true,
+        employee_id: employee.id,
+        date: today,
+      });
+    }
+
     const settings = db.prepare('SELECT * FROM business_settings WHERE id = 1').get();
     const cout = canCheckOut(employee.id, currentTime, settings);
 
@@ -148,15 +159,19 @@ router.post('/toggle', (req, res) => {
       return res.status(400).json({ message: cout.reason || 'Check-out not available right now.' });
     }
 
-    db.prepare('UPDATE attendance SET check_out = ? WHERE id = ?').run(currentTime, existing.id);
+    db.prepare(
+      'UPDATE attendance SET check_out = ?, ecocash_amount = ?, printing_amount = ? WHERE id = ?'
+    ).run(currentTime, ecocashAmount || 0, printingAmount || 0, existing.id);
 
     db.prepare(
       'INSERT INTO notifications (title, message, type) VALUES (?, ?, ?)'
     ).run('Check-Out', `${employee.name} checked out at ${currentTime}`, 'info');
 
+    const updated = db.prepare('SELECT * FROM attendance WHERE id = ?').get(existing.id);
+
     return res.json({
       message: `Checked out successfully at ${currentTime}`,
-      data: { ...existing, check_out: currentTime },
+      data: updated,
     });
   }
 

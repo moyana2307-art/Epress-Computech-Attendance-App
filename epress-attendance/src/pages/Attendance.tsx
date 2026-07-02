@@ -80,6 +80,8 @@ export default function Attendance() {
               { label: 'Late', value: records.filter((r) => r.status === 'Late').length, color: 'text-warning' },
               { label: 'Absent', value: records.filter((r) => r.status === 'Absent').length, color: 'text-danger' },
               { label: 'Checked Out', value: records.filter((r) => r.check_out).length, color: 'text-primary' },
+              { label: 'EcoCash', value: `$${records.reduce((s, r) => s + (r.ecocash_amount || 0), 0).toFixed(2)}`, color: 'text-success' },
+              { label: 'Printing', value: `$${records.reduce((s, r) => s + (r.printing_amount || 0), 0).toFixed(2)}`, color: 'text-warning' },
             ].map((item) => (
               <div key={item.label} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                 <span className="text-sm text-text-secondary">{item.label}</span>
@@ -103,6 +105,8 @@ export default function Attendance() {
                 {r.status}
               </Badge>
             )},
+            { key: 'ecocash_amount', header: 'EcoCash', render: (r) => <span className="text-success font-medium">${(r.ecocash_amount || 0).toFixed(2)}</span> },
+            { key: 'printing_amount', header: 'Printing', render: (r) => <span className="text-warning font-medium">${(r.printing_amount || 0).toFixed(2)}</span> },
           ]}
           data={records}
           keyExtractor={(r) => r.id}

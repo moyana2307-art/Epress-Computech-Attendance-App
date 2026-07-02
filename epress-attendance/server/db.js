@@ -143,6 +143,10 @@ db.exec(`
 // Migration: add avatar column if missing
 try { db.prepare("ALTER TABLE users ADD COLUMN avatar TEXT DEFAULT ''").run(); } catch {}
 
+// Migration: add revenue columns to attendance
+try { db.prepare("ALTER TABLE attendance ADD COLUMN ecocash_amount REAL DEFAULT 0").run(); } catch {}
+try { db.prepare("ALTER TABLE attendance ADD COLUMN printing_amount REAL DEFAULT 0").run(); } catch {}
+
 // Seed default admin
 const admin = db.prepare('SELECT id FROM users WHERE email = ?').get('admin@epress.com');
 if (!admin) {

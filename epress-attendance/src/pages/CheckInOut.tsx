@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { LogIn, LogOut, Clock, Fingerprint, Loader2 } from 'lucide-react';
+import { LogIn, LogOut, Clock, Loader2, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { api } from '@/lib/api';
 
@@ -11,6 +12,9 @@ export default function CheckInOut() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' | 'info' } | null>(null);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [showRevenue, setShowRevenue] = useState(false);
+  const [ecocashAmount, setEcocashAmount] = useState('');
+  const [printingAmount, setPrintingAmount] = useState('');
 
   useState(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -26,9 +30,23 @@ export default function CheckInOut() {
     setLoading(true);
     setMessage(null);
     try {
-      const result = await api.attendance.toggle(employeeName);
+      const extra = showRevenue
+        ? { ecocashAmount: parseFloat(ecocashAmount) || 0, printingAmount: parseFloat(printingAmount) || 0 }
+        : undefined;
+      const result = await api.attendance.toggle(employeeName, extra);
+
+      if (result.requiresRevenue) {
+        setShowRevenue(true);
+        setMessage({ text: 'Enter the amounts collected today:', type: 'info' });
+        setLoading(false);
+        return;
+      }
+
       setMessage({ text: result.message, type: 'success' });
       setEmployeeName('');
+      setShowRevenue(false);
+      setEcocashAmount('');
+      setPrintingAmount('');
     } catch (err: any) {
       setMessage({ text: err.message, type: 'error' });
     } finally {
@@ -56,13 +74,50 @@ export default function CheckInOut() {
         <CardContent className="pt-6">
           <form onSubmit={handleToggle} className="space-y-6">
             <div className="flex flex-col items-center gap-4">
-              
               <input
                 value={employeeName}
                 onChange={(e) => setEmployeeName(e.target.value)}
                 placeholder="Enter your full name..."
-                className="w-full max-w-sm h-12 text-center text-lg rounded-xl border border-border bg-card text-text placeholder:text-text-secondary/60 focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all"
+                disabled={showRevenue}
+                className="w-full max-w-sm h-12 text-center text-lg rounded-xl border border-border bg-card text-text placeholder:text-text-secondary/60 focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all disabled:opacity-50"
               />
+
+              {showRevenue && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  className="w-full max-w-sm space-y-4 overflow-hidden"
+                >
+                  <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
+                    <div className="flex items-center gap-2 mb-3">
+                      <DollarSign className="w-4 h-4 text-primary" />
+                      <span className="text-sm font-semibold text-text">Revenue Collected</span>
+                    </div>
+                    <div className="space-y-3">
+                      <Input
+                        id="ecocash"
+                        label="EcoCash Amount ($)"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={ecocashAmount}
+                        onChange={(e) => setEcocashAmount(e.target.value)}
+                        placeholder="0.00"
+                      />
+                      <Input
+                        id="printing"
+                        label="Printing Amount ($)"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={printingAmount}
+                        onChange={(e) => setPrintingAmount(e.target.value)}
+                        placeholder="0.00"
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              )}
             </div>
 
             {message && (
@@ -79,7 +134,7 @@ export default function CheckInOut() {
             <div className="flex gap-4 justify-center">
               <Button type="submit" size="xl" disabled={loading} className="min-w-[200px]">
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <LogIn className="w-5 h-5" />}
-                {loading ? 'Processing...' : 'Check In / Out'}
+                {loading ? 'Processing...' : showRevenue ? 'Confirm Check Out' : 'Check In / Out'}
               </Button>
             </div>
           </form>
