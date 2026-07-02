@@ -14,7 +14,8 @@ export function timeToMinutes(t) {
 }
 
 export function getDayOfWeek() {
-  return parseInt(new Intl.DateTimeFormat('en-GB', { timeZone: TZ, weekday: 'numeric' }).format(new Date()), 10);
+  const dayName = new Intl.DateTimeFormat('en-US', { timeZone: TZ, weekday: 'long' }).format(new Date());
+  return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].indexOf(dayName);
 }
 
 export function todayStr() {
