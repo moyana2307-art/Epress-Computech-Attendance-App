@@ -59,7 +59,7 @@ export default function AdminDashboard() {
   const [empOpen, setEmpOpen] = useState(false);
   const [editEmp, setEditEmp] = useState<Employee | null>(null);
   const [formData, setFormData] = useState({
-    name: '', email: '', department: '', position: '', shift_id: '', responsibilities: '',
+    name: '', email: '', password: '', department: '', position: '', shift_id: '', responsibilities: '',
   });
   const [settingsForm, setSettingsForm] = useState({
     opening_time: '08:00', closing_time: '20:15', grace_period_minutes: 10, early_checkin_minutes: 15,
@@ -105,7 +105,7 @@ export default function AdminDashboard() {
   const handleSaveEmployee = async () => {
     setSaving(true);
     try {
-      const payload = {
+      const payload: any = {
         name: formData.name,
         email: formData.email || undefined,
         department: formData.department || 'General',
@@ -113,6 +113,7 @@ export default function AdminDashboard() {
         shift_id: formData.shift_id ? Number(formData.shift_id) : undefined,
         responsibilities: formData.responsibilities,
       };
+      if (!editEmp && formData.password) payload.password = formData.password;
       if (editEmp) {
         await api.employees.update(editEmp.id, payload);
       } else {
@@ -121,14 +122,14 @@ export default function AdminDashboard() {
       await refresh();
       setEmpOpen(false);
       setEditEmp(null);
-      setFormData({ name: '', email: '', department: '', position: '', shift_id: '', responsibilities: '' });
+      setFormData({ name: '', email: '', password: '', department: '', position: '', shift_id: '', responsibilities: '' });
     } catch {}
     finally { setSaving(false); }
   };
 
   const openNewEmployee = () => {
     setEditEmp(null);
-    setFormData({ name: '', email: '', department: 'Printing', position: '', shift_id: '', responsibilities: '' });
+      setFormData({ name: '', email: '', password: '', department: 'Printing', position: '', shift_id: '', responsibilities: '' });
     setEmpOpen(true);
   };
 
@@ -137,6 +138,7 @@ export default function AdminDashboard() {
     setFormData({
       name: emp.name,
       email: emp.email || '',
+      password: '',
       department: emp.department,
       position: emp.position,
       shift_id: emp.shift_id ? String(emp.shift_id) : '',
@@ -319,6 +321,8 @@ export default function AdminDashboard() {
                         <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Employee</th>
                         <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Check In</th>
                         <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Check Out</th>
+                        <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">EcoCash</th>
+                        <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Printing</th>
                         <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Status</th>
                         <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Note</th>
                       </tr>
@@ -331,6 +335,8 @@ export default function AdminDashboard() {
                           <td className="px-3 py-3 text-sm font-medium text-text">{row.employee_name}</td>
                           <td className="px-3 py-3 text-sm text-text">{row.check_in || '--'}</td>
                           <td className="px-3 py-3 text-sm text-text">{row.check_out || '--'}</td>
+                          <td className="px-3 py-3 text-sm text-success font-medium">${(row.ecocash_amount || 0).toFixed(2)}</td>
+                          <td className="px-3 py-3 text-sm text-warning font-medium">${(row.printing_amount || 0).toFixed(2)}</td>
                           <td className="px-3 py-3">
                             <Badge variant={row.status === 'Late' ? 'warning' : 'success'}>{row.status}</Badge>
                           </td>
@@ -436,6 +442,7 @@ export default function AdminDashboard() {
         <div className="space-y-4">
           <Input label="Name" value={formData.name} onChange={(e) => setFormData(p => ({ ...p, name: e.target.value }))} />
           <Input label="Email" type="email" value={formData.email} onChange={(e) => setFormData(p => ({ ...p, email: e.target.value }))} />
+          {!editEmp && <Input label="Password" type="password" value={formData.password || ''} onChange={(e) => setFormData(p => ({ ...p, password: e.target.value }))} />}
           <Input label="Department" value={formData.department} onChange={(e) => setFormData(p => ({ ...p, department: e.target.value }))} />
           <Input label="Position" value={formData.position} onChange={(e) => setFormData(p => ({ ...p, position: e.target.value }))} />
           <div>

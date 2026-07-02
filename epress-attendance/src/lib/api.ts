@@ -142,10 +142,10 @@ export const api = {
         method: 'POST',
         body: JSON.stringify({ employeeName, code }),
       }),
-    checkout: (employeeName: string) =>
+    checkout: (employeeName: string, extra?: { ecocashAmount?: number; printingAmount?: number }) =>
       request<{ message: string }>('/worker/checkout', {
         method: 'POST',
-        body: JSON.stringify({ employeeName }),
+        body: JSON.stringify({ employeeName, ...extra }),
       }),
   },
 };

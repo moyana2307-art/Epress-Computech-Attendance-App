@@ -213,6 +213,9 @@ export default function WorkerDashboard() {
   const { data, loading, refresh } = useWorkerDashboard();
   const [otpOpen, setOtpOpen] = useState(false);
   const [checkingOut, setCheckingOut] = useState(false);
+  const [revenueOpen, setRevenueOpen] = useState(false);
+  const [revEcocash, setRevEcocash] = useState('');
+  const [revPrinting, setRevPrinting] = useState('');
   const [actionMsg, setActionMsg] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
   const myStatus: EmployeeStatus | undefined = data?.employees.find(
@@ -233,8 +236,14 @@ export default function WorkerDashboard() {
     setCheckingOut(true);
     setActionMsg(null);
     try {
-      const r = await api.worker.checkout(user.name);
+      const r = await api.worker.checkout(user.name, {
+        ecocashAmount: parseFloat(revEcocash) || 0,
+        printingAmount: parseFloat(revPrinting) || 0,
+      });
       setActionMsg({ text: r.message, type: 'success' });
+      setRevenueOpen(false);
+      setRevEcocash('');
+      setRevPrinting('');
       await refresh();
     } catch (e: any) {
       setActionMsg({ text: e.message, type: 'error' });
@@ -354,14 +363,13 @@ export default function WorkerDashboard() {
             )}
             {isOnDuty && myStatus?.attendance?.check_in && !myStatus?.attendance?.check_out && (
               <Button
-                onClick={handleCheckout}
-                disabled={!myStatus?.checkOutAvailable || checkingOut}
+                onClick={() => setRevenueOpen(true)}
+                disabled={!myStatus?.checkOutAvailable}
                 variant="secondary"
                 size="lg"
                 className="min-w-[140px] bg-white/15 text-white hover:bg-white/25 border-0"
               >
-                {checkingOut ? <Loader2 className="w-4 h-4 animate-spin" /> : <LogOut className="w-4 h-4" />}
-                {checkingOut ? '...' : 'Check Out'}
+                <LogOut className="w-4 h-4" /> Check Out
               </Button>
             )}
             <Link to="/leaves">
@@ -491,7 +499,7 @@ export default function WorkerDashboard() {
                   label: 'Check Out',
                   desc: 'End your shift',
                   gradient: 'from-secondary to-primary',
-                  onClick: isOnDuty && myStatus?.attendance?.check_in && !myStatus?.attendance?.check_out ? handleCheckout : undefined,
+                  onClick: isOnDuty && myStatus?.attendance?.check_in && !myStatus?.attendance?.check_out ? () => setRevenueOpen(true) : undefined,
                   disabled: !isOnDuty || !myStatus?.checkOutAvailable || !myStatus?.attendance?.check_in || !!myStatus?.attendance?.check_out,
                   condition: myStatus?.attendance?.check_in && !myStatus?.attendance?.check_out,
                 },
@@ -567,6 +575,8 @@ export default function WorkerDashboard() {
                       <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Employee</th>
                       <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Check In</th>
                       <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Check Out</th>
+                      <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">EcoCash</th>
+                      <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Printing</th>
                       <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Status</th>
                       <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Note</th>
                     </tr>
@@ -579,6 +589,8 @@ export default function WorkerDashboard() {
                         <td className="px-3 py-3 text-sm font-medium text-text">{row.employee_name}</td>
                         <td className="px-3 py-3 text-sm text-text">{row.check_in || '--'}</td>
                         <td className="px-3 py-3 text-sm text-text">{row.check_out || '--'}</td>
+                        <td className="px-3 py-3 text-sm text-success font-medium">${(row.ecocash_amount || 0).toFixed(2)}</td>
+                        <td className="px-3 py-3 text-sm text-warning font-medium">${(row.printing_amount || 0).toFixed(2)}</td>
                         <td className="px-3 py-3">
                           <Badge variant={row.status === 'Late' ? 'warning' : 'success'}>{row.status}</Badge>
                         </td>
@@ -646,6 +658,29 @@ export default function WorkerDashboard() {
         employeeName={user?.name || ''}
         onSuccess={handleOtpSuccess}
       />
+
+      <Modal open={revenueOpen} onClose={() => { if (!checkingOut) setRevenueOpen(false); }} title="Check-Out Revenue">
+        <div className="space-y-5">
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20">
+            <DollarSign className="w-8 h-8 text-primary" />
+            <div>
+              <p className="text-sm font-medium text-text">Enter today's revenue</p>
+              <p className="text-xs text-text-secondary">Record amounts collected during your shift</p>
+            </div>
+          </div>
+          <Input id="rev-eco" label="EcoCash Amount ($)" type="number" min="0" step="0.01"
+            value={revEcocash} onChange={(e) => setRevEcocash(e.target.value)} placeholder="0.00" />
+          <Input id="rev-print" label="Printing Amount ($)" type="number" min="0" step="0.01"
+            value={revPrinting} onChange={(e) => setRevPrinting(e.target.value)} placeholder="0.00" />
+          <div className="flex gap-3 pt-2">
+            <Button onClick={handleCheckout} disabled={checkingOut} className="flex-1">
+              {checkingOut ? <Loader2 className="w-4 h-4 animate-spin" /> : <LogOut className="w-4 h-4" />}
+              {checkingOut ? 'Checking out...' : 'Confirm Check Out'}
+            </Button>
+            <Button variant="outline" onClick={() => { if (!checkingOut) setRevenueOpen(false); }}>Cancel</Button>
+          </div>
+        </div>
+      </Modal>
     </motion.div>
   );
 }
