@@ -120,6 +120,8 @@ router.delete('/:id', (req, res) => {
     db.prepare('DELETE FROM attendance WHERE employee_id = ?').run(req.params.id);
     db.prepare('DELETE FROM employee_schedules WHERE employee_id = ?').run(req.params.id);
     db.prepare('DELETE FROM otp_codes WHERE employee_id = ?').run(req.params.id);
+    db.prepare('DELETE FROM shift_logs WHERE employee_id = ?').run(req.params.id);
+    db.prepare("DELETE FROM users WHERE name = ? AND role = 'employee'").run(employee.name);
     db.prepare('DELETE FROM employees WHERE id = ?').run(req.params.id);
 
     res.json({ message: 'Employee deleted successfully.' });
