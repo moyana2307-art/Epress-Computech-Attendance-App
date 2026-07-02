@@ -31,6 +31,11 @@ export const api = {
         method: 'POST',
         body: JSON.stringify(data),
       }),
+    uploadAvatar: (userId: number, avatar: string) =>
+      request<{ message: string; avatar: string }>('/auth/upload-avatar', {
+        method: 'POST',
+        body: JSON.stringify({ userId, avatar }),
+      }),
   },
   attendance: {
     today: (date?: string) =>

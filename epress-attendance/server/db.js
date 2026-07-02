@@ -19,6 +19,7 @@ db.exec(`
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
     role TEXT DEFAULT 'employee',
+    avatar TEXT DEFAULT '',
     created_at TEXT DEFAULT (datetime('now'))
   );
 
@@ -138,6 +139,9 @@ db.exec(`
     FOREIGN KEY (employee_id) REFERENCES employees(id)
   );
 `);
+
+// Migration: add avatar column if missing
+try { db.prepare("ALTER TABLE users ADD COLUMN avatar TEXT DEFAULT ''").run(); } catch {}
 
 // Seed default admin
 const admin = db.prepare('SELECT id FROM users WHERE email = ?').get('admin@epress.com');

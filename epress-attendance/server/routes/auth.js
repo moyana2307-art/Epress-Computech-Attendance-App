@@ -22,6 +22,7 @@ router.post('/login', (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      avatar: user.avatar || '',
     },
   });
 });
@@ -48,6 +49,16 @@ router.post('/register', (req, res) => {
     }
     throw err;
   }
+});
+
+router.post('/upload-avatar', (req, res) => {
+  const { userId, avatar } = req.body;
+  if (!userId || !avatar) {
+    return res.status(400).json({ message: 'User ID and avatar data are required.' });
+  }
+
+  db.prepare('UPDATE users SET avatar = ? WHERE id = ?').run(avatar, userId);
+  res.json({ message: 'Avatar updated successfully.', avatar });
 });
 
 export default router;
