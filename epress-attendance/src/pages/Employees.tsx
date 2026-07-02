@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Mail, Phone, Building2, MoreHorizontal, Fingerprint } from 'lucide-react';
+import { Plus, Mail, Phone, Building2, MoreHorizontal, Fingerprint, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
@@ -69,6 +69,16 @@ export default function Employees() {
     }
   };
 
+  const handleRemove = async (emp: Employee) => {
+    if (!confirm(`Remove ${emp.name}? This will delete all their attendance records.`)) return;
+    try {
+      await api.employees.delete(emp.id);
+      setEmployees((prev) => prev.filter((e) => e.id !== emp.id));
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
   if (loading) return <TableSkeleton />;
 
   return (
@@ -132,17 +142,29 @@ export default function Employees() {
                   {emp.status}
                 </Badge>
               </div>
-              {isAdmin && emp.status === 'active' && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => handleAdminCheckin(emp.id)}
-                  disabled={checkingIn === emp.id}
-                  className="mt-2 w-full"
-                >
-                  <Fingerprint className="w-3.5 h-3.5" />
-                  {checkingIn === emp.id ? 'Checking in...' : 'Check In'}
-                </Button>
+              {isAdmin && (
+                <div className="flex gap-2 mt-2 w-full">
+                  {emp.status === 'active' && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleAdminCheckin(emp.id)}
+                      disabled={checkingIn === emp.id}
+                      className="flex-1"
+                    >
+                      <Fingerprint className="w-3.5 h-3.5" />
+                      {checkingIn === emp.id ? 'Checking in...' : 'Check In'}
+                    </Button>
+                  )}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleRemove(emp)}
+                    className="flex-none text-danger hover:bg-danger/10 border-danger/30 hover:border-danger/50"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </Button>
+                </div>
               )}
               <div className="mt-4 space-y-2 text-sm text-text-secondary">
                 <div className="flex items-center gap-2">

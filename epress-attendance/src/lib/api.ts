@@ -72,6 +72,8 @@ export const api = {
       }),
     delete: (id: number) =>
       request<{ message: string }>(`/employees/${id}`, { method: 'DELETE' }),
+    remove: (id: number) =>
+      request<{ message: string }>(`/employees/${id}`, { method: 'DELETE' }),
   },
   departments: {
     list: () => request<import('./types').Department[]>('/departments'),
