@@ -30,27 +30,27 @@ export default function Topbar() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-20 h-16 bg-transparent border-b border-slate-200 dark:border-[#162240]">
+    <header className="sticky top-0 z-20 h-16 bg-transparent dark:bg-[#0A0F1D]/80 border-b border-slate-200 dark:border-[#162240]">
       <div className="flex items-center justify-between h-full px-4 lg:px-6">
         <div className="flex items-center gap-4">
           {searchOpen ? (
-            <div className="flex items-center gap-2 bg-white rounded-full px-4 py-2 border border-slate-300 shadow-sm animate-fade-in">
-              <Search className="w-4 h-4 text-slate-400" />
+            <div className="flex items-center gap-2 bg-white dark:bg-card rounded-full px-4 py-2 border border-slate-300 dark:border-border shadow-sm animate-fade-in">
+              <Search className="w-4 h-4 text-slate-400 dark:text-text-secondary/60" />
               <input
                 autoFocus
                 placeholder="Search and navigate..."
-                className="bg-transparent border-none outline-none text-sm text-slate-900 w-64 placeholder:text-slate-400"
+                className="bg-transparent border-none outline-none text-sm text-slate-900 dark:text-text w-64 placeholder:text-slate-400 dark:placeholder:text-text-secondary"
                 onBlur={() => setSearchOpen(false)}
               />
             </div>
           ) : (
               <button
                 onClick={() => setSearchOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-300 text-slate-600 text-sm hover:border-slate-400 transition-all duration-200 shadow-sm"
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white dark:bg-card border border-slate-300 dark:border-border text-slate-600 dark:text-text-secondary text-sm hover:border-slate-400 dark:hover:border-primary/30 transition-all duration-200 shadow-sm"
               >
-                <Search className="w-4 h-4 text-slate-400" />
-                <span className="hidden sm:inline text-slate-500">Search and navigate...</span>
-                <kbd className="hidden sm:inline-flex items-center text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-mono">
+                <Search className="w-4 h-4 text-slate-400 dark:text-text-secondary" />
+                <span className="hidden sm:inline text-slate-500 dark:text-text-secondary">Search and navigate...</span>
+                <kbd className="hidden sm:inline-flex items-center text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-gray-700 text-slate-500 dark:text-text-secondary/60 font-mono">
                   ⌘K
                 </kbd>
               </button>

@@ -82,14 +82,14 @@ export default function AdminDashboard() {
   const lateCount = dashboard?.todayRecords?.filter(r => r.status === 'Late').length || 0;
 
   const statCards = useMemo(() => [
-    { icon: <Users className="w-5 h-5 text-white" />, label: 'Employees', value: employees.length, color: 'bg-gradient-to-br from-primary to-primary-dark' },
-    { icon: <UserCheck className="w-5 h-5 text-white" />, label: 'On Duty Now', value: onDuty.length, color: 'bg-gradient-to-br from-success to-emerald-700' },
-    { icon: <Clock className="w-5 h-5 text-white" />, label: 'Checked In', value: checkedIn, color: 'bg-gradient-to-br from-secondary to-primary' },
-    { icon: <Building2 className="w-5 h-5 text-white" />, label: 'Business', value: dashboard?.businessOpen ? 'Open' : 'Closed', color: dashboard?.businessOpen ? 'bg-gradient-to-br from-success to-emerald-700' : 'bg-gradient-to-br from-danger to-red-700', subtitle: dashboard?.businessHours ? `${dashboard.businessHours.opening_time} - ${dashboard.businessHours.closing_time}` : undefined },
-    { icon: <AlertTriangle className="w-5 h-5 text-white" />, label: 'Late Today', value: lateCount, color: lateCount ? 'bg-gradient-to-br from-warning to-amber-700' : 'bg-gradient-to-br from-gray-400 to-gray-500' },
-    { icon: <ShieldCheck className="w-5 h-5 text-white" />, label: 'Departments', value: dashboard?.departmentAssignments?.length || 0, color: 'bg-gradient-to-br from-primary to-secondary' },
-    { icon: <TrendingUp className="w-5 h-5 text-white" />, label: 'Checked Out', value: dashboard?.todayRecords?.filter(r => r.check_out).length || 0, color: 'bg-gradient-to-br from-gray-400 to-primary' },
-    { icon: <CalendarCheck className="w-5 h-5 text-white" />, label: dayNames[new Date().getDay()], value: dashboard?.businessHours ? `${dashboard.businessHours.opening_time} - ${dashboard.businessHours.closing_time}` : '--', color: 'bg-gradient-to-br from-primary to-secondary' },
+    { icon: <Users className="w-5 h-5 text-white" />, label: 'Employees', value: employees.length, color: 'bg-linear-to-br from-primary to-primary-dark' },
+    { icon: <UserCheck className="w-5 h-5 text-white" />, label: 'On Duty Now', value: onDuty.length, color: 'bg-linear-to-br from-success to-emerald-700' },
+    { icon: <Clock className="w-5 h-5 text-white" />, label: 'Checked In', value: checkedIn, color: 'bg-linear-to-br from-secondary to-primary' },
+    { icon: <Building2 className="w-5 h-5 text-white" />, label: 'Business', value: dashboard?.businessOpen ? 'Open' : 'Closed', color: dashboard?.businessOpen ? 'bg-linear-to-br from-success to-emerald-700' : 'bg-linear-to-br from-danger to-red-700', subtitle: dashboard?.businessHours ? `${dashboard.businessHours.opening_time} - ${dashboard.businessHours.closing_time}` : undefined },
+    { icon: <AlertTriangle className="w-5 h-5 text-white" />, label: 'Late Today', value: lateCount, color: lateCount ? 'bg-linear-to-br from-warning to-amber-700' : 'bg-linear-to-br from-gray-400 to-gray-500' },
+    { icon: <ShieldCheck className="w-5 h-5 text-white" />, label: 'Departments', value: dashboard?.departmentAssignments?.length || 0, color: 'bg-linear-to-br from-primary to-secondary' },
+    { icon: <TrendingUp className="w-5 h-5 text-white" />, label: 'Checked Out', value: dashboard?.todayRecords?.filter(r => r.check_out).length || 0, color: 'bg-linear-to-br from-gray-400 to-primary' },
+    { icon: <CalendarCheck className="w-5 h-5 text-white" />, label: dayNames[new Date().getDay()], value: dashboard?.businessHours ? `${dashboard.businessHours.opening_time} - ${dashboard.businessHours.closing_time}` : '--', color: 'bg-linear-to-br from-primary to-secondary' },
   ], [employees.length, onDuty.length, checkedIn, lateCount, dashboard]);
 
   const handleSaveSettings = async () => {
@@ -152,7 +152,7 @@ export default function AdminDashboard() {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-br from-primary via-[#0F2E6E] to-primary-dark rounded-2xl p-6 lg:p-8 text-white relative overflow-hidden dark:shadow-[0_0_40px_rgba(16,54,125,0.15)]"
+        className="bg-linear-to-br from-primary via-[#0F2E6E] to-primary-dark rounded-2xl p-6 lg:p-8 text-white relative overflow-hidden dark:shadow-[0_0_40px_rgba(16,54,125,0.15)]"
       >
         <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]">
           <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
@@ -372,7 +372,7 @@ export default function AdminDashboard() {
                   >
                     <div className={cn(
                       'p-2 rounded-lg shrink-0 transition-transform duration-200 group-hover:scale-110',
-                      'bg-gradient-to-br ' + action.color + ' text-white shadow-sm'
+                      'bg-linear-to-br ' + action.color + ' text-white shadow-sm'
                     )}>
                       <action.icon className="w-4 h-4" />
                     </div>

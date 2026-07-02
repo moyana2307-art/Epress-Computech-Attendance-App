@@ -4,7 +4,7 @@ import Topbar from './Topbar';
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-white relative">
+    <div className="min-h-screen bg-white dark:bg-[#0B1120] relative">
       <Sidebar />
       <div className="lg:pl-64 transition-all duration-300 relative z-10">
         <Topbar />

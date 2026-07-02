@@ -254,45 +254,45 @@ export default function WorkerDashboard() {
       icon: <Building2 className="w-5 h-5 text-white" />,
       label: 'Status',
       value: data?.businessOpen ? 'Open' : 'Closed',
-      color: data?.businessOpen ? 'bg-gradient-to-br from-success to-emerald-700' : 'bg-gradient-to-br from-danger to-red-700',
+      color: data?.businessOpen ? 'bg-linear-to-br from-success to-emerald-700' : 'bg-linear-to-br from-danger to-red-700',
       subtitle: data?.businessHours ? `${data.businessHours.opening_time} - ${data.businessHours.closing_time}` : undefined,
     },
     {
       icon: <Users className="w-5 h-5 text-white" />,
       label: 'On Duty',
       value: data?.employees.map(e => e.employee.name).join(', ') || 'Nobody',
-      color: 'bg-gradient-to-br from-primary to-secondary',
+      color: 'bg-linear-to-br from-primary to-secondary',
     },
     {
       icon: <Clock className="w-5 h-5 text-white" />,
       label: 'My Status',
       value: isOnDuty ? (myStatus?.attendance?.check_in ? 'Checked In' : 'Not Checked In') : 'Off Duty',
-      color: isOnDuty ? 'bg-gradient-to-br from-secondary to-primary' : 'bg-gradient-to-br from-gray-400 to-gray-500',
+      color: isOnDuty ? 'bg-linear-to-br from-secondary to-primary' : 'bg-linear-to-br from-gray-400 to-gray-500',
     },
     {
       icon: <Hourglass className="w-5 h-5 text-white" />,
       label: 'My Hours Today',
       value: myStatus?.todayMinutes ? `${Math.floor(myStatus.todayMinutes / 60)}h ${myStatus.todayMinutes % 60}m` : '0h 0m',
-      color: 'bg-gradient-to-br from-primary to-primary-dark',
+      color: 'bg-linear-to-br from-primary to-primary-dark',
     },
     {
       icon: <CheckCircle2 className="w-5 h-5 text-white" />,
       label: 'Check-In',
       value: myStatus?.attendance?.check_in || '--',
-      color: myStatus?.attendance?.check_in ? 'bg-gradient-to-br from-success to-emerald-700' : 'bg-gradient-to-br from-gray-400 to-gray-500',
+      color: myStatus?.attendance?.check_in ? 'bg-linear-to-br from-success to-emerald-700' : 'bg-linear-to-br from-gray-400 to-gray-500',
       subtitle: myStatus?.attendance?.check_in ? myStatus.attendance.status : undefined,
     },
     {
       icon: <LogOut className="w-5 h-5 text-white" />,
       label: 'Check-Out',
       value: myStatus?.attendance?.check_out || '--',
-      color: myStatus?.attendance?.check_out ? 'bg-gradient-to-br from-warning to-amber-700' : 'bg-gradient-to-br from-gray-400 to-gray-500',
+      color: myStatus?.attendance?.check_out ? 'bg-linear-to-br from-warning to-amber-700' : 'bg-linear-to-br from-gray-400 to-gray-500',
     },
     {
       icon: <AlertTriangle className="w-5 h-5 text-white" />,
       label: 'Late',
       value: myStatus?.attendance?.late_minutes ? `${myStatus.attendance.late_minutes}m` : '0m',
-      color: myStatus?.attendance?.late_minutes ? 'bg-gradient-to-br from-warning to-amber-700' : 'bg-gradient-to-br from-success to-emerald-700',
+      color: myStatus?.attendance?.late_minutes ? 'bg-linear-to-br from-warning to-amber-700' : 'bg-linear-to-br from-success to-emerald-700',
     },
   ];
 
@@ -301,7 +301,7 @@ export default function WorkerDashboard() {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-br from-primary via-[#0F2E6E] to-primary-dark rounded-2xl p-6 lg:p-8 text-white relative overflow-hidden dark:shadow-[0_0_40px_rgba(16,54,125,0.15)]"
+        className="bg-linear-to-br from-primary via-[#0F2E6E] to-primary-dark rounded-2xl p-6 lg:p-8 text-white relative overflow-hidden dark:shadow-[0_0_40px_rgba(16,54,125,0.15)]"
       >
         <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]">
           <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
@@ -531,7 +531,7 @@ export default function WorkerDashboard() {
                   >
                     <div className={cn(
                       'p-2.5 rounded-lg shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-3',
-                      'bg-gradient-to-br ' + action.gradient + ' text-white shadow-sm'
+                      'bg-linear-to-br ' + action.gradient + ' text-white shadow-sm'
                     )}>
                       <action.icon className="w-4 h-4" />
                     </div>

@@ -33,7 +33,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex">
-      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-primary via-primary-dark to-primary relative overflow-hidden items-center justify-center">
+      <div className="hidden lg:flex flex-1 bg-linear-to-br from-primary via-primary-dark to-primary relative overflow-hidden items-center justify-center">
         <div className="absolute inset-0 opacity-[0.04]">
           <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
             <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -74,7 +74,7 @@ export default function Login() {
         </motion.div>
       </div>
 
-      <div className="flex-1 flex items-center justify-center p-6 bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
+      <div className="flex-1 flex items-center justify-center p-6 bg-linear-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

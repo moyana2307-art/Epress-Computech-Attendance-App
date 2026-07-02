@@ -90,7 +90,7 @@ export default function Sidebar() {
       >
         <div className={cn('flex items-center h-16 px-4 border-b border-slate-200 dark:border-[#162240]', collapsed && 'justify-center')}>
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center shrink-0 shadow-sm shadow-blue-200">
+            <div className="w-9 h-9 rounded-lg bg-linear-to-br from-blue-600 to-blue-800 flex items-center justify-center shrink-0 shadow-sm shadow-blue-200">
               <ShieldCheck className="w-5 h-5 text-white" />
             </div>
             {!collapsed && (
@@ -110,7 +110,7 @@ export default function Sidebar() {
 
         <div className={cn('px-4 py-4 border-b border-slate-200 dark:border-[#162240]', collapsed && 'px-2')}>
           <div className={cn('flex items-center gap-3', collapsed && 'justify-center')}>
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-xs font-bold font-heading shrink-0 ring-2 ring-blue-100 dark:ring-white/10">
+            <div className="w-8 h-8 rounded-full bg-linear-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-xs font-bold font-heading shrink-0 ring-2 ring-blue-100 dark:ring-white/10">
               {user?.name?.charAt(0) || 'A'}
             </div>
             {!collapsed && (

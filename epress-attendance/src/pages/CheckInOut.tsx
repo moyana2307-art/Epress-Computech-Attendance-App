@@ -92,7 +92,7 @@ export default function CheckInOut() {
           { icon: LogOut, label: 'Check Out', desc: 'Record your departure time', color: 'from-warning to-primary-dark' },
         ].map((item) => (
           <div key={item.label} className="p-5 rounded-2xl bg-card border border-border hover:shadow-md transition-all">
-            <div className={cn('p-3 rounded-xl bg-gradient-to-br w-fit mb-3', item.color)}>
+            <div className={cn('p-3 rounded-xl bg-linear-to-br w-fit mb-3', item.color)}>
               <item.icon className="w-5 h-5 text-white" />
             </div>
             <h3 className="font-semibold text-text">{item.label}</h3>
