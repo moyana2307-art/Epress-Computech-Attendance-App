@@ -143,6 +143,16 @@ db.exec(`
 // Migration: add avatar column if missing
 try { db.prepare("ALTER TABLE users ADD COLUMN avatar TEXT DEFAULT ''").run(); } catch {}
 
+// Migration: add messages table if missing
+try { db.prepare(`CREATE TABLE IF NOT EXISTS messages (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  sender_id INTEGER NOT NULL,
+  sender_name TEXT NOT NULL,
+  message TEXT NOT NULL,
+  created_at TEXT DEFAULT (datetime('now')),
+  FOREIGN KEY (sender_id) REFERENCES users(id)
+)`).run(); } catch {}
+
 // Migration: add revenue columns to attendance
 try { db.prepare("ALTER TABLE attendance ADD COLUMN ecocash_amount REAL DEFAULT 0").run(); } catch {}
 try { db.prepare("ALTER TABLE attendance ADD COLUMN printing_amount REAL DEFAULT 0").run(); } catch {}

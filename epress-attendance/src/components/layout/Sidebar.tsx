@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, Users, Fingerprint, LogIn, Building2,
   CalendarCheck, BarChart3, Calendar, Bell, UserCircle, Settings,
-  ChevronLeft, Menu, X, ShieldCheck, Clock, Briefcase,
+  ChevronLeft, Menu, X, ShieldCheck, Clock, Briefcase, MessageCircle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
@@ -13,6 +13,7 @@ const adminNavItems = [
   { section: 'Overview', items: [
     { label: 'Admin Dashboard', icon: LayoutDashboard, path: '/admin' },
     { label: 'Analytics', icon: BarChart3, path: '/reports' },
+    { label: 'Team Chat', icon: MessageCircle, path: '/chat' },
   ]},
   { section: 'Management', items: [
     { label: 'Employees', icon: Users, path: '/employees' },
@@ -32,6 +33,7 @@ const workerNavItems = [
   { section: 'Overview', items: [
     { label: 'Dashboard', icon: LayoutDashboard, path: '/' },
     { label: 'Calendar', icon: Calendar, path: '/calendar' },
+    { label: 'Team Chat', icon: MessageCircle, path: '/chat' },
   ]},
   { section: 'Attendance', items: [
     { label: 'Check In / Out', icon: LogIn, path: '/check-in-out' },
