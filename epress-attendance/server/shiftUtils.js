@@ -23,9 +23,9 @@ export function todayStr() {
   return new Intl.DateTimeFormat('en-CA', opts).format(new Date());
 }
 
-export function isBusinessOpen(currentTime) {
+export async function isBusinessOpen(currentTime) {
   const dow = getDayOfWeek();
-  const hours = db.prepare('SELECT * FROM business_hours WHERE day_of_week = ?').get(dow);
+  const hours = await db.prepare('SELECT * FROM business_hours WHERE day_of_week = $1').get(dow);
   if (!hours) return { open: false, hours: null };
   const now = timeToMinutes(currentTime);
   const open = timeToMinutes(hours.opening_time);
@@ -36,15 +36,15 @@ export function isBusinessOpen(currentTime) {
   };
 }
 
-export function getActiveSchedules() {
+export async function getActiveSchedules() {
   const dow = getDayOfWeek();
   const currentTime = nowHHMM();
   const now = timeToMinutes(currentTime);
-  const all = db.prepare(`
+  const all = await db.prepare(`
     SELECT es.*, e.name as employee_name, e.email
     FROM employee_schedules es
     JOIN employees e ON es.employee_id = e.id
-    WHERE (es.day_of_week = ? OR es.day_of_week IS NULL)
+    WHERE (es.day_of_week = $1 OR es.day_of_week IS NULL)
     AND e.status = 'active'
     ORDER BY es.start_time ASC
   `).all(dow);
@@ -56,8 +56,8 @@ export function getActiveSchedules() {
   });
 }
 
-export function getActiveEmployees() {
-  const active = getActiveSchedules();
+export async function getActiveEmployees() {
+  const active = await getActiveSchedules();
   const seen = new Set();
   const result = [];
   for (const s of active) {
@@ -73,8 +73,8 @@ export function getActiveEmployees() {
   return result;
 }
 
-export function getDepartmentAssignments() {
-  const active = getActiveSchedules();
+export async function getDepartmentAssignments() {
+  const active = await getActiveSchedules();
   const map = {};
   for (const s of active) {
     const dept = s.department;
@@ -91,27 +91,29 @@ export function getDepartmentAssignments() {
   return Object.values(map);
 }
 
-export function getEmployeeSchedule(employeeId) {
+export async function getEmployeeSchedule(employeeId) {
   const dow = getDayOfWeek();
   const currentTime = nowHHMM();
   const now = timeToMinutes(currentTime);
-  return db.prepare(`
+  const schedules = await db.prepare(`
     SELECT * FROM employee_schedules
-    WHERE employee_id = ? AND (day_of_week = ? OR day_of_week IS NULL)
+    WHERE employee_id = $1 AND (day_of_week = $2 OR day_of_week IS NULL)
     ORDER BY start_time ASC
-  `).all(employeeId, dow).find(s => {
+  `).all(employeeId, dow);
+
+  return schedules.find(s => {
     const start = timeToMinutes(s.start_time);
     const end = timeToMinutes(s.end_time);
     return now >= start && now < end;
   }) || null;
 }
 
-export function canCheckIn(employeeId, currentTime, settings) {
+export async function canCheckIn(employeeId, currentTime, settings) {
   const dow = getDayOfWeek();
   const now = timeToMinutes(currentTime);
-  const all = db.prepare(`
+  const all = await db.prepare(`
     SELECT * FROM employee_schedules
-    WHERE employee_id = ? AND (day_of_week = ? OR day_of_week IS NULL)
+    WHERE employee_id = $1 AND (day_of_week = $2 OR day_of_week IS NULL)
     ORDER BY start_time ASC
   `).all(employeeId, dow);
 
@@ -153,8 +155,8 @@ export function canCheckIn(employeeId, currentTime, settings) {
   return { available: true, schedule: activeSchedule, isLate, lateMinutes: isLate ? now - start : 0 };
 }
 
-export function canCheckOut(employeeId, currentTime, settings) {
-  const schedule = getEmployeeSchedule(employeeId);
+export async function canCheckOut(employeeId, currentTime, settings) {
+  const schedule = await getEmployeeSchedule(employeeId);
   if (!schedule) return { available: false, reason: 'No active schedule' };
 
   const now = timeToMinutes(currentTime);
@@ -169,29 +171,29 @@ export function canCheckOut(employeeId, currentTime, settings) {
   return { available: true, schedule };
 }
 
-export function handleAutoCheckout() {
+export async function handleAutoCheckout() {
   const currentTime = nowHHMM();
   const now = timeToMinutes(currentTime);
   const today = todayStr();
-  const employees = db.prepare("SELECT id, name FROM employees WHERE status = 'active'").all();
+  const employees = await db.prepare("SELECT id, name FROM employees WHERE status = 'active'").all();
 
   for (const emp of employees) {
-    const schedules = db.prepare(`
+    const schedules = await db.prepare(`
       SELECT * FROM employee_schedules
-      WHERE employee_id = ? AND (day_of_week = ? OR day_of_week IS NULL)
+      WHERE employee_id = $1 AND (day_of_week = $2 OR day_of_week IS NULL)
       ORDER BY end_time DESC
     `).all(emp.id, getDayOfWeek());
 
     for (const s of schedules) {
       const end = timeToMinutes(s.end_time);
       if (now >= end && now < end + 5) {
-        const att = db.prepare(
-          'SELECT * FROM attendance WHERE employee_id = ? AND date = ?'
+        const att = await db.prepare(
+          'SELECT * FROM attendance WHERE employee_id = $1 AND date = $2'
         ).get(emp.id, today);
         if (att && !att.check_out) {
-          db.prepare('UPDATE attendance SET check_out = ? WHERE id = ?').run(s.end_time, att.id);
-          db.prepare(
-            'INSERT INTO notifications (title, message, type) VALUES (?, ?, ?)'
+          await db.prepare('UPDATE attendance SET check_out = $1 WHERE id = $2').run(s.end_time, att.id);
+          await db.prepare(
+            'INSERT INTO notifications (title, message, type) VALUES ($1, $2, $3)'
           ).run(
             'Auto Check-Out',
             `${emp.name} auto checked-out at ${s.end_time} (${s.department})`,

@@ -3,8 +3,8 @@ import db from '../db.js';
 
 const router = Router();
 
-router.get('/', (req, res) => {
-  const employees = db.prepare(`
+router.get('/', async (_req, res) => {
+  const employees = await db.prepare(`
     SELECT e.*, s.name as shift_name
     FROM employees e
     LEFT JOIN shifts s ON e.shift_id = s.id
@@ -13,12 +13,12 @@ router.get('/', (req, res) => {
   res.json(employees);
 });
 
-router.get('/:id', (req, res) => {
-  const employee = db.prepare(`
+router.get('/:id', async (req, res) => {
+  const employee = await db.prepare(`
     SELECT e.*, s.name as shift_name
     FROM employees e
     LEFT JOIN shifts s ON e.shift_id = s.id
-    WHERE e.id = ?
+    WHERE e.id = $1
   `).get(req.params.id);
   if (!employee) {
     return res.status(404).json({ message: 'Employee not found.' });
@@ -26,7 +26,7 @@ router.get('/:id', (req, res) => {
   res.json(employee);
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const { name, email, password, department, position, phone, shift_id, responsibilities } = req.body;
 
   if (!name || typeof name !== 'string' || !name.trim()) {
@@ -34,54 +34,48 @@ router.post('/', (req, res) => {
   }
 
   try {
-    const transaction = db.transaction(() => {
-      // Create user account for sign-in
+    const result = await db.transaction(async (client) => {
       const userPw = password || 'default123';
-      db.prepare(
-        'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)'
-      ).run(name.trim(), email || null, userPw, 'employee');
-
-      // Create employee record
-      const result = db.prepare(
-        'INSERT INTO employees (name, email, department, position, phone, shift_id, responsibilities) VALUES (?, ?, ?, ?, ?, ?, ?)'
-      ).run(
-        name.trim(),
-        email || null,
-        department || 'General',
-        position || '',
-        phone || '',
-        shift_id || null,
-        responsibilities || ''
+      await client.query(
+        'INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4)',
+        [name.trim(), email || null, userPw, 'employee']
       );
 
-      return db.prepare(`
+      const empResult = await client.query(
+        'INSERT INTO employees (name, email, department, position, phone, shift_id, responsibilities) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id',
+        [name.trim(), email || null, department || 'General', position || '', phone || '', shift_id || null, responsibilities || '']
+      );
+
+      const emp = await client.query(`
         SELECT e.*, s.name as shift_name
         FROM employees e
         LEFT JOIN shifts s ON e.shift_id = s.id
-        WHERE e.id = ?
-      `).get(result.lastInsertRowid);
-    });
-    const employee = transaction();
-    res.status(201).json(employee);
+        WHERE e.id = $1
+      `, [empResult.rows[0].id]);
+
+      return emp.rows[0];
+    })();
+
+    res.status(201).json(result);
   } catch (err) {
-    if (err.message.includes('UNIQUE')) {
+    if (err.message?.includes('unique') || err.code === '23505') {
       return res.status(409).json({ message: 'An account with this name or email already exists.' });
     }
     throw err;
   }
 });
 
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   const { name, email, department, position, phone, status, shift_id, responsibilities } = req.body;
-  const employee = db.prepare('SELECT * FROM employees WHERE id = ?').get(req.params.id);
+  const employee = await db.prepare('SELECT * FROM employees WHERE id = $1').get(req.params.id);
 
   if (!employee) {
     return res.status(404).json({ message: 'Employee not found.' });
   }
 
   try {
-    db.prepare(
-      'UPDATE employees SET name = ?, email = ?, department = ?, position = ?, phone = ?, status = ?, shift_id = ?, responsibilities = ? WHERE id = ?'
+    await db.prepare(
+      'UPDATE employees SET name = $1, email = $2, department = $3, position = $4, phone = $5, status = $6, shift_id = $7, responsibilities = $8 WHERE id = $9'
     ).run(
       (name || employee.name).trim(),
       email !== undefined ? email : employee.email,
@@ -94,35 +88,35 @@ router.put('/:id', (req, res) => {
       req.params.id
     );
 
-    const updated = db.prepare(`
+    const updated = await db.prepare(`
       SELECT e.*, s.name as shift_name
       FROM employees e
       LEFT JOIN shifts s ON e.shift_id = s.id
-      WHERE e.id = ?
+      WHERE e.id = $1
     `).get(req.params.id);
     res.json(updated);
   } catch (err) {
-    if (err.message.includes('UNIQUE')) {
+    if (err.message?.includes('unique') || err.code === '23505') {
       return res.status(409).json({ message: 'Employee with this name already exists.' });
     }
     throw err;
   }
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
-    const employee = db.prepare('SELECT * FROM employees WHERE id = ?').get(req.params.id);
+    const employee = await db.prepare('SELECT * FROM employees WHERE id = $1').get(req.params.id);
 
     if (!employee) {
       return res.status(404).json({ message: 'Employee not found.' });
     }
 
-    db.prepare('DELETE FROM attendance WHERE employee_id = ?').run(req.params.id);
-    db.prepare('DELETE FROM employee_schedules WHERE employee_id = ?').run(req.params.id);
-    db.prepare('DELETE FROM otp_codes WHERE employee_id = ?').run(req.params.id);
-    db.prepare('DELETE FROM shift_logs WHERE employee_id = ?').run(req.params.id);
-    db.prepare("DELETE FROM users WHERE name = ? AND role = 'employee'").run(employee.name);
-    db.prepare('DELETE FROM employees WHERE id = ?').run(req.params.id);
+    await db.prepare('DELETE FROM attendance WHERE employee_id = $1').run(req.params.id);
+    await db.prepare('DELETE FROM employee_schedules WHERE employee_id = $1').run(req.params.id);
+    await db.prepare('DELETE FROM otp_codes WHERE employee_id = $1').run(req.params.id);
+    await db.prepare('DELETE FROM shift_logs WHERE employee_id = $1').run(req.params.id);
+    await db.prepare("DELETE FROM users WHERE name = $1 AND role = 'employee'").run(employee.name);
+    await db.prepare('DELETE FROM employees WHERE id = $1').run(req.params.id);
 
     res.json({ message: 'Employee deleted successfully.' });
   } catch (err) {

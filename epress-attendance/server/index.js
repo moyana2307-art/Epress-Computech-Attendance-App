@@ -62,10 +62,10 @@ try {
   });
 } catch {} // static serving not available (serverless)
 
-handleAutoCheckout();
-setInterval(handleAutoCheckout, 60000);
-cleanupExpiredOTPs();
-setInterval(cleanupExpiredOTPs, 300000);
+handleAutoCheckout().catch(() => {});
+setInterval(() => { handleAutoCheckout().catch(() => {}); }, 60000);
+cleanupExpiredOTPs().catch(() => {});
+setInterval(() => { cleanupExpiredOTPs().catch(() => {}); }, 300000);
 
 app.use((err, _req, res, _next) => {
   console.error('Unhandled error:', err);

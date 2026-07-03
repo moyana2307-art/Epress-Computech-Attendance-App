@@ -3,14 +3,14 @@ import db from '../db.js';
 
 const router = Router();
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required.' });
   }
 
-  const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+  const user = await db.prepare('SELECT * FROM users WHERE email = $1').get(email);
   if (!user || user.password !== password) {
     return res.status(401).json({ message: 'Invalid email or password.' });
   }
@@ -27,7 +27,7 @@ router.post('/login', (req, res) => {
   });
 });
 
-router.post('/register', (req, res) => {
+router.post('/register', async (req, res) => {
   const { name, email, password, department } = req.body;
 
   if (!name || !email || !password) {
@@ -35,29 +35,28 @@ router.post('/register', (req, res) => {
   }
 
   try {
-    db.prepare('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)').run(
+    await db.prepare('INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4)').run(
       name, email, password, 'employee'
     );
-    // Also add to employees table
-    db.prepare('INSERT INTO employees (name, email, department) VALUES (?, ?, ?)').run(
+    await db.prepare('INSERT INTO employees (name, email, department) VALUES ($1, $2, $3)').run(
       name, email, department || 'General'
     );
     res.status(201).json({ message: 'Registration successful.' });
   } catch (err) {
-    if (err.message.includes('UNIQUE')) {
+    if (err.message?.includes('unique') || err.code === '23505') {
       return res.status(409).json({ message: 'Email already registered.' });
     }
     throw err;
   }
 });
 
-router.post('/upload-avatar', (req, res) => {
+router.post('/upload-avatar', async (req, res) => {
   const { userId, avatar } = req.body;
   if (!userId || !avatar) {
     return res.status(400).json({ message: 'User ID and avatar data are required.' });
   }
 
-  db.prepare('UPDATE users SET avatar = ? WHERE id = ?').run(avatar, userId);
+  await db.prepare('UPDATE users SET avatar = $1 WHERE id = $2').run(avatar, userId);
   res.json({ message: 'Avatar updated successfully.', avatar });
 });
 
