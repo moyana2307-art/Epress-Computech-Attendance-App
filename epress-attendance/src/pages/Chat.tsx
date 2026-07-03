@@ -67,19 +67,21 @@ export default function Chat() {
     }
   };
 
+  const parseTS = (ts: string) => new Date(ts.endsWith('Z') ? ts : ts + 'Z');
+
   const formatTime = (ts: string) => {
-    const d = new Date(ts + 'Z');
+    const d = parseTS(ts);
     return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
   };
 
   const isToday = (ts: string) => {
-    const d = new Date(ts + 'Z');
+    const d = parseTS(ts);
     const now = new Date();
     return d.toDateString() === now.toDateString();
   };
 
   const formatDate = (ts: string) => {
-    const d = new Date(ts + 'Z');
+    const d = parseTS(ts);
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
 
@@ -101,7 +103,7 @@ export default function Chat() {
           )}
           {messages.map((msg, i) => {
             const isMine = msg.sender_id === user?.id;
-            const showDate = i === 0 || new Date(messages[i - 1].created_at + 'Z').toDateString() !== new Date(msg.created_at + 'Z').toDateString();
+            const showDate = i === 0 || parseTS(messages[i - 1].created_at).toDateString() !== parseTS(msg.created_at).toDateString();
             return (
               <div key={msg.id}>
                 {showDate && (
