@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import db from '../db.js';
+import { asyncHandler } from '../asyncHandler.js';
 
 const router = Router();
 
@@ -27,7 +28,7 @@ router.post('/login', async (req, res) => {
   });
 });
 
-router.post('/register', async (req, res) => {
+router.post('/register', asyncHandler(async (req, res) => {
   const { name, email, password, department } = req.body;
 
   if (!name || !email || !password) {
@@ -48,7 +49,7 @@ router.post('/register', async (req, res) => {
     }
     throw err;
   }
-});
+}));
 
 router.post('/upload-avatar', async (req, res) => {
   const { userId, avatar } = req.body;

@@ -8,12 +8,10 @@ import { cleanupExpiredOTPs } from './otpUtils.js';
 
 process.on('uncaughtException', (err) => {
   console.error('UNCAUGHT EXCEPTION:', err);
-  process.exit(1);
 });
 
 process.on('unhandledRejection', (reason) => {
   console.error('UNHANDLED REJECTION:', reason);
-  process.exit(1);
 });
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -67,9 +65,15 @@ setInterval(() => { handleAutoCheckout().catch(() => {}); }, 60000);
 cleanupExpiredOTPs().catch(() => {});
 setInterval(() => { cleanupExpiredOTPs().catch(() => {}); }, 300000);
 
-app.use((err, _req, res, _next) => {
+app.use((err, _req, res, next) => {
   console.error('Unhandled error:', err);
-  res.status(500).json({ error: err?.message || 'Internal server error' });
+  if (res.headersSent) return next(err);
+  res.status(err?.status || err?.statusCode || 500);
+  res.json({ error: err?.message || 'Internal server error' });
+});
+
+app.use((_req, res) => {
+  res.status(404).json({ error: 'Not found' });
 });
 
 if (process.env.VERCEL !== '1') {

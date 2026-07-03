@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import db from '../db.js';
+import { asyncHandler } from '../asyncHandler.js';
 
 const router = Router();
 
@@ -26,7 +27,7 @@ router.get('/:id', async (req, res) => {
   res.json(employee);
 });
 
-router.post('/', async (req, res) => {
+router.post('/', asyncHandler(async (req, res) => {
   const { name, email, password, department, position, phone, shift_id, responsibilities } = req.body;
 
   if (!name || typeof name !== 'string' || !name.trim()) {
@@ -63,9 +64,9 @@ router.post('/', async (req, res) => {
     }
     throw err;
   }
-});
+}));
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', asyncHandler(async (req, res) => {
   const { name, email, department, position, phone, status, shift_id, responsibilities } = req.body;
   const employee = await db.prepare('SELECT * FROM employees WHERE id = $1').get(req.params.id);
 
@@ -101,7 +102,7 @@ router.put('/:id', async (req, res) => {
     }
     throw err;
   }
-});
+}));
 
 router.delete('/:id', async (req, res) => {
   try {
