@@ -104,7 +104,7 @@ export default function Attendance() {
                 {r.status}
               </Badge>
             )},
-            { key: 'cash_up_amount', header: 'Cash Up', render: (r) => <span className="text-success font-medium">$${(r.cash_up_amount || 0).toFixed(2)}</span> },
+            { key: 'cash_up_amount', header: 'Cash Up', render: (r) => <span className="text-success font-medium">{`$${(r.cash_up_amount || 0).toFixed(2)}`}</span> },
           ]}
           data={records}
           keyExtractor={(r) => r.id}

@@ -49,7 +49,7 @@ export default function Revenue() {
     }
   }, [month, year, isAdmin, myEmployeeId]);
 
-  useEffect(() => { if (isAdmin || myEmployeeId) load(); }, [load]);
+  useEffect(() => { if (isAdmin || myEmployeeId) load(); }, [load, isAdmin, myEmployeeId]);
 
   const viewEmployee = async (empId: number) => {
     setEmpLoading(true);
@@ -203,15 +203,16 @@ export default function Revenue() {
                   <>
                     {renderMobileTable(
                       ['Date', 'In', 'Out', 'Cash Up', 'Status'],
-                      selectedEmp.records.map(r => ({
+                      (selectedEmp.records.map(r => ({
                         cells: [
                           r.date,
                           r.check_in || '--',
                           r.check_out || '--',
-                          <span key="amt" className="text-success font-bold">${(r.cash_up_amount || 0).toFixed(2)}</span>,
+                          <span key="amt" className="text-success font-bold">{`$${(r.cash_up_amount || 0).toFixed(2)}`}</span>,
                           <Badge key="status" variant={r.status === 'Late' ? 'warning' : 'success'} className="text-[10px]">{r.status}</Badge>,
                         ],
-                      })).concat([{
+                        highlight: false,
+                      })) as { cells: (string | React.ReactNode)[]; highlight?: boolean }[]).concat([{
                         cells: [
                           <span key="total" className="font-semibold">Total</span>,
                           '', '',
@@ -223,16 +224,17 @@ export default function Revenue() {
                     )}
                     {renderDesktopTable(
                       [{ key: 'date', label: 'Date' }, { key: 'in', label: 'Check In' }, { key: 'out', label: 'Check Out' }, { key: 'cash', label: 'Cash Up' }, { key: 'status', label: 'Status' }],
-                      selectedEmp.records.map(r => ({
+                      (selectedEmp.records.map(r => ({
                         cells: {
                           date: r.date,
                           in: r.check_in || '--',
                           out: r.check_out || '--',
-                          cash: <span className="text-success font-bold">${(r.cash_up_amount || 0).toFixed(2)}</span>,
+                          cash: <span className="text-success font-bold">{`$${(r.cash_up_amount || 0).toFixed(2)}`}</span>,
                           status: <Badge variant={r.status === 'Late' ? 'warning' : 'success'}>{r.status}</Badge>,
-                        },
-                      })).concat([{
-                        cells: { date: <span className="font-semibold">Total</span>, in: '', out: '', cash: <span className="text-success font-bold">${selectedEmp.total.toFixed(2)}</span>, status: '' },
+                        } as Record<string, React.ReactNode>,
+                        highlight: false,
+                      })) as { cells: Record<string, React.ReactNode>; highlight?: boolean }[]).concat([{
+                        cells: { date: <span className="font-semibold">Total</span>, in: '', out: '', cash: <span className="text-success font-bold">${selectedEmp.total.toFixed(2)}</span>, status: '' } as Record<string, React.ReactNode>,
                         highlight: true,
                       }])
                     )}
@@ -277,7 +279,7 @@ export default function Revenue() {
                 <>
                   {renderMobileTable(
                     ['Employee', 'Dept', 'Days', 'Revenue', 'Avg'],
-                    (data?.employees || []).map(emp => ({
+                    ((data?.employees || []).map(emp => ({
                       cells: [
                         <div key="name" className="flex items-center gap-2">
                           <Avatar name={emp.employee_name} size="sm" />
@@ -289,7 +291,8 @@ export default function Revenue() {
                         <span key="avg">${emp.avg_daily_revenue.toFixed(2)}</span>,
                       ],
                       onClick: () => viewEmployee(emp.employee_id),
-                    })).concat(data && data.employees.length > 0 ? [{
+                      highlight: false,
+                    })) as { cells: (string | React.ReactNode)[]; onClick?: () => void; highlight?: boolean }[]).concat(data && data.employees.length > 0 ? [{
                       cells: [
                         <span key="total" className="font-semibold">Total</span>,
                         '', '',
@@ -301,7 +304,7 @@ export default function Revenue() {
                   )}
                   {renderDesktopTable(
                     [{ key: 'emp', label: 'Employee' }, { key: 'dept', label: 'Department' }, { key: 'days', label: 'Work Days' }, { key: 'rev', label: 'Total Revenue' }, { key: 'avg', label: 'Daily Avg' }, { key: 'action', label: '' }],
-                    (data?.employees || []).map(emp => ({
+                    ((data?.employees || []).map(emp => ({
                       cells: {
                         emp: <div className="flex items-center gap-2">
                           <Avatar name={emp.employee_name} size="sm" />
@@ -312,15 +315,16 @@ export default function Revenue() {
                         rev: <span className="text-success font-bold">${emp.total_revenue.toFixed(2)}</span>,
                         avg: `$${emp.avg_daily_revenue.toFixed(2)}`,
                         action: <Button variant="ghost" size="sm" className="text-primary">View <ChevronDown className="w-3 h-3 ml-1" /></Button>,
-                      },
+                      } as Record<string, React.ReactNode>,
                       onClick: () => viewEmployee(emp.employee_id),
-                    })).concat(data && data.employees.length > 0 ? [{
+                      highlight: false,
+                    })) as { cells: Record<string, React.ReactNode>; onClick?: () => void; highlight?: boolean }[]).concat(data && data.employees.length > 0 ? [{
                       cells: {
                         emp: <span className="font-semibold">Total</span>,
                         dept: '', days: '',
                         rev: <span className="text-success font-bold">${data.total_revenue.toFixed(2)}</span>,
                         avg: '', action: '',
-                      },
+                      } as Record<string, React.ReactNode>,
                       highlight: true,
                     }] : [])
                   )}

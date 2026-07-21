@@ -41,6 +41,7 @@ export default defineConfig([
       ...reactRefresh.configs.vite.rules,
       'react-hooks/exhaustive-deps': 'warn',
       'react-refresh/only-export-components': 'off',
+      'react-hooks/set-state-in-effect': 'warn',
     },
   },
   {

@@ -73,6 +73,12 @@ export async function getActiveEmployees() {
   return result;
 }
 
+export async function getAllActiveEmployees() {
+  return await db.prepare(
+    "SELECT id, name, email FROM employees WHERE status = 'active' ORDER BY name ASC"
+  ).all();
+}
+
 export async function getDepartmentAssignments() {
   const active = await getActiveSchedules();
   const map = {};
@@ -155,7 +161,7 @@ export async function canCheckIn(employeeId, currentTime, settings) {
   return { available: true, schedule: activeSchedule, isLate, lateMinutes: isLate ? now - start : 0 };
 }
 
-export async function canCheckOut(employeeId, currentTime, settings) {
+export async function canCheckOut(employeeId, currentTime, _settings) {
   const schedule = await getEmployeeSchedule(employeeId);
   if (!schedule) return { available: false, reason: 'No active schedule' };
 

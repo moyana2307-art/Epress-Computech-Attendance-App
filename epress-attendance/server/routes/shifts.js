@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import db from '../db.js';
+import { requireAdmin } from '../middleware.js';
 
 const router = Router();
 
@@ -36,7 +37,7 @@ function hhmmToMin(t) {
   return h * 60 + m;
 }
 
-router.post('/', async (req, res) => {
+router.post('/', requireAdmin, async (req, res) => {
   const { name, start_time, end_time, description, responsibilities, department } = req.body;
   if (!name || !start_time || !end_time) {
     return res.status(400).json({ message: 'Name, start time, and end time are required.' });
@@ -49,7 +50,7 @@ router.post('/', async (req, res) => {
   res.status(201).json(shift);
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', requireAdmin, async (req, res) => {
   const { name, start_time, end_time, description, responsibilities, department } = req.body;
   const existing = await db.prepare('SELECT * FROM shifts WHERE id = $1').get(req.params.id);
   if (!existing) {
@@ -70,7 +71,7 @@ router.put('/:id', async (req, res) => {
   res.json(updated);
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireAdmin, async (req, res) => {
   const existing = await db.prepare('SELECT * FROM shifts WHERE id = $1').get(req.params.id);
   if (!existing) {
     return res.status(404).json({ message: 'Shift not found.' });

@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import db from '../db.js';
+import { requireAdmin } from '../middleware.js';
 
 const router = Router();
 
@@ -11,7 +12,7 @@ router.get('/', async (_req, res) => {
   res.json(settings);
 });
 
-router.put('/', async (req, res) => {
+router.put('/', requireAdmin, async (req, res) => {
   const { opening_time, closing_time, grace_period_minutes, early_checkin_minutes } = req.body;
   const existing = await db.prepare('SELECT id FROM business_settings WHERE id = 1').get();
   if (!existing) {

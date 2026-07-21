@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import db from '../db.js';
 import { nowHHMM, todayStr, canCheckIn, canCheckOut } from '../shiftUtils.js';
+import { asyncHandler } from '../asyncHandler.js';
+import { requireAdmin } from '../middleware.js';
 
 const router = Router();
 
-router.get('/', async (req, res) => {
+router.get('/', asyncHandler(async (req, res) => {
   const { date, employee_id } = req.query;
   let query = `
     SELECT a.*, e.name as employee_name, e.department, s.name as shift_name
@@ -30,11 +32,11 @@ router.get('/', async (req, res) => {
 
   const records = await db.prepare(query).all(...params);
   res.json(records);
-});
+}));
 
-router.get('/stats', async (req, res) => {
+router.get('/stats', asyncHandler(async (req, res) => {
   const { date } = req.query;
-  const today = date || new Date().toISOString().split('T')[0];
+  const today = date || todayStr();
 
   const total = await db.prepare(
     'SELECT COUNT(*) as count FROM attendance WHERE date = $1'
@@ -58,10 +60,10 @@ router.get('/stats', async (req, res) => {
     late: late.count,
     checkedOut: checkedOut.count,
   });
-});
+}));
 
-router.get('/today', async (_req, res) => {
-  const today = new Date().toISOString().split('T')[0];
+router.get('/today', asyncHandler(async (_req, res) => {
+  const today = todayStr();
   const records = await db.prepare(`
     SELECT a.*, e.name as employee_name, e.department, s.name as shift_name
     FROM attendance a
@@ -72,9 +74,9 @@ router.get('/today', async (_req, res) => {
   `).all(today);
 
   res.json(records);
-});
+}));
 
-router.post('/toggle', async (req, res) => {
+router.post('/toggle', asyncHandler(async (req, res) => {
   const { employeeName } = req.body;
   if (!employeeName || !employeeName.trim()) {
     return res.status(400).json({ message: 'Employee name is required.' });
@@ -180,9 +182,9 @@ router.post('/toggle', async (req, res) => {
   }
 
   return res.status(400).json({ message: 'No attendance action available.' });
-});
+}));
 
-router.post('/admin-checkin', async (req, res) => {
+router.post('/admin-checkin', requireAdmin, asyncHandler(async (req, res) => {
   const { employeeId } = req.body;
   if (!employeeId) {
     return res.status(400).json({ message: 'Employee ID is required.' });
@@ -220,6 +222,6 @@ router.post('/admin-checkin', async (req, res) => {
   return res.json({
     message: `${employee.name} checked in successfully by Admin at ${currentTime}`,
   });
-});
+}));
 
 export default router;

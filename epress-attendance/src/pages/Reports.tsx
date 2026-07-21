@@ -34,7 +34,7 @@ const recentReports = [
 export default function Reports() {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text">Reports & Analytics</h1>
           <p className="text-sm text-text-secondary mt-1">Comprehensive attendance analytics and reports</p>

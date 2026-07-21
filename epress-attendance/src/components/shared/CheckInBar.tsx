@@ -44,27 +44,13 @@ export default function CheckInBar() {
     return () => clearInterval(t);
   }, [isEmployee, user, fetchStatus]);
 
-  if (!isEmployee || !user) return null;
-  if (loading || !status) return null;
-
-  const isOnDuty = true;
-  const checkedIn = !!status.attendance?.check_in;
-  const checkedOut = !!status.attendance?.check_out;
-  const canCheckIn = status.checkInAvailable;
-  const canCheckOut = status.checkOutAvailable;
-
-  const showCheckIn = isOnDuty && !checkedIn;
-  const showCheckOut = isOnDuty && checkedIn && !checkedOut;
-
-  if (!showCheckIn && !showCheckOut) return null;
-
-  // --- OTP flow ---
   const [otpStep, setOtpStep] = useState<'request' | 'verify'>('request');
   const [otpCode, setOtpCode] = useState(['', '', '', '', '', '']);
   const [otpMsg, setOtpMsg] = useState('');
   const [otpExpires, setOtpExpires] = useState(300);
   const [otpLoading, setOtpLoading] = useState(false);
   const [otpError, setOtpError] = useState('');
+  const [checkingOut, setCheckingOut] = useState(false);
 
   useEffect(() => {
     if (!otpOpen) {
@@ -80,6 +66,20 @@ export default function CheckInBar() {
     const t = setInterval(() => setOtpExpires(p => Math.max(0, p - 1)), 1000);
     return () => clearInterval(t);
   }, [otpStep, otpExpires]);
+
+  if (!isEmployee || !user) return null;
+  if (loading || !status) return null;
+
+  const onDuty = !!status.schedule;
+  const checkedIn = !!status.attendance?.check_in;
+  const checkedOut = !!status.attendance?.check_out;
+  const canCheckIn = status.checkInAvailable;
+  const canCheckOut = status.checkOutAvailable;
+
+  const showCheckIn = (onDuty || canCheckIn) && !checkedIn;
+  const showCheckOut = checkedIn && !checkedOut;
+
+  if (!showCheckIn && !showCheckOut) return null;
 
   const handleRequestOTP = async () => {
     setOtpLoading(true);
@@ -126,9 +126,6 @@ export default function CheckInBar() {
       setOtpLoading(false);
     }
   };
-
-  // --- Checkout flow ---
-  const [checkingOut, setCheckingOut] = useState(false);
 
   const handleCheckout = async () => {
     setCheckingOut(true);

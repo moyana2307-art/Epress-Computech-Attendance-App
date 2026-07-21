@@ -77,7 +77,7 @@ export default function AdminDashboard() {
     }
   }, [settings]);
 
-  const onDuty = dashboard?.employees || [];
+  const onDuty = (dashboard?.employees || []).filter(e => e.schedule !== null);
   const checkedIn = dashboard?.todayRecords?.filter(r => r.check_in).length || 0;
   const lateCount = dashboard?.todayRecords?.filter(r => r.status === 'Late').length || 0;
 
@@ -314,36 +314,56 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent>
               {dashboard?.todayRecords?.length ? (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-border-light text-left">
-                        <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Employee</th>
-                        <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Check In</th>
-                        <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Check Out</th>
-                        <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Cash Up</th>
-                        <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Status</th>
-                        <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Note</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-border-light/60">
-                      {dashboard.todayRecords.map((row, i) => (
-                        <motion.tr key={row.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: i * 0.03 }}
-                          className="hover:bg-primary-lighter/40 dark:hover:bg-card-hover/50 transition-colors">
-                          <td className="px-3 py-3 text-sm font-medium text-text">{row.employee_name}</td>
-                          <td className="px-3 py-3 text-sm text-text">{row.check_in || '--'}</td>
-                          <td className="px-3 py-3 text-sm text-text">{row.check_out || '--'}</td>
-                          <td className="px-3 py-3 text-sm text-success font-medium">$${(row.cash_up_amount || 0).toFixed(2)}</td>
-                          <td className="px-3 py-3">
-                            <Badge variant={row.status === 'Late' ? 'warning' : 'success'}>{row.status}</Badge>
-                          </td>
-                          <td className="px-3 py-3 text-xs text-text-secondary">{row.note || row.shift_name || ''}</td>
-                        </motion.tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                <>
+                  <div className="sm:hidden divide-y divide-border-light/60">
+                    {dashboard.todayRecords.map((row) => (
+                      <div key={row.id} className="p-3 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-text">{row.employee_name}</span>
+                          <Badge variant={row.status === 'Late' ? 'warning' : 'success'}>{row.status}</Badge>
+                        </div>
+                        <div className="flex items-center justify-between text-xs text-text-secondary">
+                          <span>In: {row.check_in || '--'}</span>
+                          <span>Out: {row.check_out || '--'}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-success font-medium">{`$${(row.cash_up_amount || 0).toFixed(2)}`}</span>
+                          <span className="text-[10px] text-text-secondary truncate ml-2">{row.note || row.shift_name || ''}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="hidden sm:block overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-border-light text-left">
+                          <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Employee</th>
+                          <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Check In</th>
+                          <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Check Out</th>
+                          <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Cash Up</th>
+                          <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Status</th>
+                          <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Note</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border-light/60">
+                        {dashboard.todayRecords.map((row, i) => (
+                          <motion.tr key={row.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: i * 0.03 }}
+                            className="hover:bg-primary-lighter/40 dark:hover:bg-card-hover/50 transition-colors active:bg-primary-lighter/60">
+                            <td className="px-3 py-3 text-sm font-medium text-text">{row.employee_name}</td>
+                            <td className="px-3 py-3 text-sm text-text">{row.check_in || '--'}</td>
+                            <td className="px-3 py-3 text-sm text-text">{row.check_out || '--'}</td>
+                            <td className="px-3 py-3 text-sm text-success font-medium">{`$${(row.cash_up_amount || 0).toFixed(2)}`}</td>
+                            <td className="px-3 py-3">
+                              <Badge variant={row.status === 'Late' ? 'warning' : 'success'}>{row.status}</Badge>
+                            </td>
+                            <td className="px-3 py-3 text-xs text-text-secondary">{row.note || row.shift_name || ''}</td>
+                          </motion.tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
               ) : (
                 <div className="text-center py-8 text-text-secondary">
                   <Users className="w-10 h-10 mx-auto mb-2 opacity-40" />

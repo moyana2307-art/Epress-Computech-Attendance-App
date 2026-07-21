@@ -1,10 +1,12 @@
 import { Router } from 'express';
+import bcrypt from 'bcryptjs';
 import db from '../db.js';
 import { asyncHandler } from '../asyncHandler.js';
+import { requireAdmin } from '../middleware.js';
 
 const router = Router();
 
-router.get('/', async (_req, res) => {
+router.get('/', asyncHandler(async (_req, res) => {
   const employees = await db.prepare(`
     SELECT e.*, s.name as shift_name
     FROM employees e
@@ -12,9 +14,9 @@ router.get('/', async (_req, res) => {
     ORDER BY e.name ASC
   `).all();
   res.json(employees);
-});
+}));
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', asyncHandler(async (req, res) => {
   const employee = await db.prepare(`
     SELECT e.*, s.name as shift_name
     FROM employees e
@@ -25,9 +27,9 @@ router.get('/:id', async (req, res) => {
     return res.status(404).json({ message: 'Employee not found.' });
   }
   res.json(employee);
-});
+}));
 
-router.post('/', asyncHandler(async (req, res) => {
+router.post('/', requireAdmin, asyncHandler(async (req, res) => {
   const { name, email, password, department, position, phone, shift_id, responsibilities } = req.body;
 
   if (!name || typeof name !== 'string' || !name.trim()) {
@@ -36,7 +38,7 @@ router.post('/', asyncHandler(async (req, res) => {
 
   try {
     const result = await db.transaction(async (client) => {
-      const userPw = password || 'default123';
+      const userPw = password ? await bcrypt.hash(password, 12) : await bcrypt.hash('default123', 12);
       await client.query(
         'INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4)',
         [name.trim(), email || null, userPw, 'employee']
@@ -66,7 +68,7 @@ router.post('/', asyncHandler(async (req, res) => {
   }
 }));
 
-router.put('/:id', asyncHandler(async (req, res) => {
+router.put('/:id', requireAdmin, asyncHandler(async (req, res) => {
   const { name, email, department, position, phone, status, shift_id, responsibilities } = req.body;
   const employee = await db.prepare('SELECT * FROM employees WHERE id = $1').get(req.params.id);
 
@@ -104,7 +106,7 @@ router.put('/:id', asyncHandler(async (req, res) => {
   }
 }));
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireAdmin, asyncHandler(async (req, res) => {
   try {
     const employee = await db.prepare('SELECT * FROM employees WHERE id = $1').get(req.params.id);
 
@@ -123,6 +125,6 @@ router.delete('/:id', async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err?.message || 'Failed to delete employee.' });
   }
-});
+}));
 
 export default router;

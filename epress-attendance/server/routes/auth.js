@@ -1,10 +1,12 @@
 import { Router } from 'express';
+import bcrypt from 'bcryptjs';
 import db from '../db.js';
 import { asyncHandler } from '../asyncHandler.js';
+import { signToken, requireAuth, requireAdmin } from '../middleware.js';
 
 const router = Router();
 
-router.post('/login', async (req, res) => {
+router.post('/login', asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -12,12 +14,19 @@ router.post('/login', async (req, res) => {
   }
 
   const user = await db.prepare('SELECT * FROM users WHERE email = $1').get(email);
-  if (!user || user.password !== password) {
+  if (!user) {
     return res.status(401).json({ message: 'Invalid email or password.' });
   }
 
+  const valid = await bcrypt.compare(password, user.password);
+  if (!valid) {
+    return res.status(401).json({ message: 'Invalid email or password.' });
+  }
+
+  const token = signToken(user);
+
   res.json({
-    token: 'mock-jwt-token-' + Date.now(),
+    token,
     user: {
       id: user.id,
       name: user.name,
@@ -26,18 +35,24 @@ router.post('/login', async (req, res) => {
       avatar: user.avatar || '',
     },
   });
-});
+}));
 
-router.post('/register', asyncHandler(async (req, res) => {
+router.post('/register', requireAuth, requireAdmin, asyncHandler(async (req, res) => {
   const { name, email, password, department } = req.body;
 
   if (!name || !email || !password) {
     return res.status(400).json({ message: 'Name, email, and password are required.' });
   }
 
+  if (password.length < 8) {
+    return res.status(400).json({ message: 'Password must be at least 8 characters.' });
+  }
+
+  const hash = await bcrypt.hash(password, 12);
+
   try {
     await db.prepare('INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4)').run(
-      name, email, password, 'employee'
+      name, email, hash, 'employee'
     );
     await db.prepare('INSERT INTO employees (name, email, department) VALUES ($1, $2, $3)').run(
       name, email, department || 'General'
@@ -51,14 +66,18 @@ router.post('/register', asyncHandler(async (req, res) => {
   }
 }));
 
-router.post('/upload-avatar', async (req, res) => {
-  const { userId, avatar } = req.body;
-  if (!userId || !avatar) {
-    return res.status(400).json({ message: 'User ID and avatar data are required.' });
+router.post('/upload-avatar', requireAuth, asyncHandler(async (req, res) => {
+  const { avatar } = req.body;
+  if (!avatar) {
+    return res.status(400).json({ message: 'Avatar data is required.' });
   }
 
-  await db.prepare('UPDATE users SET avatar = $1 WHERE id = $2').run(avatar, userId);
+  if (typeof avatar !== 'string' || avatar.length > 100000) {
+    return res.status(400).json({ message: 'Invalid avatar data.' });
+  }
+
+  await db.prepare('UPDATE users SET avatar = $1 WHERE id = $2').run(avatar, req.user.id);
   res.json({ message: 'Avatar updated successfully.', avatar });
-});
+}));
 
 export default router;

@@ -1,10 +1,12 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { handleAutoCheckout } from './shiftUtils.js';
 import { cleanupExpiredOTPs } from './otpUtils.js';
+import { requireAuth, requireAdmin, apiLimiter } from './middleware.js';
 
 process.on('uncaughtException', (err) => {
   console.error('UNCAUGHT EXCEPTION:', err);
@@ -20,9 +22,24 @@ dotenv.config({ path: path.join(__dirname, '..', '.env') });
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+const ALLOWED_ORIGINS = [
+  process.env.FRONTEND_URL,
+  'https://epress-attendance.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:5000',
+].filter(Boolean);
 
-app.use(express.json());
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
+}));
+
+app.use(cors({
+  origin: ALLOWED_ORIGINS.length > 0 ? ALLOWED_ORIGINS : false,
+  credentials: true,
+}));
+
+app.use(express.json({ limit: '1mb' }));
 
 import authRoutes from './routes/auth.js';
 import attendanceRoutes from './routes/attendance.js';
@@ -38,17 +55,17 @@ import messageRoutes from './routes/messages.js';
 import revenueRoutes from './routes/revenue.js';
 
 app.use('/api/auth', authRoutes);
-app.use('/api/attendance', attendanceRoutes);
-app.use('/api/employees', employeeRoutes);
-app.use('/api/departments', departmentRoutes);
-app.use('/api/leaves', leaveRoutes);
-app.use('/api/notifications', notificationRoutes);
-app.use('/api/shifts', shiftRoutes);
-app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/business', businessRoutes);
-app.use('/api/messages', messageRoutes);
-app.use('/api/revenue', revenueRoutes);
-app.use('/api/worker', workerRoutes);
+app.use('/api/attendance', apiLimiter, requireAuth, attendanceRoutes);
+app.use('/api/employees', apiLimiter, requireAuth, employeeRoutes);
+app.use('/api/departments', apiLimiter, requireAuth, departmentRoutes);
+app.use('/api/leaves', apiLimiter, requireAuth, leaveRoutes);
+app.use('/api/notifications', apiLimiter, requireAuth, notificationRoutes);
+app.use('/api/shifts', apiLimiter, requireAuth, shiftRoutes);
+app.use('/api/dashboard', apiLimiter, requireAuth, dashboardRoutes);
+app.use('/api/business', apiLimiter, requireAuth, businessRoutes);
+app.use('/api/messages', apiLimiter, requireAuth, messageRoutes);
+app.use('/api/revenue', apiLimiter, requireAuth, requireAdmin, revenueRoutes);
+app.use('/api/worker', apiLimiter, workerRoutes);
 
 try {
   const distPath = path.join(__dirname, '..', 'dist');
@@ -58,7 +75,7 @@ try {
       if (err) res.status(404).send('Not found');
     });
   });
-} catch {} // static serving not available (serverless)
+} catch { /* static serving not available (serverless) */ }
 
 handleAutoCheckout().catch(() => {});
 setInterval(() => { handleAutoCheckout().catch(() => {}); }, 60000);
@@ -69,7 +86,7 @@ app.use((err, _req, res, next) => {
   console.error('Unhandled error:', err);
   if (res.headersSent) return next(err);
   res.status(err?.status || err?.statusCode || 500);
-  res.json({ error: err?.message || 'Internal server error' });
+  res.json({ error: 'Internal server error' });
 });
 
 app.use((_req, res) => {

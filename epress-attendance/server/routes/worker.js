@@ -1,22 +1,22 @@
 import { Router } from 'express';
 import db from '../db.js';
 import {
-  getActiveSchedules, getActiveEmployees, getDepartmentAssignments,
+  getAllActiveEmployees, getDepartmentAssignments,
   getEmployeeSchedule, isBusinessOpen, canCheckIn, canCheckOut,
-  nowHHMM, todayStr, handleAutoCheckout,
+  nowHHMM, todayStr,
 } from '../shiftUtils.js';
 import { requestOTP, verifyOTP } from '../otpUtils.js';
+import { requireAuth, otpLimiter, otpVerifyLimiter } from '../middleware.js';
 
 const router = Router();
 
-router.get('/dashboard', async (req, res) => {
+router.get('/dashboard', requireAuth, async (req, res) => {
   const currentTime = nowHHMM();
   const today = todayStr();
   const settings = await db.prepare('SELECT * FROM business_settings WHERE id = 1').get();
   const biz = await isBusinessOpen(currentTime);
-  const employees = await getActiveEmployees();
+  const allEmployees = await getAllActiveEmployees();
   const deptAssignments = await getDepartmentAssignments();
-  const activeSchedules = await getActiveSchedules();
 
   const attRecords = await db.prepare(`
     SELECT a.*, e.name as employee_name, e.department, s.name as shift_name
@@ -32,14 +32,14 @@ router.get('/dashboard', async (req, res) => {
   `).all();
 
   const employeeStatuses = [];
-  for (const emp of employees) {
-    const schedule = await getEmployeeSchedule(emp.id);
+  for (const emp of allEmployees) {
+    const currentSchedule = await getEmployeeSchedule(emp.id);
+    const cin = await canCheckIn(emp.id, currentTime, settings);
+    const cout = await canCheckOut(emp.id, currentTime, settings);
+    const schedule = cin.schedule || currentSchedule || cout.schedule || null;
     const att = await db.prepare(
       'SELECT * FROM attendance WHERE employee_id = $1 AND date = $2'
     ).get(emp.id, today);
-
-    const cin = emp && schedule ? await canCheckIn(emp.id, currentTime, settings) : { available: false };
-    const cout = emp && schedule ? await canCheckOut(emp.id, currentTime, settings) : { available: false };
 
     let minutes = 0;
     if (att?.check_in) {
@@ -96,7 +96,7 @@ router.get('/dashboard', async (req, res) => {
   });
 });
 
-router.post('/request-otp', async (req, res) => {
+router.post('/request-otp', otpLimiter, async (req, res) => {
   const { employeeName } = req.body;
   if (!employeeName || !employeeName.trim()) {
     return res.status(400).json({ message: 'Employee name is required.' });
@@ -131,7 +131,7 @@ router.post('/request-otp', async (req, res) => {
   res.json(result);
 });
 
-router.post('/verify-otp', async (req, res) => {
+router.post('/verify-otp', otpVerifyLimiter, async (req, res) => {
   const { employeeName, code } = req.body;
   if (!employeeName || !code) {
     return res.status(400).json({ message: 'Employee name and OTP code are required.' });
@@ -216,7 +216,7 @@ router.post('/verify-otp', async (req, res) => {
   });
 });
 
-router.post('/checkout', async (req, res) => {
+router.post('/checkout', requireAuth, async (req, res) => {
   const { employeeName, cashUpAmount } = req.body;
   if (!employeeName || !employeeName.trim()) {
     return res.status(400).json({ message: 'Employee name is required.' });

@@ -29,7 +29,7 @@ export default function Profile() {
       const reader = new FileReader();
       reader.onload = async () => {
         const base64 = reader.result as string;
-        await api.auth.uploadAvatar(user.id, base64);
+        await api.auth.uploadAvatar(base64);
         // Update stored user with new avatar
         const stored = localStorage.getItem('user');
         if (stored) {

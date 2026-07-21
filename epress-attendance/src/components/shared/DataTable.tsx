@@ -18,11 +18,12 @@ interface DataTableProps<T> {
   emptyMessage?: string;
   onRowClick?: (item: T) => void;
   title?: string;
+  mobileCard?: boolean;
 }
 
 export function DataTable<T extends Record<string, any>>({
   columns, data, keyExtractor, searchable = true,
-  searchKeys, emptyMessage = 'No data found', onRowClick, title,
+  searchKeys, emptyMessage = 'No data found', onRowClick, title, mobileCard = false,
 }: DataTableProps<T>) {
   const [search, setSearch] = useState('');
   const [sortKey, setSortKey] = useState<string | null>(null);
@@ -73,7 +74,32 @@ export function DataTable<T extends Record<string, any>>({
           )}
         </div>
       )}
-      <div className="overflow-x-auto">
+      {mobileCard && sorted.length > 0 ? (
+        <div className="sm:hidden divide-y divide-border-light">
+          {sorted.map((item) => (
+            <div
+              key={keyExtractor(item)}
+              onClick={() => onRowClick?.(item)}
+              className={cn(
+                'p-4 space-y-2 active:bg-background/80 transition-colors',
+                onRowClick && 'cursor-pointer active:scale-[0.99]'
+              )}
+            >
+              {columns.map((col) => (
+                <div key={col.key} className="flex items-center justify-between gap-2">
+                  <span className="text-xs font-medium text-text-secondary uppercase tracking-wider shrink-0">
+                    {col.header}
+                  </span>
+                  <span className="text-sm text-text text-right truncate max-w-[60%]">
+                    {col.render ? col.render(item) : item[col.key]}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      ) : null}
+      <div className={cn(mobileCard && 'hidden sm:block', 'overflow-x-auto')}>
         <table className="w-full">
           <thead>
             <tr className="border-b border-border-light bg-background/50">
@@ -126,6 +152,11 @@ export function DataTable<T extends Record<string, any>>({
           </tbody>
         </table>
       </div>
+      {sorted.length === 0 && mobileCard && (
+        <div className="sm:hidden py-12 text-center text-sm text-text-secondary">
+          {emptyMessage}
+        </div>
+      )}
     </div>
   );
 }

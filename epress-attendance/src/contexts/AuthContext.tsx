@@ -18,8 +18,14 @@ const AuthContext = createContext<AuthContextType>({
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(() => {
-    const stored = localStorage.getItem('user');
-    return stored ? JSON.parse(stored) : null;
+    try {
+      const stored = localStorage.getItem('user');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      localStorage.removeItem('user');
+      localStorage.removeItem('auth_token');
+      return null;
+    }
   });
   const [loading, setLoading] = useState(false);
 
@@ -27,6 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setLoading(true);
     try {
       const data = await api.auth.login(email, password);
+      localStorage.setItem('auth_token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       setUser(data.user as User);
     } finally {
@@ -35,6 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(() => {
+    localStorage.removeItem('auth_token');
     localStorage.removeItem('user');
     setUser(null);
   }, []);

@@ -1,8 +1,14 @@
 import pkg from 'pg';
+import bcrypt from 'bcryptjs';
 const { Pool } = pkg;
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: true } : { rejectUnauthorized: false },
+});
+
+pool.on('error', (err) => {
+  console.error('Unexpected database pool error:', err);
 });
 
 const db = {
@@ -46,6 +52,16 @@ function convert(sql) {
 }
 
 async function init() {
+  try {
+    const alreadyInit = await pool.query("SELECT id FROM business_settings WHERE id = 1");
+    if (alreadyInit.rows.length > 0) {
+      console.log('Database already initialized, skipping seed');
+      return;
+    }
+  } catch {
+    // Table doesn't exist yet — proceed with initialization
+  }
+
   await pool.query(`
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
@@ -176,12 +192,14 @@ async function init() {
     );
   `);
 
-  // Seed default admin
-  await pool.query(`
-    INSERT INTO users (name, email, password, role)
-    SELECT 'Admin User', 'admin@epressattendance.co.zw', 'admin123', 'admin'
-    WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'admin@epressattendance.co.zw')
-  `);
+  // Seed default admin (hashed password)
+  const adminHash = await bcrypt.hash('admin123', 12);
+  await pool.query(
+    `INSERT INTO users (name, email, password, role)
+     SELECT 'Admin User', 'admin@epressattendance.co.zw', $1, 'admin'
+     WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'admin@epressattendance.co.zw')`,
+    [adminHash]
+  );
 
   // Seed departments
   for (const name of ['Printing', 'EcoCash', 'Customer Service']) {
@@ -207,14 +225,16 @@ async function init() {
     );
   }
 
-  // Seed users
-  for (const [name, email, pw, role] of [
+  // Seed users (hashed passwords)
+  const seedUsers = [
     ['Acquiline', 'acquiline@epressattendance.co.zw', 'acquiline123', 'employee'],
     ['Pride', 'pride@epressattendance.co.zw', 'pride123', 'employee'],
-  ]) {
+  ];
+  for (const [name, email, pw, role] of seedUsers) {
+    const hash = await bcrypt.hash(pw, 12);
     await pool.query(
       'INSERT INTO users (name, email, password, role) SELECT $1,$2,$3,$4 WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = $2)',
-      [name, email, pw, role]
+      [name, email, hash, role]
     );
   }
 
@@ -320,6 +340,7 @@ async function init() {
   console.log('Database initialized successfully');
 }
 
-init().catch(err => console.error('Database initialization error:', err));
+const initPromise = init().catch(err => console.error('Database initialization error:', err));
 
+export { initPromise };
 export default db;

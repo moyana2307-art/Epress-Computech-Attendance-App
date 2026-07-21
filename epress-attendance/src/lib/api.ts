@@ -1,10 +1,29 @@
 const BASE_URL = '/api';
 
+function getToken(): string | null {
+  try {
+    const raw = localStorage.getItem('auth_token');
+    return raw || null;
+  } catch {
+    return null;
+  }
+}
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
+  const token = getToken();
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...((options?.headers as Record<string, string>) || {}),
+  };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const res = await fetch(`${BASE_URL}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
     ...options,
+    headers,
   });
+
   let data: unknown;
   try {
     data = await res.json();
@@ -15,6 +34,14 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
         : `Server returned ${res.status} with no JSON body`
     );
   }
+
+  if (res.status === 401) {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user');
+    window.location.href = '/';
+    throw new Error('Session expired. Please log in again.');
+  }
+
   if (!res.ok) throw new Error((data as { message: string }).message || 'Request failed');
   return data as T;
 }
@@ -22,7 +49,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 export const api = {
   auth: {
     login: (email: string, password: string) =>
-      request<{ token: string; user: { id: number; name: string; email: string; role: string } }>(
+      request<{ token: string; user: { id: number; name: string; email: string; role: string; avatar?: string } }>(
         '/auth/login',
         { method: 'POST', body: JSON.stringify({ email, password }) }
       ),
@@ -31,10 +58,10 @@ export const api = {
         method: 'POST',
         body: JSON.stringify(data),
       }),
-    uploadAvatar: (userId: number, avatar: string) =>
+    uploadAvatar: (avatar: string) =>
       request<{ message: string; avatar: string }>('/auth/upload-avatar', {
         method: 'POST',
-        body: JSON.stringify({ userId, avatar }),
+        body: JSON.stringify({ avatar }),
       }),
   },
   attendance: {
@@ -71,8 +98,6 @@ export const api = {
         body: JSON.stringify(data),
       }),
     delete: (id: number) =>
-      request<{ message: string }>(`/employees/${id}`, { method: 'DELETE' }),
-    remove: (id: number) =>
       request<{ message: string }>(`/employees/${id}`, { method: 'DELETE' }),
   },
   departments: {

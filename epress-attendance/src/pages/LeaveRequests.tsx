@@ -61,7 +61,7 @@ export default function LeaveRequests() {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text">Leave Requests</h1>
           <p className="text-sm text-text-secondary mt-1">{leaves.filter((l) => l.status === 'pending').length} pending requests</p>

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import db from '../db.js';
 import { asyncHandler } from '../asyncHandler.js';
+import { requireAdmin } from '../middleware.js';
 
 const router = Router();
 
@@ -12,7 +13,7 @@ router.get('/', async (_req, res) => {
   res.json(departments);
 });
 
-router.post('/', asyncHandler(async (req, res) => {
+router.post('/', requireAdmin, asyncHandler(async (req, res) => {
   const { name, head } = req.body;
   if (!name || typeof name !== 'string' || !name.trim()) {
     return res.status(400).json({ message: 'Department name is required.' });

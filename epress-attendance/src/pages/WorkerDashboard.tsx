@@ -220,7 +220,7 @@ export default function WorkerDashboard() {
   const myStatus: EmployeeStatus | undefined = data?.employees.find(
     e => e.employee.name.toLowerCase() === user?.name?.toLowerCase()
   );
-  const isOnDuty = !!myStatus;
+  const isOnDuty = !!myStatus?.schedule || !!myStatus?.attendance?.check_in;
   const myDeptAssignment = data?.departmentAssignments.find(
     d => d.employee_name.toLowerCase() === user?.name?.toLowerCase()
   );
@@ -272,7 +272,7 @@ export default function WorkerDashboard() {
     {
       icon: <Clock className="w-5 h-5 text-white" />,
       label: 'My Status',
-      value: isOnDuty ? (myStatus?.attendance?.check_in ? 'Checked In' : 'Not Checked In') : 'Off Duty',
+      value: myStatus?.schedule ? (myStatus?.attendance?.check_in ? 'Checked In' : 'Not Checked In') : 'Off Duty',
       color: isOnDuty ? 'bg-linear-to-br from-secondary to-primary' : 'bg-linear-to-br from-gray-400 to-gray-500',
     },
     {
@@ -347,26 +347,26 @@ export default function WorkerDashboard() {
                 <CountdownTimer targetTime={myStatus.schedule.end_time} />
               </div>
             )}
-            {isOnDuty && !myStatus?.attendance?.check_in && (
+            {!myStatus?.attendance?.check_in && (
               <Button
                 onClick={handleCheckin}
                 disabled={!myStatus?.checkInAvailable}
                 variant="default"
                 size="lg"
-                className="min-w-[140px] bg-white text-primary hover:bg-white/90 shadow-lg shadow-white/10"
+                className="min-w-[120px] sm:min-w-[140px] bg-white text-primary hover:bg-white/90 shadow-lg shadow-white/10"
               >
-                <Key className="w-4 h-4" /> Check In
+                <Key className="w-4 h-4" /> <span className="hidden xs:inline">Check In</span>
               </Button>
             )}
-            {isOnDuty && myStatus?.attendance?.check_in && !myStatus?.attendance?.check_out && (
+            {myStatus?.attendance?.check_in && !myStatus?.attendance?.check_out && (
               <Button
                 onClick={() => setRevenueOpen(true)}
                 disabled={!myStatus?.checkOutAvailable}
                 variant="secondary"
                 size="lg"
-                className="min-w-[140px] bg-white/15 text-white hover:bg-white/25 border-0"
+                className="min-w-[120px] sm:min-w-[140px] bg-white/15 text-white hover:bg-white/25 border-0"
               >
-                <LogOut className="w-4 h-4" /> Check Out
+                <LogOut className="w-4 h-4" /> <span className="hidden xs:inline">Check Out</span>
               </Button>
             )}
             <Link to="/leaves">
@@ -487,8 +487,8 @@ export default function WorkerDashboard() {
                   label: 'Check In',
                   desc: 'OTP verification',
                   gradient: 'from-primary to-primary-dark',
-                  onClick: isOnDuty && !myStatus?.attendance?.check_in ? handleCheckin : undefined,
-                  disabled: !isOnDuty || !myStatus?.checkInAvailable || !!myStatus?.attendance?.check_in,
+                  onClick: !myStatus?.attendance?.check_in ? handleCheckin : undefined,
+                  disabled: !myStatus?.checkInAvailable || !!myStatus?.attendance?.check_in,
                   condition: !myStatus?.attendance?.check_in,
                 },
                 {
@@ -496,8 +496,8 @@ export default function WorkerDashboard() {
                   label: 'Check Out',
                   desc: 'End your shift',
                   gradient: 'from-secondary to-primary',
-                  onClick: isOnDuty && myStatus?.attendance?.check_in && !myStatus?.attendance?.check_out ? () => setRevenueOpen(true) : undefined,
-                  disabled: !isOnDuty || !myStatus?.checkOutAvailable || !myStatus?.attendance?.check_in || !!myStatus?.attendance?.check_out,
+                  onClick: myStatus?.attendance?.check_in && !myStatus?.attendance?.check_out ? () => setRevenueOpen(true) : undefined,
+                  disabled: !myStatus?.checkOutAvailable || !myStatus?.attendance?.check_in || !!myStatus?.attendance?.check_out,
                   condition: myStatus?.attendance?.check_in && !myStatus?.attendance?.check_out,
                 },
                 {
@@ -565,36 +565,56 @@ export default function WorkerDashboard() {
           </CardHeader>
           <CardContent>
             {data?.todayRecords?.length ? (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-border-light text-left">
-                      <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Employee</th>
-                      <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Check In</th>
-                      <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Check Out</th>
-                      <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Cash Up</th>
-                      <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Status</th>
-                      <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Note</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border-light/60">
-                    {data.todayRecords.map((row, i) => (
-                      <motion.tr key={row.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.05 }}
-                        className="hover:bg-primary-lighter/40 dark:hover:bg-card-hover/50 transition-colors">
-                        <td className="px-3 py-3 text-sm font-medium text-text">{row.employee_name}</td>
-                        <td className="px-3 py-3 text-sm text-text">{row.check_in || '--'}</td>
-                        <td className="px-3 py-3 text-sm text-text">{row.check_out || '--'}</td>
-                        <td className="px-3 py-3 text-sm text-success font-medium">$${(row.cash_up_amount || 0).toFixed(2)}</td>
-                        <td className="px-3 py-3">
-                          <Badge variant={row.status === 'Late' ? 'warning' : 'success'}>{row.status}</Badge>
-                        </td>
-                        <td className="px-3 py-3 text-xs text-text-secondary">{row.note || (row.shift_name || '')}</td>
-                      </motion.tr>
+              <>
+                <div className="sm:hidden divide-y divide-border-light/60">
+                  {data.todayRecords.map((row) => (
+                    <div key={row.id} className="p-3 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-text">{row.employee_name}</span>
+                        <Badge variant={row.status === 'Late' ? 'warning' : 'success'}>{row.status}</Badge>
+                      </div>
+                      <div className="flex items-center justify-between text-xs text-text-secondary">
+                        <span>In: {row.check_in || '--'}</span>
+                        <span>Out: {row.check_out || '--'}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                          <span className="text-xs text-success font-medium">{`$${(row.cash_up_amount || 0).toFixed(2)}`}</span>
+                          <span className="text-[10px] text-text-secondary truncate ml-2">{row.note || row.shift_name || ''}</span>
+                        </div>
+                      </div>
                     ))}
-                  </tbody>
-                </table>
-              </div>
+                  </div>
+                  <div className="hidden sm:block overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-border-light text-left">
+                          <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Employee</th>
+                          <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Check In</th>
+                          <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Check Out</th>
+                          <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Cash Up</th>
+                          <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Status</th>
+                          <th className="px-3 py-2.5 text-xs font-semibold text-text-secondary uppercase tracking-wider">Note</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border-light/60">
+                        {data.todayRecords.map((row, i) => (
+                          <motion.tr key={row.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: i * 0.05 }}
+                            className="hover:bg-primary-lighter/40 dark:hover:bg-card-hover/50 transition-colors active:bg-primary-lighter/60">
+                            <td className="px-3 py-3 text-sm font-medium text-text">{row.employee_name}</td>
+                            <td className="px-3 py-3 text-sm text-text">{row.check_in || '--'}</td>
+                            <td className="px-3 py-3 text-sm text-text">{row.check_out || '--'}</td>
+                            <td className="px-3 py-3 text-sm text-success font-medium">{`$${(row.cash_up_amount || 0).toFixed(2)}`}</td>
+                          <td className="px-3 py-3">
+                            <Badge variant={row.status === 'Late' ? 'warning' : 'success'}>{row.status}</Badge>
+                          </td>
+                          <td className="px-3 py-3 text-xs text-text-secondary">{row.note || (row.shift_name || '')}</td>
+                        </motion.tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
             ) : (
               <div className="text-center py-8 text-text-secondary">
                 <Users className="w-10 h-10 mx-auto mb-2 opacity-40" />

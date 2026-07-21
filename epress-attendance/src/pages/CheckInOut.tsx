@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { LogIn, LogOut, Clock, Loader2, DollarSign, Banknote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -15,10 +15,10 @@ export default function CheckInOut() {
   const [showRevenue, setShowRevenue] = useState(false);
   const [cashUpAmount, setCashUpAmount] = useState('');
 
-  useState(() => {
+  useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
-  });
+  }, []);
 
   const handleToggle = async (e: React.FormEvent) => {
     e.preventDefault();

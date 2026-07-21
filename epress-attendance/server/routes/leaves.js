@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import db from '../db.js';
+import { requireAdmin } from '../middleware.js';
 
 const router = Router();
 
@@ -27,7 +28,7 @@ router.post('/', async (req, res) => {
   res.status(201).json(leave);
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', requireAdmin, async (req, res) => {
   const { status } = req.body;
   if (!['pending', 'approved', 'rejected'].includes(status)) {
     return res.status(400).json({ message: 'Invalid status.' });
