@@ -337,6 +337,20 @@ async function init() {
     );
   }
 
+  // Migrate plaintext passwords to bcrypt hashes
+  const allUsers = await pool.query('SELECT id, password FROM users');
+  let migrated = 0;
+  for (const user of allUsers.rows) {
+    if (user.password && !user.password.startsWith('$2a$') && !user.password.startsWith('$2b$')) {
+      const hash = await bcrypt.hash(user.password, 12);
+      await pool.query('UPDATE users SET password = $1 WHERE id = $2', [hash, user.id]);
+      migrated++;
+    }
+  }
+  if (migrated > 0) {
+    console.log(`Migrated ${migrated} plaintext password(s) to bcrypt hashes`);
+  }
+
   console.log('Database initialized successfully');
 }
 
